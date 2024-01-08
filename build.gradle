@@ -9,6 +9,12 @@ plugins {
 version = mod_version
 group = mod_group_id
 
+sourceSets.main.java.srcDirs += [
+    new File(file('..'), "/FVTM-Core/src"),
+    new File(file('..'), "/FCLN/src"),
+    new File(file('..'), "/Json/src")
+]
+
 repositories {
     mavenLocal()
 }
