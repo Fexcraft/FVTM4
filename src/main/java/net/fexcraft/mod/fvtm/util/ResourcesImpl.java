@@ -1,21 +1,14 @@
 package net.fexcraft.mod.fvtm.util;
 
-import java.io.InputStream;
-import java.util.function.Supplier;
-
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
-import net.fexcraft.mod.fvtm.data.Consumable;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
-import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -32,8 +25,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredItem;
+
+import java.io.InputStream;
+import java.util.function.Supplier;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -58,22 +53,22 @@ public class ResourcesImpl extends FvtmResources {
 
 
 	public void createContentItems(){
-		DecorationItem.REGOBJ = ((DeferredRegister)FVTM4.ITEM_REGISTRY.get("fvtm")).register("decoration", () -> new DecorationItem());
-		FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), ())));
-		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), ())));
+		DecorationItem.REGOBJ = (DeferredItem<DecorationItem>)FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
+		//TODO FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), () -> new MaterialItem())));
+		//TODO FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), () -> new ConsumableItem())));
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
-		RegistryObject<Item> obj = ((DeferredRegister)FVTM4.ITEM_REGISTRY.get(id.space())).register(id.id(), item);
+		DeferredItem<Item> obj = (DeferredItem<Item>)FVTM4.ITEM_REGISTRY.get(id.space()).register(id.id(), item);
 		IWR iWR = new IWR(obj);
 		FvtmRegistry.CONTENT_ITEMS.put(id, iWR);
 		FvtmRegistry.ITEMS.put(id.colon(), iWR);
-		return (ItemWrapper)iWR;
+		return iWR;
 	}
 
 	public ItemWrapper getItemWrapper(String id){
-		Item item = (Item)BuiltInRegistries.f_257033_.m_7745_(new ResourceLocation(id));
-		return (item == null) ? null : new IWI(item);
+		Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(id));
+		return item == null ? null : new IWI(item);
 	}
 
 	public StackWrapper newStack(ItemWrapper item){
@@ -164,7 +159,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	public InputStream getModelInputStream(IDL loc, boolean log){
 		try{
-			return ((Resource)Minecraft.getInstance().getResourceManager().getResource((ResourceLocation)loc).get()).m_215507_();
+			return ((Resource)Minecraft.getInstance().getResourceManager().getResource((ResourceLocation)loc).get()).open();
 		}
 		catch(Throwable e){
 			e.printStackTrace();
