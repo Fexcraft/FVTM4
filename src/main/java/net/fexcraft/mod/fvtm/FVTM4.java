@@ -9,10 +9,14 @@ import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.ui.DecoContainer;
+import net.fexcraft.mod.fvtm.ui.DecoEditor;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.fexcraft.mod.uni.UniReg;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -79,6 +83,9 @@ public class FVTM4 {
 			//TODO Config.addListener(() -> ConditionRegistry.BUILDER = CondBuilder.run());
 		}
 		//
+		UniReg.registerUI(UIKey.DECORATION_EDITOR.key, DecoEditor.class);
+		UniReg.registerMenu(UIKey.DECORATION_EDITOR.key, "assets/fvtm/uis/deco_editor", DecoContainer.class);
+		//
 		FvtmResources.INSTANCE.init();
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(BuiltInRegistries.ITEM, addon.getID().id())));
 		//
@@ -128,7 +135,7 @@ public class FVTM4 {
 					});
 				}
 		}
-		
+
 	}
 
 }
