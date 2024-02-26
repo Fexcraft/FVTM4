@@ -1,0 +1,7 @@
+{
+	"gui.fvtm.decoration_editor.position":"Position Offset",
+	"gui.fvtm.decoration_editor.rotation":"Rotation (Degrees)",
+	"gui.fvtm.decoration_editor.scale":"Scale",
+	"gui.fvtm.decoration_editor.texture":"Texture",
+	"gui.fvtm.decoration_editor.no_color_channels":"No Color Channels"
+}
