@@ -5,7 +5,10 @@ import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
+import net.fexcraft.mod.fvtm.util.TabInitializer;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -35,19 +38,27 @@ public class FVTM4 {
 	//public static final RegistryObject<EntityType<Decoration>> DECORATION_ENTITY = ENTITIES.register("decoration", () -> EntityType.Builder.m_20704_(Decoration::new, MobCategory.MISC).m_20699_(0.25F, 0.25F).m_20702_(10).m_20717_(256).m_20712_("decoration"));
 
 	public FVTM4(IEventBus event){
+		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
 			protected void log0(Object obj){
 				LOGGER4.info(obj == null ? "null" : obj.toString());
 			}
 		};
-		if(FMLLoader.getDist().isClient()){
+		if(EnvInfo.CLIENT){
 			Renderer.RENDERER = new Renderer120();
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
 		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
 		FvtmResources.INSTANCE = new ResourcesImpl();
-		NeoForge.EVENT_BUS.register(FvtmResources.INSTANCE);
+		//NeoForge.EVENT_BUS.register(FvtmResources.INSTANCE);
+		Config.addListener(() -> {
+			//
+		});
+		if(EnvInfo.CLIENT){
+			CTab.IMPL[0] = TabInitializer.class;
+			//TODO Config.addListener(() -> ConditionRegistry.BUILDER = CondBuilder.run());
+		}
 	}
 
 }
