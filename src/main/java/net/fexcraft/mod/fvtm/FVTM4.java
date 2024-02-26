@@ -3,24 +3,39 @@ package net.fexcraft.mod.fvtm;
 import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
+import net.fexcraft.mod.fvtm.data.addon.Addon;
+import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
 import net.fexcraft.mod.uni.EnvInfo;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackCompatibility;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -39,6 +54,7 @@ public class FVTM4 {
 
 	public FVTM4(IEventBus event){
 		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
+		AABB.SUPPLIER = () -> new AABBI();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
 			protected void log0(Object obj){
@@ -58,6 +74,57 @@ public class FVTM4 {
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializer.class;
 			//TODO Config.addListener(() -> ConditionRegistry.BUILDER = CondBuilder.run());
+		}
+		//
+		FvtmResources.INSTANCE.init();
+		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(BuiltInRegistries.ITEM, addon.getID().id())));
+		//
+		FvtmResources.INSTANCE.registerFvtmBlocks();
+		FvtmResources.INSTANCE.registerFvtmItems();
+		FvtmResources.INSTANCE.registerAttributes();
+		FvtmResources.INSTANCE.registerFunctions();
+		FvtmResources.INSTANCE.registerHandlers();
+		FvtmResources.INSTANCE.searchContent();
+		FvtmResources.INSTANCE.createContentBlocks();
+		FvtmResources.INSTANCE.createContentItems();
+		if(EnvInfo.CLIENT){
+			FvtmResources.initModelSystem();
+		}
+		//
+		event.register(new PackAdder());
+		//event.addListener(this::commonSetup);
+		ITEM_REGISTRY.values().forEach(reg -> reg.register(event));
+		CREATIVE_MODE_TABS.register(event);
+		//CONTAINERS.register(event);
+		ENTITIES.register(event);
+		//NeoForge.EVENT_BUS.register(this);
+	}
+
+	public static class PackAdder {
+
+		@SubscribeEvent
+		public void addPacks(AddPackFindersEvent event){
+			if(event.getPackType() == PackType.CLIENT_RESOURCES)
+				for(Addon addon : FvtmRegistry.ADDONS){
+					if(!addon.getLocation().isConfigPack() || addon.getFile() == null) continue;
+					Path rpath = addon.getFile().toPath();
+					Pack pack = Pack.create("fvtm/" + addon.getID().id(), Component.literal(addon.getName()), true, new Pack.ResourcesSupplier() {
+						private PackResources packres = new PathPackResources(addon.getName(), rpath, true);
+						@Override
+						public PackResources openPrimary(String s){
+							return packres;
+						}
+
+						@Override
+						public PackResources openFull(String s, Pack.Info info){
+							return packres;
+						}
+					}, new Pack.Info(Component.literal("FVTM Autoloaded Pack"), PackCompatibility.COMPATIBLE, FeatureFlagSet.of(), Collections.emptyList(), false),
+						Pack.Position.BOTTOM, true, PackSource.BUILT_IN);
+					event.addRepositorySource(cons -> {
+						if(pack != null) cons.accept(pack);
+					});
+				}
 		}
 	}
 
