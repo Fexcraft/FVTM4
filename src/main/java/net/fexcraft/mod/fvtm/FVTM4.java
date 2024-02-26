@@ -5,6 +5,7 @@ import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -13,6 +14,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
@@ -44,6 +46,8 @@ public class FVTM4 {
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
 		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
+		FvtmResources.INSTANCE = new ResourcesImpl();
+		NeoForge.EVENT_BUS.register(FvtmResources.INSTANCE);
 	}
 
 }
