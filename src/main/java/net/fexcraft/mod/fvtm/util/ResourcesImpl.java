@@ -53,7 +53,6 @@ public class ResourcesImpl extends FvtmResources {
 
 
 	public void createContentItems(){
-		DecorationItem.REGOBJ = (DeferredItem<DecorationItem>)FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
 		//TODO FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), () -> new MaterialItem())));
 		//TODO FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), () -> new ConsumableItem())));
 	}
@@ -133,7 +132,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmItems(){
-
+		DecorationItem.REGOBJ = FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
 	}
 
 	@Override
