@@ -45,4 +45,5 @@ public class DecorationItem extends Item {
 		context.getPlayer().getData(UniversalAttachments.PASSENGER).openUI(UIKey.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));
 		return InteractionResult.SUCCESS;
 	}
+
 }
