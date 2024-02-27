@@ -33,7 +33,6 @@ public class TabInitializer implements CTab {
 		FVTM4.CREATIVE_MODE_TABS.register(addonid + "." + id, () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.SPAWN_EGGS).title(Component.literal(addon.getName())).displayItems((par, out) -> {
 			Item item = null;
 			for(Map.Entry<String, DeferredRegister<Item>> registry : ITEM_REGISTRY.entrySet()){
-				FvtmLogger.log("----->> " + registry.getKey());
 				for(DeferredHolder<Item, ? extends Item> entry : registry.getValue().getEntries()){
 					item = entry.get();
 					if(item instanceof ContentItem<?> == false){
