@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.impl.AABBI;
+import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.ui.DecoContainer;
@@ -17,6 +18,7 @@ import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -61,6 +63,7 @@ public class FVTM4 {
 
 	public FVTM4(IEventBus event){
 		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
+		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		AABB.SUPPLIER = () -> new AABBI();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
