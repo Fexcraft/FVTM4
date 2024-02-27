@@ -42,7 +42,7 @@ public class Decoration extends Entity {
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag tag){
+	public void readAdditionalSaveData(CompoundTag tag){
 		this.decos.clear();
 		if(tag.contains("decorations")){
 			ListTag list = (ListTag)tag.get("decorations");
@@ -142,12 +142,11 @@ public class Decoration extends Entity {
 		return true;
 	}
 
-	public void updateClient(){//TODO
-		CompoundTag com = new CompoundTag();
-		addAdditionalSaveData(com);
-		com.putString("task", "deco_update");
-		com.putInt("entid", getId());
-		//TODO Packets.sendInRange(Packet_TagListener.class, null, null, 0, null);
+	public void updateClient(){
+		TagCW com = TagCW.create();
+		addAdditionalSaveData(com.local());
+		com.set("entid", getId());
+		Packets.sendToAll(Packet_TagListener.class, "deco", TagCW.wrap(com));//TODO change to ranged packet
 	}
 
 }
