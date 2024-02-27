@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.impl.AABBI;
+import net.fexcraft.mod.fvtm.impl.Packets20;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
@@ -110,6 +111,7 @@ public class FVTM4 {
 		CREATIVE_MODE_TABS.register(event);
 		ENTITIES.register(event);
 		//NeoForge.EVENT_BUS.register(this);
+		new Packets20().init();
 	}
 
 	public static class PackAdder {
