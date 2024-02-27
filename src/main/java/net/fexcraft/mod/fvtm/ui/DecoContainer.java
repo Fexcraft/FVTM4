@@ -144,7 +144,7 @@ public class DecoContainer extends ContainerInterface {
 
 	@Override
 	public void onClosed(){
-		if(entity != null && !entity.level().isClientSide)this.entity.updateClient();
+		if(entity != null && !entity.level().isClientSide) entity.updateClient();
 	}
 
 }
