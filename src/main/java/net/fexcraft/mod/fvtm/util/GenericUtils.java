@@ -12,4 +12,8 @@ public class GenericUtils {
 		return Component.literal(Formatter.format(s));
 	}
 
+	public static Component format(String s, Object... args){
+		return format(String.format(s, args));
+	}
+
 }
