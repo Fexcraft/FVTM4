@@ -8,7 +8,9 @@ import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.item.ConsumableItem;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -25,7 +27,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.DeferredItem;
 
 import java.io.InputStream;
 import java.util.function.Supplier;
@@ -53,16 +54,15 @@ public class ResourcesImpl extends FvtmResources {
 
 
 	public void createContentItems(){
-		//TODO FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), () -> new MaterialItem())));
-		//TODO FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), () -> new ConsumableItem())));
+		FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), () -> new MaterialItem(mat))));
+		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), () -> new ConsumableItem(con))));
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
-		DeferredItem<Item> obj = (DeferredItem<Item>)FVTM4.ITEM_REGISTRY.get(id.space()).register(id.id(), item);
-		IWR iWR = new IWR(obj);
-		FvtmRegistry.CONTENT_ITEMS.put(id, iWR);
-		FvtmRegistry.ITEMS.put(id.colon(), iWR);
-		return iWR;
+		IWR iwr = new IWR(FVTM4.ITEM_REGISTRY.get(id.space()).register(id.id(), item));
+		FvtmRegistry.CONTENT_ITEMS.put(id, iwr);
+		FvtmRegistry.ITEMS.put(id.colon(), iwr);
+		return iwr;
 	}
 
 	public ItemWrapper getItemWrapper(String id){
