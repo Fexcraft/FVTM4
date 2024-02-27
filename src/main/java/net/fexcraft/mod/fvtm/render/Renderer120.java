@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Renderer;
@@ -21,6 +22,9 @@ import org.joml.Vector4f;
  */
 public class Renderer120 extends Renderer<GLObject> {
 
+	public static Vector3f AY = new Vector3f(0, 1, 0);
+	public static Vector3f AX = new Vector3f(1, 0, 0);
+	public static Vector3f AZ = new Vector3f(0, 0, 1);
 	public static PoseStack pose;
 	public static MultiBufferSource buffer;
 	public static RenderType rentype;
@@ -31,7 +35,11 @@ public class Renderer120 extends Renderer<GLObject> {
 		pose.pushPose();
 		pose.translate(poly.posX, poly.posY, poly.posZ);
 		if(poly.rotX != 0.0F || poly.rotY != 0.0F || poly.rotZ != 0.0F){
-			pose.mulPose((new Quaternionf()).rotationZYX(poly.rotZ, poly.rotY, poly.rotX));
+			pose.mulPose(new Quaternionf()
+				.rotateAxis(Static.toRadians(poly.rotY), AY)
+				.rotateAxis(Static.toRadians(poly.rotX), AX)
+				.rotateAxis(Static.toRadians(poly.rotZ), AZ)
+			);
 		}
 		VertexConsumer cons = buffer.getBuffer(rentype);
 		Matrix4f verma = pose.last().pose();
