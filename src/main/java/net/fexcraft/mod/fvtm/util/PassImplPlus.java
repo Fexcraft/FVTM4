@@ -2,7 +2,6 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.util.PassImpl;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.uimpl.UniCon;
@@ -29,6 +28,7 @@ public class PassImplPlus extends Passenger {
 	private Entity entity;
 
 	public PassImplPlus(IAttachmentHolder iah){
+		super();
 		entity = (Entity)iah;
 	}
 
