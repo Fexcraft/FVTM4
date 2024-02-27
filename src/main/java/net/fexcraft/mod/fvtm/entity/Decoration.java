@@ -111,7 +111,7 @@ public class Decoration extends Entity {
 			return InteractionResult.SUCCESS;
 		}
 		if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
-		player.getData(UniversalAttachments.PASSENGER).openUI(UIKey.DECORATION_EDITOR.key, new V3I(getId(), 0, 0));
+			player.getData(UniversalAttachments.PASSENGER).openUI(UIKey.DECORATION_EDITOR.key, new V3I(getId(), 0, 0));
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -125,7 +125,7 @@ public class Decoration extends Entity {
 				source.getDirectEntity().sendSystemMessage(Component.literal("Deco is locked."));
 				return true;
 			}
-			ItemStack stack = getPickedResult(null);
+			//ItemStack stack = getPickedResult(null);
 			ItemEntity entity = new ItemEntity(EntityType.ITEM, level());
 			entity.setPos(position().add(0.0D, 0.25D, 0.0D));
 			entity.setItem(new ItemStack(DecorationItem.REGOBJ.get(), 1));
