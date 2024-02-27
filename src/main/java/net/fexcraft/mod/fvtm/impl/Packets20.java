@@ -85,7 +85,7 @@ public class Packets20 extends Packets {
 	@Override
 	public void send0(Class<? extends PacketBase> packet, Object... data){
 		try{
-			PacketDistributor.SERVER.noArg().send((Packet<?>)PACKETS.get(packet).newInstance().fill(data));
+			PacketDistributor.SERVER.noArg().send((CustomPacketPayload)PACKETS.get(packet).newInstance().fill(data));
 		}
 		catch(Exception e){
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public class Packets20 extends Packets {
 			Vec3 vec = new Vec3(pos.x, pos.y, pos.z);
 			for(ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()){
 				if(player.position().distanceTo(vec) > range) continue;
-				PacketDistributor.PLAYER.with(player).send((Packet<?>)PACKETS.get(packet).newInstance().fill(data));
+				PacketDistributor.PLAYER.with(player).send((CustomPacketPayload)PACKETS.get(packet).newInstance().fill(data));
 			}
 		}
 		catch(Exception e){
@@ -110,7 +110,7 @@ public class Packets20 extends Packets {
 	public void sendToAll0(Class<? extends PacketBase> packet, Object... data){
 		try{
 			for(ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()){
-				PacketDistributor.PLAYER.with(player).send((Packet<?>)PACKETS.get(packet).newInstance().fill(data));
+				PacketDistributor.PLAYER.with(player).send((CustomPacketPayload)PACKETS.get(packet).newInstance().fill(data));
 			}
 		}
 		catch(Exception e){
@@ -121,7 +121,7 @@ public class Packets20 extends Packets {
 	@Override
 	public void sendTo0(Class<? extends PacketBase> packet, Passenger to, Object... data){
 		try{
-			PacketDistributor.PLAYER.with(to.local()).send((Packet<?>)PACKETS.get(packet).newInstance().fill(data));
+			PacketDistributor.PLAYER.with(to.local()).send((CustomPacketPayload)PACKETS.get(packet).newInstance().fill(data));
 		}
 		catch(Exception e){
 			e.printStackTrace();
