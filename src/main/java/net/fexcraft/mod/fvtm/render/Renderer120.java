@@ -44,10 +44,8 @@ public class Renderer120 extends Renderer<GLObject> {
 					cons.vertex(vec.x, vec.y, vec.z, 1.0F, 1.0F, 1.0F, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
 				}
 				else{
-
 					cons.vertex(vec.x, vec.y, vec.z, (vert.color()).x, (vert.color()).y, (vert.color()).z, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
 				}
-				cons.endVertex();
 			}
 		}
 		pose.popPose();
