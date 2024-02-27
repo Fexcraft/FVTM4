@@ -92,12 +92,13 @@ public class Decoration extends Entity {
 		return new ClientboundAddEntityPacket(this);
 	}
 
-	public boolean m_5829_(){
+	@Override
+	public boolean isPickable(){
 		return true;
 	}
 
 	public InteractionResult interact(Player player, InteractionHand hand){
-		if(!isAlive() || level().isClientSide || hand == InteractionHand.OFF_HAND){
+		if(isRemoved() || level().isClientSide || hand == InteractionHand.OFF_HAND){
 			return InteractionResult.PASS;
 		}
 		ItemStack stack = player.getItemInHand(hand);
@@ -119,7 +120,7 @@ public class Decoration extends Entity {
 
 	@Override
 	public boolean hurt(DamageSource source, float am){
-		if(level().isClientSide || !isAlive()) return false;
+		if(level().isClientSide || isRemoved()) return false;
 		if(source.getDirectEntity() instanceof Player){
 			if(this.locked){
 				source.getDirectEntity().sendSystemMessage(Component.literal("Deco is locked."));
@@ -136,8 +137,8 @@ public class Decoration extends Entity {
 		return false;
 	}
 
-
-	public boolean m_6087_(){
+	@Override
+	public boolean canBeCollidedWith(){
 		return true;
 	}
 
