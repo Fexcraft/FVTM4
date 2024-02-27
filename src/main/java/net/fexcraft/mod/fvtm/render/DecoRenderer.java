@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
+import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -40,7 +42,11 @@ public class DecoRenderer extends EntityRenderer<Decoration> {
 			pose.pushPose();
 			pose.translate(data.offset.x16, data.offset.y16, data.offset.z16);
 			if(data.rotx != 0.0F || data.roty != 0.0F || data.rotz != 0.0F){
-				pose.mulPose((new Quaternionf()).rotationZYX(Static.toRadians(data.rotz), Static.toRadians(data.roty), Static.toRadians(data.rotx)));
+				pose.mulPose(new Quaternionf()
+					.rotateAxis(Static.toRadians(data.roty), AY)
+					.rotateAxis(Static.toRadians(data.rotx), AX)
+					.rotateAxis(Static.toRadians(data.rotz), AZ)
+				);
 			}
 			pose.scale(data.sclx, data.scly, data.sclz);
 			data.model.render(DefaultModel.RENDERDATA);
