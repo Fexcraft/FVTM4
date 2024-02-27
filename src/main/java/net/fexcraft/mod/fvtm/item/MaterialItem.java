@@ -97,7 +97,7 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 
 	@Override
 	public Material getContent(){
-		return null;
+		return material;
 	}
 
 	@Override
