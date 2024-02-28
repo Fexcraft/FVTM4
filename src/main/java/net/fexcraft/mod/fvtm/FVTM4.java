@@ -7,6 +7,7 @@ import net.fexcraft.mod.fcl.UniversalAttachments;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.Packets20;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
@@ -62,7 +63,20 @@ public class FVTM4 {
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "fvtm");
 
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, "fvtm");
-	public static final DeferredHolder<EntityType<?>, EntityType<Decoration>> DECORATION_ENTITY = ENTITIES.register("decoration", () -> EntityType.Builder.of(Decoration::new, MobCategory.MISC).sized(0.25F, 0.25F).setUpdateInterval(10).setTrackingRange(256).build("decoration"));
+	public static final DeferredHolder<EntityType<?>, EntityType<Decoration>> DECORATION_ENTITY = ENTITIES.register("decoration", () ->
+		EntityType.Builder.of(Decoration::new, MobCategory.MISC)
+			.sized(0.25F, 0.25F)
+			.setUpdateInterval(10)
+			.setTrackingRange(256)
+			.build("decoration")
+	);
+	public static final DeferredHolder<EntityType<?>, EntityType<WheelEntity>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
+		EntityType.Builder.of(WheelEntity::new, MobCategory.MISC)
+			.sized(0.25F, 0.25F)
+			.setUpdateInterval(1)
+			.setTrackingRange(256)
+			.build("wheel")
+	);
 
 	public FVTM4(IEventBus event){
 		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
