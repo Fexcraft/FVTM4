@@ -2,16 +2,23 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WorldWI extends WorldW {
+public class WorldWI extends FvtmWorld {
 
 	private Level level;
 
@@ -58,6 +65,28 @@ public class WorldWI extends WorldW {
 	@Override
 	public int dim(){
 		return 0;
+	}
+
+	@Override
+	public SeatInstance getSeat(int entid, int seatid){
+		return null;
+	}
+
+	@Override
+	public SwivelPoint getSwivelPoint(int entid, String pointid){
+		return null;
+	}
+
+	@Override
+	public Passenger getPassenger(int source){
+		return null;
+	}
+
+	@Override
+	public void onVehicleMove(Packet_VehMove packet){
+		Entity ent = level.getEntity(packet.entid);
+		if(ent == null || ent instanceof RootVehicle == false) return;
+		((RootVehicle)ent).setPosRotMot(packet.pos, packet.yaw, packet.pitch, packet.roll, packet.throttle, packet.steering, packet.fuel);
 	}
 
 }
