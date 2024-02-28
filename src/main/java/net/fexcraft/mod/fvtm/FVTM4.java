@@ -7,6 +7,7 @@ import net.fexcraft.mod.fcl.UniversalAttachments;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.Packets20;
@@ -76,6 +77,13 @@ public class FVTM4 {
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
 			.build("wheel")
+	);
+	public static final DeferredHolder<EntityType<?>, EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
+		EntityType.Builder.of(RootVehicle::new, MobCategory.MISC)
+			.sized(1F, 1F)
+			.setUpdateInterval(1)
+			.setTrackingRange(256)
+			.build("vehicle")
 	);
 
 	public FVTM4(IEventBus event){
