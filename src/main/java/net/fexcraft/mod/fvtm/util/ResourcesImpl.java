@@ -26,6 +26,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.io.InputStream;
 import java.util.function.Supplier;
@@ -35,15 +36,18 @@ import java.util.function.Supplier;
  */
 public class ResourcesImpl extends FvtmResources {
 
+	@Override
 	public void searchASMPacks(){}
 
+	@Override
 	public boolean searchPacksInResourcePacks(){
 		return true;
 	}
 
+	@Override
 	public void loadPackTextures(){}
 
-
+	@Override
 	public void checkForCustomModel(AddonLocation loc, ContentType contype, Content<?> content){}
 
 	@Override
@@ -51,7 +55,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	}
 
-
+	@Override
 	public void createContentItems(){
 		FvtmRegistry.MATERIALS.forEach(mat -> mat.setItemWrapper(wrapwrapper(mat.getID(), () -> new MaterialItem(mat))));
 		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), () -> new ConsumableItem(con))));
@@ -66,24 +70,28 @@ public class ResourcesImpl extends FvtmResources {
 		return iwr;
 	}
 
+	@Override
 	public ItemWrapper getItemWrapper(String id){
 		Item item = BuiltInRegistries.ITEM.get(new ResourceLocation(id));
 		return item == null ? null : new IWI(item);
 	}
 
+	@Override
 	public StackWrapper newStack(ItemWrapper item){
 		return new SWI(item);
 	}
 
 	@Override
 	public StackWrapper newStack(Object local){
-		return null;
+		return new SWI((ItemStack)local);
 	}
 
+	@Override
 	public JsonMap getJsonC(String loc){
 		return null;
 	}
 
+	@Override
 	public void initModelPrograms(){
 		Transforms.GET_TRANSFORM = (args -> {
 			switch(args[0]){
@@ -113,7 +121,13 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public InputStream getAssetInputStream(IDL loc, boolean log){
-		return null;
+		try{
+			return Minecraft.getInstance().getResourceManager().getResource((ResourceLocation)loc).get().open();
+		}
+		catch(Throwable e){
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
@@ -154,17 +168,6 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public Object getBlockMaterial(String key, boolean allownull){
 		return null;
-	}
-
-
-	public InputStream getModelInputStream(IDL loc, boolean log){
-		try{
-			return Minecraft.getInstance().getResourceManager().getResource((ResourceLocation)loc).get().open();
-		}
-		catch(Throwable e){
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 }
