@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.ui.UIKey;
@@ -98,7 +99,11 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		ItemStack stack = context.getItemInHand();
 		VehicleData data = getDataFromTag(stack.getTag());
-		//TODO spawn entity
+		RootVehicle veh = new RootVehicle(FVTM4.VEHICLE_ENTITY.get(), context.getLevel());
+		veh.setPos(context.getClickLocation().add(0, 2, 0));
+		veh.init(data);
+		context.getLevel().addFreshEntity(veh);
+		if(!context.getPlayer().isCreative()) stack.shrink(1);
 		return InteractionResult.SUCCESS;
 	}
 
