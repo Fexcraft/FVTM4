@@ -24,10 +24,11 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 import java.util.ArrayList;
 
-public class Decoration extends Entity {
+public class Decoration extends Entity implements IEntityWithComplexSpawn {
 
 	public ArrayList<DecorationData> decos = new ArrayList<>();
 	private boolean locked;
@@ -60,6 +61,7 @@ public class Decoration extends Entity {
 		tag.put("decorations", list);
 	}
 
+	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		try{
 			buffer.writeBoolean(this.locked);
@@ -73,6 +75,7 @@ public class Decoration extends Entity {
 		}
 	}
 
+	@Override
 	public void readSpawnData(FriendlyByteBuf buffer){
 		try{
 			this.locked = buffer.readBoolean();
