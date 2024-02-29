@@ -2,10 +2,8 @@ package net.fexcraft.mod.fvtm.entity;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.UniversalAttachments;
-import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.FvtmLogger;
-import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.*;
+import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.root.Lockable;
 import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
@@ -14,35 +12,51 @@ import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
-import net.fexcraft.mod.fvtm.sys.uni.*;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
+import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.uni.impl.TagCWI;
+import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.LeadItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static net.fexcraft.lib.common.Static.rad180;
+import static net.fexcraft.lib.common.Static.rad90;
+import static net.fexcraft.mod.fcl.UniversalAttachments.PASSENGER;
+import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
+import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
 import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -254,7 +268,7 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 			//TODO ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
 			return InteractionResult.SUCCESS;
 		}
-		Passenger pass = (Passenger)player.getData(UniversalAttachments.PASSENGER);
+		Passenger pass = (Passenger)player.getData(PASSENGER);
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass, wrapper);
 			vehicle.sendLockUpdate();
@@ -299,11 +313,400 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 			player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.locked"));
 			return InteractionResult.SUCCESS;
 		}
-		return InteractionResult.FAIL;
+		//temporary until seat interaction is added
+		player.startRiding(this);
+		return InteractionResult.SUCCESS;
+		//return InteractionResult.FAIL;
 	}
 
 	private boolean isFuelContainer(Item item){
 		if(item instanceof MaterialItem == false) return false;
 		return ((MaterialItem)item).getContent().isFuelContainer();
 	}
+
+	@Override
+	public void tick(){
+		super.tick();
+		if(isRemoved()) return;
+		if(vehicle.data == null){
+			FvtmLogger.LOGGER.log("Vehicle '" + getId() + "' has no data, skipping update.");
+			return;
+		}
+		if(!level().isClientSide){
+			for(Map.Entry<String, WheelTireData> entry : vehicle.wheeldata.entrySet()){
+				if(!wheels.containsKey(entry.getKey()) || !wheels.get(entry.getKey()).isAddedToWorld()){
+					wheels.put(entry.getKey(), new WheelEntity(FVTM4.WHEEL_ENTITY.get(), level()).init(this, entry.getKey()));
+					level().addFreshEntity(wheels.get(entry.getKey()));
+				}
+			}
+		}
+		yRotO = vehicle.point.getPivot().deg_yaw();
+		xRotO = vehicle.point.getPivot().deg_pitch();
+		protZ = vehicle.point.getPivot().deg_roll();
+		vehicle.point.updatePrevAxe();
+		tickCount++;
+		if(tickCount >= Integer.MAX_VALUE) tickCount = 0;
+		if(vehicle.toggable_timer > 0) vehicle.toggable_timer--;
+		//
+		vehicle.checkSteerAngle(level().isClientSide);
+		if(level().isClientSide){
+			if(server_sync > 0){
+				double x = position().x + (serverX - position().x) / server_sync;
+				double y = position().y + (serverY - position().y) / server_sync;
+				double z = position().z + (serverZ - position().z) / server_sync;
+				double yw = valDeg(serverYaw - vehicle.pivot().deg_yaw());
+				double pt = valDeg(serverPitch - vehicle.pivot().deg_pitch());
+				double rl = valDeg(serverRoll - vehicle.pivot().deg_roll());
+				setYRot((float)(vehicle.pivot().deg_yaw() + yw / server_sync));
+				setXRot((float)(vehicle.pivot().deg_pitch() + pt / server_sync));
+				rotZ = (float)(vehicle.pivot().deg_roll() + rl / server_sync);
+				vehicle.steer_yaw += (serverSteer - vehicle.steer_yaw) / server_sync;
+				server_sync--;
+				setPos(x, y, z);
+				vehicle.pivot().set_rotation(getYRot(), getXRot(), rotZ, true);
+			}
+			AttrFloat attr = (AttrFloat)vehicle.data.getAttribute("steering_angle");
+			attr.initial = attr.value;
+			attr.value = (float)vehicle.steer_yaw;
+			double dir = Math.abs(vehicle.pivot().yaw() + rad180) - Math.abs(-Math.atan2(xOld - position().x, zOld - position().z) + rad180);
+			dir = dir > rad90 || dir < -rad90 ? -1 : 1;
+			wheel_rotation = valDegF(wheel_rotation + (vehicle.speed * dir * wheel_radius * 100));
+			vehicle.data.setAttribute("wheel_angle", wheel_rotation);
+			vehicle.data.setAttribute("throttle", vehicle.throttle);
+			vehicle.data.setAttribute("speed", vehicle.speed);
+		}
+		for(WheelEntity wheel : wheels.values()){
+			if(wheel == null) continue;
+			wheel.setOldPosAndRot();
+		}
+		Player driver = getDriver();
+		if(!level().isClientSide){
+			boolean creative = driver != null && driver.isCreative();
+			if(driver == null || (!creative && vehicle.data.outoffuel())){
+				vehicle.throttle *= 0.98;
+			}
+			move(!VEHICLES_NEED_FUEL || creative);
+			if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
+			//
+			WheelEntity fl = wheels.get(w_front_l.id);
+			WheelEntity fr = wheels.get(w_front_r.id);
+			WheelEntity rl = wheels.get(w_rear_l.id);
+			WheelEntity rr = wheels.get(w_rear_r.id);
+			V3D fron = new V3D((fl.position().x + fr.position().x) * 0.5, (fl.position().y + fr.position().y) * 0.5, (fl.position().z + fr.position().z) * 0.5);
+			V3D rear = new V3D((rl.position().x + rr.position().x) * 0.5, (rl.position().y + rr.position().y) * 0.5, (rl.position().z + rr.position().z) * 0.5);
+			V3D left = new V3D((fl.position().x + rl.position().x) * 0.5, (fl.position().y + rl.position().y) * 0.5, (fl.position().z + rl.position().z) * 0.5);
+			V3D righ = new V3D((fr.position().x + rr.position().x) * 0.5, (fr.position().y + rr.position().y) * 0.5, (fr.position().z + rr.position().z) * 0.5);
+			double dx = rear.x - fron.x, dy = rear.y - fron.y, dz = rear.z - fron.z;
+			double drx = righ.x - left.x, dry = righ.y - left.y, drz = righ.z - left.z;
+			double dxz = Math.sqrt(dx * dx + dz * dz);
+			double y = -Math.atan2(dx, dz);
+			double p = -Math.atan2(dy, dxz);
+			double r = Math.atan2(dry, Math.sqrt((drx * drx + drz * drz)));
+			double t = valRad(Math.toRadians(tickCount / 10 % 360));
+			vehicle.pivot().set_rotation(y, p, r, false);
+			//align_wheels();
+		}
+		else{
+			vehicle.speed = MathUtils.calcSpeed(position().x, position().y, position().z, xOld, yOld, zOld);
+		}
+		vehicle.updatePointsSeats();
+		//collchecks
+		if(!level().isClientSide && tickCount % VEHICLE_SYNC_RATE == 0){
+			vehicle.sendUpdatePacket();
+		}
+	}
+
+	protected void move(boolean needsnofuel){
+		setOnGround(true);
+		V3D move = new V3D();
+		if(vehicle.data.getType().isTrailer()){
+			for(WheelEntity wheel : wheels.values()){
+				wheel.setOnGround(true);
+				wheel.setYRot(vehicle.pivot().deg_yaw());
+				if(!vehicle.data.getType().isTracked() && wheel.wheel.steering){
+					wheel.setYRot((float)(wheel.getYRot() + vehicle.steer_yaw));
+				}
+				wheel.motionX *= 0.9;
+				wheel.motionY *= 0.9;
+				wheel.motionZ *= 0.9;
+				wheel.motionY -= GRAVITY_20th;
+				wheel.move(MoverType.SELF, wheel.motion());
+				V3D dest = vehicle.pivot().get_vector(wheel.pos);
+				dest.x = (dest.x - (wheel.position().x - position().x)) * 0.5;
+				dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
+				dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
+				if(dest.length() > 0.001){
+					wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
+					move = move.sub(dest.scale(0.5));
+				}
+			}
+			move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
+		}
+		else{
+			if(vehicle.type.isWaterVehicle()){
+				//TODO
+			}
+			else{
+				EngineFunction engine = vehicle.data.getFunctionInPart("engine", "fvtm:engine");
+				boolean consumed = engine != null && vehicle.consumeFuel(engine);
+				for(WheelEntity wheel : wheels.values()){
+					wheel.setOnGround(true);
+					wheel.motionX *= 0.9;
+					//wheel.motionY *= 0.9;
+					wheel.motionZ *= 0.9;
+					wheel.motionY /*-*/ = -GRAVITY;
+					double steer = Math.toRadians(vehicle.steer_yaw);
+					if(engine != null && (needsnofuel || consumed)){
+						double scal = 0;
+						double wheelrot = valRad(vehicle.pivot().yaw());
+						if(vehicle.data.getType().isTracked()){
+							wheel.motionX *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
+							wheel.motionZ *= 1 - (Math.abs(vehicle.steer_yaw) * 0.02);
+							scal = 0.04 * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							double steerscal = 0.1f * (vehicle.steer_yaw > 0 ? vehicle.data.getType().getSphData().turn_left_mod : vehicle.data.getType().getSphData().turn_right_mod);
+							double wheelspeed = (vehicle.throttle + (vehicle.steer_yaw * (wheel.wheel.mirror ? -1 : 1) * steerscal)) * scal;
+							wheel.motionX += wheelspeed * Math.cos(wheelrot);
+							wheel.motionZ += wheelspeed * Math.sin(wheelrot);
+						}
+						else{
+							scal = 0.05 * vehicle.throttle * (vehicle.throttle > 0 ? vehicle.data.getType().getSphData().max_throttle : vehicle.data.getType().getSphData().min_throttle) * engine.getSphEngineSpeed();
+							if(wheel.wheel.steering){
+								wheelrot = valRad(wheelrot + steer);
+								wheel.setYRot(vehicle.pivot().deg_yaw() + (float)vehicle.steer_yaw);
+							}
+							else{
+								wheel.setYRot(vehicle.pivot().deg_yaw());
+							}
+							wheel.motionX -= Math.sin(-wheelrot) * scal;
+							wheel.motionZ -= Math.cos(-wheelrot) * scal;
+						}
+					}
+					wheel.move(MoverType.SELF, wheel.motion());
+					V3D dest = vehicle.pivot().get_vector(wheel.pos);
+					dest.x = (dest.x - (wheel.position().x - position().x)) * 0.5;
+					dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
+					dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
+					if(dest.length() > 0.001){
+						if(dest.length() > 16) wheel.setPos(dest.x, dest.y, dest.z);
+						else wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
+						move.x -= dest.x * 0.5;
+						move.y -= dest.y * 0.5;
+						move.z -= dest.z * 0.5;
+					}
+				}
+				move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
+			}
+		}
+	}
+
+	/** for trailers */
+	protected void align(){
+		setOldPosAndRot();
+		if(wheels.isEmpty() || vehicle.front == null) return;
+		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getRearConnector());
+		conn.add(vehicle.front.getV3D());
+		setPos(conn.x, conn.y, conn.z);
+		vehicle.throttle = vehicle.front.throttle;
+		double thr = Math.abs(vehicle.throttle);
+		double rawy = vehicle.front.pivot().deg_yaw() - vehicle.pivot().deg_yaw();
+		double diff = rawy * thr * 0.2;
+		diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
+		vehicle.pivot().set_rotation(vehicle.pivot().yaw() + Math.toRadians(diff), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
+		alignWheels();
+	}
+
+	protected void alignWheels(){
+		setOnGround(true);
+		for(WheelEntity wheel : wheels.values()){
+			wheel.setOnGround(true);
+			wheel.setYRot(vehicle.pivot().deg_yaw());
+			V3D dest = vehicle.pivot().get_vector(wheel.pos);
+			dest.x = (dest.x - (wheel.position().x - position().x)) * 0.5;
+			dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
+			dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
+			if(dest.length() > 0.001){
+				wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
+			}
+			if(wheel.position().distanceTo(position()) > wheel.getHorSpeed() * 2){
+				dest = vehicle.pivot().get_vector(wheel.pos);
+				wheel.setPos(dest.x + position().x, dest.y + position().y, dest.z + position().z);
+			}
+		}
+	}
+
+	public Player getDriver(){
+		for(SeatInstance seat : vehicle.seats){
+			if(seat.seat.driver && seat.passengerIsPlayer()){
+				return seat.passenger().local();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public LivingEntity getControllingPassenger(){
+		return null;
+	}
+
+	@Override
+	public void positionRider(Entity pass, MoveFunction movefunc){
+		SeatInstance seat = getSeatOf(pass);
+		if(seat != null) updatePassenger(pass, seat);
+		else{
+			//if(level(.isClientSide) pass.getData(PASSENGER).reconn(true);
+			pass.setPos(position());
+		}
+	}
+
+	public void updatePassenger(Entity pass, SeatInstance seat){
+		if(seat.passenger_direct() != pass){
+			seat.passenger(pass.getData(PASSENGER));
+		}
+		V3D pos = seat.getCurrentGlobalPosition();
+		pass.setPos(pos.x, pos.y - (pass instanceof Player ? 0.7 : 0), pos.z);
+		//check if flight reset is necessary on 1.20
+	}
+
+	@Override
+	public void addPassenger(Entity pass){
+		super.addPassenger(pass);
+		SeatInstance seat = getSeatOf(pass);
+		if(seat != null) seat.passenger(pass.getData(PASSENGER));
+	}
+
+	@Override
+	public void removePassenger(Entity pass){
+		for(SeatInstance seat : vehicle.seats){
+			if(pass.equals(seat.passenger_direct())){
+				seat.passenger(null);
+			}
+		}
+		if(!level().isClientSide){
+			((Passenger)pass.getData(PASSENGER)).set(-1, -1);
+		}
+		super.removePassenger(pass);
+	}
+
+	@Override
+	public void ejectPassengers(){
+		super.ejectPassengers();
+	}
+
+	@Override
+	protected boolean canAddPassenger(Entity passenger){
+		return true;
+	}
+
+	@Override
+	public boolean shouldRiderSit(){
+		return should_sit;
+	}
+
+	public SeatInstance getSeatOf(Entity entity){
+		Passenger pass = (Passenger)entity.getData(PASSENGER);
+		if(pass == null || pass.seat() < 0 || vehicle.seats.isEmpty() || pass.seat() >= vehicle.seats.size()) return null;
+		return vehicle.seats.get(pass.seat());
+	}
+
+	@Override
+	public boolean hurt(DamageSource source, float am){
+		if(level().isClientSide || isRemoved()) return true;
+		if(source.getDirectEntity() instanceof Player && getDriver() == null){
+			Player player = (Player)source.getDirectEntity();
+			if(vehicle.data.getLock().isLocked()){
+				player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.remove_locked"));
+				return false;
+			}
+			EngineFunction engine = vehicle.data.hasPart("engine") ? vehicle.data.getFunctionInPart("engine", "fvtm:engine") : null;
+			if(engine != null) engine.setState(false);
+			//TODO perm check
+			VehicleInstance trailer = vehicle;
+			while((trailer = trailer.rear) != null){
+				Entity rear = trailer.entity.local();
+				rear.spawnAtLocation(trailer.data.newItemStack().local(), 0.5f);
+				rear.kill();
+			}
+			spawnAtLocation(vehicle.data.newItemStack().local(), 0.5f);
+			kill();
+			return true;
+		}
+		return true;
+	}
+
+	@Override
+	public ItemStack getPickedResult(HitResult rtr){
+		return vehicle.data.newItemStack().local();
+	}
+
+	public boolean processSeatInteract(int seatidx, ServerPlayer player, InteractionHand hand){
+		if(level().isClientSide || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
+		ItemStack stack = player.getItemInHand(hand);
+		SeatInstance seat = vehicle.seats.get(seatidx);
+		Passenger pass = (Passenger)player.getData(PASSENGER);
+		if(Lockable.isKey(FvtmRegistry.getItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) && !isFuelContainer(stack.getItem())){
+			vehicle.data.getLock().toggle(pass, new SWI(stack));
+			sendLockStateUpdate();
+			return true;
+		}
+		if(vehicle.data.getLock().isLocked()){
+			player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.locked"));
+			return true;
+		}
+		if(seat.interacttimer > 0) return false;
+		if(stack.getItem() instanceof LeadItem){
+			if(seat.passenger().isPlayer()) return false;
+			if(seat.passenger().isLiving()){
+				Mob ent = seat.passenger().local();
+				ent.unRide();
+				ent.setLeashedTo(player, true);
+				seat.interacttimer += 10;
+				return true;
+			}
+			double range = 10;
+			V3D pos = new V3D(position().x, position().y, position().z);
+			AABB aabb = new AABB(pos.x - range, pos.y - range, pos.z - range, pos.x + range, pos.y + range, pos.z + range);
+			List<Entity> nearby = level().getEntities(this, aabb, ent -> ent instanceof Mob);
+			for(Entity entity : nearby){
+				Mob mob = (Mob)entity;
+				if(mob.isLeashed() && mob.getLeashHolder() == player){
+					if(!seat.seat.allow(entity.getData(PASSENGER))){
+						player.sendSystemMessage(Component.literal("&eSeat does not accept this entity kind. (" + entity.getName() + ")"));
+						continue;
+					}
+					((Passenger)entity.getData(PASSENGER)).set(getId(), seatidx);
+					seat.elook.set_rotation(-entity.getYRot(), entity.getXRot(), 0F, true);
+					mob.dropLeash(true, !player.isCreative());
+					entity.startRiding(this);
+					break;
+				}
+			}
+			seat.interacttimer += 10;
+			return true;
+		}
+		if(seat.passenger() == null){
+			if(!seat.seat.allow(pass)){
+				player.sendSystemMessage(Component.literal("&eSeat does not accept players as passengers."));
+				return false;
+			}
+			if(player.isPassenger() && player.getVehicle().equals(vehicle)){
+				SeatInstance oseat = vehicle.getSeatOf(player);
+				oseat.passenger(null);
+				pass.set(getId(), seatidx);
+				seat.passenger(pass);
+			}
+			else{
+				player.unRide();
+				pass.set(getId(), seatidx);
+				player.startRiding(this);
+			}
+			seat.interacttimer += 10;
+			return true;
+		}
+		return false;
+	}
+
+	private void sendLockStateUpdate(){
+		//TODO
+	}
+
 }
