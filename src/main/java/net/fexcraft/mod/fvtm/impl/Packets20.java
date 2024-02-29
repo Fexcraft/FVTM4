@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.UniversalAttachments;
 import net.fexcraft.mod.fcl.util.UIPacket;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
@@ -53,6 +54,12 @@ public class Packets20 extends Packets {
 				if(ent != null && ent instanceof Decoration){
 					((Decoration)ent).readAdditionalSaveData(tag.local());
 				}
+			});
+			LIS_CLIENT.put("passenger_update", (tag, player) -> {
+				Level level = player.getWorld().local();
+				Entity ent = level.getEntity(tag.getInteger("entity"));
+				if(ent == null) return;
+				((Passenger)ent.getData(PASSENGER)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
 			});
 		}
 	}
