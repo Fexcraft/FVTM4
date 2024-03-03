@@ -14,10 +14,12 @@ import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
+import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -257,7 +259,7 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 	public InteractionResult interact(Player player, InteractionHand hand){
 		if(isRemoved() || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 		ItemStack stack = player.getItemInHand(hand);
-		StackWrapper wrapper = FvtmResources.INSTANCE.newStack(stack);
+		StackWrapper wrapper = FvtmResources.wrapStack(stack);
 		if(level().isClientSide){
 			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return InteractionResult.SUCCESS;
 			if(Lockable.isKey(wrapper.getItem())) return InteractionResult.SUCCESS;
@@ -279,19 +281,20 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 				//TODO open fuel UI
 				return InteractionResult.SUCCESS;
 			}
-			/*else if(stack.getItem() instanceof ToolboxItem){
-				if(stack.getMetadata() == 0){
+			else if(stack.getItem() instanceof ToolboxItem){
+				int var = ((ToolboxItem)stack.getItem()).var;
+				if(var == 0){
 
 				}
-				else if(stack.getMetadata() == 1){
+				else if(var == 1){
 
 				}
-				else if(stack.getMetadata() == 2){
-					player.openGui(FVTM.getInstance(), TOOLBOX_COLORS, world, getEntityId(), 0, 0);
+				else if(var == 2){
+					pass.openUI(UIKey.TOOLBOX_COLORS, new V3I(getId(), 0, 0));
 				}
 				return InteractionResult.SUCCESS;
 			}
-			else if(stack.getItem() instanceof VehicleItem){
+			/*else if(stack.getItem() instanceof VehicleItem){
 				//TODO check if trailer and connect
 				return InteractionResult.SUCCESS;
 			}
