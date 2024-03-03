@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.impl;
 
 
+import net.fexcraft.lib.common.math.V3D;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -13,8 +14,7 @@ public class AABBI extends net.fexcraft.mod.fvtm.data.block.AABB {
 
     @Override
     public net.fexcraft.mod.fvtm.data.block.AABB set(float sx, float sy, float sz, float ex, float ey, float ez){
-        float gx = ex - sx, gy = ey - sy, gz = ez - sz;
-        aabb = AABB.ofSize(new Vec3((sx + ex) * 0.5, (sy + ey) * 0.5, (sz + ez) * 0.5), gx, gy, gz);
+        aabb = new AABB(sx, sy, sz, ex, ey, ez);
         return this;
     }
 
@@ -31,6 +31,16 @@ public class AABBI extends net.fexcraft.mod.fvtm.data.block.AABB {
     @Override
     public <AB> AB offset(int x, int y, int z){
         return (AB)aabb;//TODO.offset(x, y, z);
+    }
+
+    @Override
+    public boolean contains(V3D vec){
+        return aabb.contains(vec.x, vec.y, vec.z);
+    }
+
+    @Override
+    public boolean contains(Object vec){
+        return aabb.contains((Vec3)vec);
     }
 
 }
