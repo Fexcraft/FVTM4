@@ -20,9 +20,11 @@ import net.fexcraft.mod.uni.impl.IWR;
 import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.Item;
@@ -63,6 +65,11 @@ public class ResourcesImpl extends FvtmResources {
 		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new VehicleItem(veh))));
 	}
 
+	@Override
+	public void registerRecipes(){
+
+	}
+
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
 		IWR iwr = new IWR(FVTM4.ITEM_REGISTRY.get(id.space()).register(id.id(), item));
 		FvtmRegistry.CONTENT_ITEMS.put(id, iwr);
@@ -77,13 +84,23 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public StackWrapper newStack(ItemWrapper item){
+	public StackWrapper newStack0(ItemWrapper item){
 		return new SWI(item);
 	}
 
 	@Override
-	public StackWrapper newStack(Object local){
-		return new SWI((ItemStack)local);
+	public StackWrapper newStack0(TagCW com){
+		return new SWI(ItemStack.of(com.local()));
+	}
+
+	@Override
+	public StackWrapper newStack0(Object item){
+		return new SWI(new IWI((Item)item));
+	}
+
+	@Override
+	public StackWrapper wrapStack0(Object stack){
+		return new SWI((ItemStack)stack);
 	}
 
 	@Override
@@ -148,6 +165,9 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public void registerFvtmItems(){
 		DecorationItem.REGOBJ = FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
+		ToolboxItem.REGOBJ0 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_0", () -> new ToolboxItem(0));
+		ToolboxItem.REGOBJ1 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_1", () -> new ToolboxItem(1));
+		ToolboxItem.REGOBJ2 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_2", () -> new ToolboxItem(2));
 	}
 
 	@Override
