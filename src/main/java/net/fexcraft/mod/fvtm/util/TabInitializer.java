@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -62,7 +63,7 @@ public class TabInitializer implements CTab {
 			if(ITEM_REGISTRY.containsKey(addonid) && ITEM_REGISTRY.get(addonid).getEntries().iterator().hasNext()){
 				return ITEM_REGISTRY.get(addonid).getEntries().iterator().next().get().getDefaultInstance();
 			}
-			else return DecorationItem.REGOBJ.get().getDefaultInstance();
+			else return ToolboxItem.REGOBJ0.get().getDefaultInstance();
 		}).build());
 	}
 
