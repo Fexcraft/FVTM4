@@ -8,11 +8,13 @@ import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 
 /**
@@ -65,6 +67,11 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public int dim(){
 		return 0;
+	}
+
+	@Override
+	public void drop(StackWrapper stack, V3D vec){
+		level.addFreshEntity(new ItemEntity(level, vec.x, vec.y, vec.z, stack.local()));
 	}
 
 	@Override
