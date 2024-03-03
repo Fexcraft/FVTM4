@@ -2,11 +2,12 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.UniversalAttachments;
-import net.fexcraft.mod.uni.world.BlockSide;
+import net.fexcraft.mod.uni.world.CubeSide;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
@@ -36,17 +37,31 @@ public class WrapperHolderImpl extends WrapperHolder {
 	}
 
 	@Override
-	public BlockSide getSide0(Object o){
-		BlockSide facing = (BlockSide)o;
+	public CubeSide getSide0(Object o){
+		CubeSide facing = (CubeSide)o;
 		switch(facing){
-			case UP: return BlockSide.UP;
-			case DOWN: return BlockSide.DOWN;
-			case NORTH: return BlockSide.NORTH;
-			case WEST: return BlockSide.WEST;
-			case EAST: return BlockSide.EAST;
-			case SOUTH: return BlockSide.SOUTH;
+			case UP: return CubeSide.UP;
+			case DOWN: return CubeSide.DOWN;
+			case NORTH: return CubeSide.NORTH;
+			case WEST: return CubeSide.WEST;
+			case EAST: return CubeSide.EAST;
+			case SOUTH: return CubeSide.SOUTH;
 		}
-		return BlockSide.NORTH;
+		return CubeSide.NORTH;
+	}
+
+	@Override
+	public <S> S getLocalSide0(CubeSide side){
+		Direction dir = Direction.NORTH;
+		switch(side){
+			case UP: return (S)Direction.UP;
+			case DOWN: return (S)Direction.DOWN;
+			case NORTH: return (S)Direction.NORTH;
+			case WEST: return (S)Direction.WEST;
+			case EAST: return (S)Direction.EAST;
+			case SOUTH: return (S)Direction.SOUTH;
+		}
+		return (S)dir;
 	}
 
 }
