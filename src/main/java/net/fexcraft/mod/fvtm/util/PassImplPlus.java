@@ -7,6 +7,8 @@ import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.uimpl.UniCon;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -157,8 +159,8 @@ public class PassImplPlus extends Passenger {
 	}
 
 	@Override
-	public void openUI(Object key, V3I pos){
-		//TODO
+	public void openUI(UIKey key, V3I pos){
+		openUI(key.key, pos);
 	}
 
 	@Override
@@ -186,6 +188,11 @@ public class PassImplPlus extends Passenger {
 	@Override
 	public String getName(){
 		return entity.getName().getString();
+	}
+
+	@Override
+	public void drop(StackWrapper stack, float height){
+		entity.spawnAtLocation(stack.local(), height);
 	}
 
 	@Override
