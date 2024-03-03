@@ -67,7 +67,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerRecipes(){
-
+		StackWrapper.EMPTY = new SWI(ItemStack.EMPTY);
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
