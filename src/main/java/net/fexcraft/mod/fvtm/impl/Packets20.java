@@ -7,6 +7,7 @@ import net.fexcraft.mod.fcl.UniversalAttachments;
 import net.fexcraft.mod.fcl.util.UIPacket;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -60,6 +61,12 @@ public class Packets20 extends Packets {
 				Entity ent = level.getEntity(tag.getInteger("entity"));
 				if(ent == null) return;
 				((Passenger)ent.getData(PASSENGER)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
+			});
+			LIS_CLIENT.put("vehicle_color", (tag, player) -> {
+				Level level = player.getWorld().local();
+				Entity ent = level.getEntity(tag.getInteger("vehicle"));
+				if(ent == null) return;
+				((RootVehicle)ent).vehicle.data.getColorChannel(tag.getString("channel")).packed = tag.getInteger("color");
 			});
 		}
 	}
