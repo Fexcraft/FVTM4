@@ -14,9 +14,7 @@ import net.fexcraft.mod.fvtm.impl.Packets20;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
-import net.fexcraft.mod.fvtm.ui.DecoContainer;
-import net.fexcraft.mod.fvtm.ui.DecoEditor;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
@@ -114,6 +112,8 @@ public class FVTM4 {
 		//
 		UniReg.registerUI(UIKey.DECORATION_EDITOR.key, DecoEditor.class);
 		UniReg.registerMenu(UIKey.DECORATION_EDITOR.key, "assets/fvtm/uis/deco_editor", DecoContainer.class);
+		UniReg.registerUI(UIKey.TOOLBOX_COLORS.key, ToolboxPainter.class);
+		UniReg.registerMenu(UIKey.TOOLBOX_COLORS.key, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
 		//
 		FvtmResources.INSTANCE.init();
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(BuiltInRegistries.ITEM, addon.getID().id())));
