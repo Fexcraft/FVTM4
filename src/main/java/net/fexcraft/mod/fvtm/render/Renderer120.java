@@ -49,6 +49,22 @@ public class Renderer120 extends Renderer<GLObject> {
 		color.x = color.y = color.z = 1;
 	}
 
+	public static void rotateDeg(float by, Vector3f axe){
+		pose.mulPose(new Quaternionf().rotateAxis(Static.toRadians(by), axe));
+	}
+
+	public static void rotateRad(float by, Vector3f axe){
+		pose.mulPose(new Quaternionf().rotateAxis(by, axe));
+	}
+
+	public static void pushPose(){
+		pose.pushPose();
+	}
+
+	public static void popPose(){
+		pose.popPose();
+	}
+
 	public void render(Polyhedron<GLObject> poly){
 		if(!poly.visible) return;
 		pose.pushPose();
