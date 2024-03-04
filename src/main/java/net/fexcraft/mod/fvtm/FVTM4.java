@@ -92,7 +92,7 @@ public class FVTM4 {
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
 			protected void log0(Object obj){
-				LOGGER4.info(obj == null ? "null" : obj.toString());
+				LOGGER4.info(obj == null ? "null " + new Exception().getStackTrace()[2].toString() : obj.toString());
 			}
 		};
 		if(EnvInfo.CLIENT){
