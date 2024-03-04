@@ -1,11 +1,20 @@
 package net.fexcraft.mod.fvtm.model.program;
 
+import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.minecraft.client.Minecraft;
+import org.joml.Quaternionf;
+import org.lwjgl.opengl.GL11;
+
+import static net.fexcraft.mod.fvtm.render.Renderer120.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -53,6 +62,86 @@ public class DefaultPrograms20 {
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){
 				list.visible = true;
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+			private AttrFloat attr = null;
+			private float am;
+
+			public String id(){
+				return "fvtm:wheel_auto_all";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				pushPose();
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.steering){
+					attr = (AttrFloat)data.vehicle.getAttribute("steering_angle");
+					am = attr.initial + data.partialticks * (attr.value - attr.initial);
+					rotateDeg(-am, AY);
+				}
+				rotateDeg(-data.vehicle.getAttribute("wheel_angle").asFloat(), AX);
+				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
+			}
+
+			public void post(ModelGroup list, ModelRenderData data){
+				Renderer120.popPose();
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_steering";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				pushPose();
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
+				if(slot != null && slot.steering) rotateDeg(data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+			}
+
+			public void post(ModelGroup list, ModelRenderData data){
+				popPose();
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_all_opposite";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				pushPose();
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+				rotateDeg(data.vehicle.getAttribute("wheel_angle").asFloat(), AX);
+				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
+			}
+
+			public void post(ModelGroup list, ModelRenderData data){
+				popPose();
+			}
+		});
+		ModelGroup.PROGRAMS.add(new Program() {
+			private WheelSlot slot;
+
+			public String id(){
+				return "fvtm:wheel_auto_steering_opposite";
+			}
+
+			public void pre(ModelGroup list, ModelRenderData data){
+				pushPose();
+				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
+				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
+			}
+
+			public void post(ModelGroup list, ModelRenderData data){
+				popPose();
 			}
 		});
 	}
