@@ -3,8 +3,6 @@ package net.fexcraft.mod.fvtm.impl;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.UniversalAttachments;
-import net.fexcraft.mod.fcl.util.UIPacket;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
@@ -15,7 +13,6 @@ import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -40,11 +36,21 @@ public class Packets20 extends Packets {
 
 	public static final HashMap<Class<? extends PacketBase>, Class<? extends PacketBase>> PACKETS = new LinkedHashMap<>();
 	public static final ResourceLocation TAG_PACKET = new ResourceLocation("fvtm", "tag");
+	public static final ResourceLocation VEHMOVE_PACKET = new ResourceLocation("fvtm", "veh_move");
+	public static final ResourceLocation VEHKEYPRESS_PACKET = new ResourceLocation("fvtm", "veh_key");
+	public static final ResourceLocation VEHKEYSTATE_PACKET = new ResourceLocation("fvtm", "veh_keystate");
+	public static final ResourceLocation SEATUPDATE_PACKET = new ResourceLocation("fvtm", "seat_upd");
+	public static final ResourceLocation SPUPDATE_PACKET = new ResourceLocation("fvtm", "sp_upd");
 
 	@Override
 	public void init(){
 		INSTANCE = this;
 		PACKETS.put(Packet_TagListener.class, PI_TagListener.class);
+		PACKETS.put(Packet_VehMove.class, PI_VehMove.class);
+		PACKETS.put(Packet_VehKeyPress.class, PI_VehKeyPress.class);
+		PACKETS.put(Packet_VehKeyPressState.class, PI_VehKeyPressState.class);
+		PACKETS.put(Packet_SeatUpdate.class, PI_SeatUpdate.class);
+		PACKETS.put(Packet_SPUpdate.class, PI_SPUpdate.class);
 		LIS_SERVER.put("", (com, player) -> {
 			//
 		});
@@ -152,6 +158,25 @@ public class Packets20 extends Packets {
 				handler.server((packet, context) -> handlePacketServer((PI_TagListener)packet, context, HTL));
 				handler.client((packet, context) -> handlePacketClient((PI_TagListener)packet, context, HTL));
 			});
+			registrar.common(VEHMOVE_PACKET, PI_VehMove::read, handler -> {
+				handler.server((packet, context) -> handlePacketServer((PI_VehMove)packet, context, HVM));
+				handler.client((packet, context) -> handlePacketClient((PI_VehMove)packet, context, HVM));
+			});
+			registrar.common(VEHKEYPRESS_PACKET, PI_VehKeyPress::read, handler -> {
+				handler.server((packet, context) -> handlePacketServer((PI_VehKeyPress)packet, context, HVK));
+			});
+			registrar.common(VEHKEYSTATE_PACKET, PI_VehKeyPressState::read, handler -> {
+				handler.server((packet, context) -> handlePacketServer((PI_VehKeyPressState)packet, context, HVKS));
+				handler.client((packet, context) -> handlePacketClient((PI_VehKeyPressState)packet, context, HVKS));
+			});
+			registrar.common(SEATUPDATE_PACKET, PI_SeatUpdate::read, handler -> {
+				handler.server((packet, context) -> handlePacketServer((PI_SeatUpdate)packet, context, HSU));
+				handler.client((packet, context) -> handlePacketClient((PI_SeatUpdate)packet, context, HSU));
+			});
+			registrar.common(SPUPDATE_PACKET, PI_SPUpdate::read, handler -> {
+				handler.server((packet, context) -> handlePacketServer((PI_SPUpdate)packet, context, HSPU));
+				handler.client((packet, context) -> handlePacketClient((PI_SPUpdate)packet, context, HSPU));
+			});
 		}
 
 		private static <T extends PacketBase> void handlePacketServer(T packet, IPayloadContext context, PacketHandler<T> handler){
@@ -167,6 +192,11 @@ public class Packets20 extends Packets {
 	//---//---//---//
 
 	public static Handler_TagListener HTL = new Handler_TagListener();
+	public static Handler_VehMove HVM = new Handler_VehMove();
+	public static Handler_VehKeyPress HVK = new Handler_VehKeyPress();
+	public static Handler_VehKeyPressState HVKS = new Handler_VehKeyPressState();
+	public static Handler_SeatUpdate HSU = new Handler_SeatUpdate();
+	public static Handler_SPUpdate HSPU = new Handler_SPUpdate();
 
 	public static class PI_TagListener extends Packet_TagListener implements CustomPacketPayload {
 
@@ -184,6 +214,106 @@ public class Packets20 extends Packets {
 		@Override
 		public ResourceLocation id(){
 			return TAG_PACKET;
+		}
+
+	}
+
+	public static class PI_VehMove extends Packet_VehMove implements CustomPacketPayload {
+
+		@Override
+		public void write(FriendlyByteBuf buffer){
+			encode(buffer);
+		}
+
+		public static CustomPacketPayload read(FriendlyByteBuf buffer){
+			PI_VehMove pkt = new PI_VehMove();
+			pkt.decode(buffer);
+			return pkt;
+		}
+
+		@Override
+		public ResourceLocation id(){
+			return VEHMOVE_PACKET;
+		}
+
+	}
+
+	public static class PI_VehKeyPress extends Packet_VehKeyPress implements CustomPacketPayload {
+
+		@Override
+		public void write(FriendlyByteBuf buffer){
+			encode(buffer);
+		}
+
+		public static CustomPacketPayload read(FriendlyByteBuf buffer){
+			PI_VehKeyPress pkt = new PI_VehKeyPress();
+			pkt.decode(buffer);
+			return pkt;
+		}
+
+		@Override
+		public ResourceLocation id(){
+			return VEHKEYPRESS_PACKET;
+		}
+
+	}
+
+	public static class PI_VehKeyPressState extends Packet_VehKeyPressState implements CustomPacketPayload {
+
+		@Override
+		public void write(FriendlyByteBuf buffer){
+			encode(buffer);
+		}
+
+		public static CustomPacketPayload read(FriendlyByteBuf buffer){
+			PI_VehKeyPressState pkt = new PI_VehKeyPressState();
+			pkt.decode(buffer);
+			return pkt;
+		}
+
+		@Override
+		public ResourceLocation id(){
+			return VEHKEYSTATE_PACKET;
+		}
+
+	}
+
+	public static class PI_SeatUpdate extends Packet_SeatUpdate implements CustomPacketPayload {
+
+		@Override
+		public void write(FriendlyByteBuf buffer){
+			encode(buffer);
+		}
+
+		public static CustomPacketPayload read(FriendlyByteBuf buffer){
+			PI_SeatUpdate pkt = new PI_SeatUpdate();
+			pkt.decode(buffer);
+			return pkt;
+		}
+
+		@Override
+		public ResourceLocation id(){
+			return SEATUPDATE_PACKET;
+		}
+
+	}
+
+	public static class PI_SPUpdate extends Packet_SPUpdate implements CustomPacketPayload {
+
+		@Override
+		public void write(FriendlyByteBuf buffer){
+			encode(buffer);
+		}
+
+		public static CustomPacketPayload read(FriendlyByteBuf buffer){
+			PI_SPUpdate pkt = new PI_SPUpdate();
+			pkt.decode(buffer);
+			return pkt;
+		}
+
+		@Override
+		public ResourceLocation id(){
+			return SPUPDATE_PACKET;
 		}
 
 	}
