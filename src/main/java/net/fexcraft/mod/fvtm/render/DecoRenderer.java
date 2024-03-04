@@ -35,7 +35,7 @@ public class DecoRenderer extends EntityRenderer<Decoration> {
 		Renderer120.light = light;
 		for(DecorationData data : deco.decos){
 			if(data.model == null){
-				FvtmLogger.LOGGER.debug(data.modelid);
+				//FvtmLogger.LOGGER.debug(data.modelid);
 				continue;
 			}
 			Renderer120.rentype = RenderType.entityCutout(data.textures.get(data.seltex).local());
