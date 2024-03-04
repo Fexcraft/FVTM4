@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
+import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Renderer;
@@ -28,7 +30,24 @@ public class Renderer120 extends Renderer<GLObject> {
 	public static PoseStack pose;
 	public static MultiBufferSource buffer;
 	public static RenderType rentype;
+	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
+	public static Vec3f color = new Vec3f();
 	public static int light;
+
+	public static void setColor(RGB col){
+		float[] arr = col.toFloatArray();
+		color.x = arr[0];
+		color.y = arr[1];
+		color.z = arr[2];
+	}
+
+	public static void setColor(Vec3f col){
+		color.copy(col);
+	}
+
+	public static void resetColor(){
+		color.x = color.y = color.z = 1;
+	}
 
 	public void render(Polyhedron<GLObject> poly){
 		if(!poly.visible) return;
@@ -48,12 +67,12 @@ public class Renderer120 extends Renderer<GLObject> {
 			for(Vertex vert : poli.vertices){
 				Vector4f vec = verma.transform(new Vector4f(vert.vector.x, vert.vector.y, vert.vector.z, 1.0F));
 				Vector3f norm = norma.transform(new Vector3f(vert.norm.x, vert.norm.y, vert.norm.z));
-				if(vert.color() == null){
-					cons.vertex(vec.x, vec.y, vec.z, 1.0F, 1.0F, 1.0F, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
-				}
-				else{
-					cons.vertex(vec.x, vec.y, vec.z, (vert.color()).x, (vert.color()).y, (vert.color()).z, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
-				}
+				//if(vert.color() == null){
+					cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
+				//}
+				//else{
+				//	cons.vertex(vec.x, vec.y, vec.z, (vert.color()).x, (vert.color()).y, (vert.color()).z, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
+				//}
 			}
 		}
 		pose.popPose();
