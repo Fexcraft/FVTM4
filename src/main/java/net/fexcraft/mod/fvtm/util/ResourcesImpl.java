@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -134,6 +135,7 @@ public class ResourcesImpl extends FvtmResources {
 			}
 			return null;
 		});
+		DefaultPrograms20.init();
 	}
 
 	@Override
