@@ -641,6 +641,11 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 		return vehicle.data.newItemStack().local();
 	}
 
+	@Override
+	public void lerpTo(double x, double y, double z, float yrot, float xrot, int steps){
+		//
+	}
+
 	public boolean processSeatInteract(int seatidx, ServerPlayer player, InteractionHand hand){
 		if(level().isClientSide || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
 		ItemStack stack = player.getItemInHand(hand);
