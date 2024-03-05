@@ -98,7 +98,6 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public void onVehicleMove(Packet_VehMove packet){
 		Entity ent = level.getEntity(packet.entid);
-		FvtmLogger.log(packet, packet.entid, ent);
 		if(ent == null || ent instanceof RootVehicle == false) return;
 		((RootVehicle)ent).setPosRotMot(packet.pos, packet.yaw, packet.pitch, packet.roll, packet.throttle, packet.steering, packet.fuel);
 	}
