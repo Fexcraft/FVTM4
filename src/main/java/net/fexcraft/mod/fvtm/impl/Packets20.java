@@ -159,8 +159,12 @@ public class Packets20 extends Packets {
 				handler.client((packet, context) -> handlePacketClient((PI_TagListener)packet, context, HTL));
 			});
 			registrar.common(VEHMOVE_PACKET, PI_VehMove::read, handler -> {
-				handler.server((packet, context) -> handlePacketServer((PI_VehMove)packet, context, HVM));
-				handler.client((packet, context) -> handlePacketClient((PI_VehMove)packet, context, HVM));
+				handler.server((packet, context) -> {
+					if(context.player().isPresent()) handlePacketServer((PI_VehMove)packet, context, HVM);
+				});
+				handler.client((packet, context) -> {
+					if(context.player().isPresent()) handlePacketClient((PI_VehMove)packet, context, HVM);
+				});
 			});
 			registrar.common(VEHKEYPRESS_PACKET, PI_VehKeyPress::read, handler -> {
 				handler.server((packet, context) -> handlePacketServer((PI_VehKeyPress)packet, context, HVK));
