@@ -278,7 +278,7 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 		}
 		if(!stack.isEmpty()){
 			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				//TODO open fuel UI
+				pass.openUI(UIKey.VEHICLE_FUEL, new V3I(getId(), 0, 0));
 				return InteractionResult.SUCCESS;
 			}
 			else if(stack.getItem() instanceof ToolboxItem){
