@@ -43,7 +43,8 @@ public class PassImplPlus extends Passenger {
 
 	@Override
 	public SeatInstance getSeatOn(){
-		return null;
+		if(entity.getVehicle() instanceof RootVehicle == false) return null;
+		return ((RootVehicle)entity.getVehicle()).getSeatOf(entity);
 	}
 
 	@Override
