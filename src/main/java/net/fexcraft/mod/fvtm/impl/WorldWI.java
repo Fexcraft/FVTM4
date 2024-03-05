@@ -2,6 +2,8 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.UniversalAttachments;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
@@ -76,22 +78,27 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public SeatInstance getSeat(int entid, int seatid){
-		return null;
+		Entity ent = level.getEntity(entid);
+		if(ent == null || ent instanceof RootVehicle == false) return null;
+		return ((RootVehicle)ent).vehicle.seats.get(seatid);
 	}
 
 	@Override
 	public SwivelPoint getSwivelPoint(int entid, String pointid){
-		return null;
+		Entity ent = level.getEntity(entid);
+		if(ent == null || ent instanceof RootVehicle == false) return null;
+		return ((RootVehicle)ent).vehicle.data.getRotationPoint(pointid);
 	}
 
 	@Override
 	public Passenger getPassenger(int source){
-		return null;
+		return (Passenger)level.getEntity(source).getData(UniversalAttachments.PASSENGER);
 	}
 
 	@Override
 	public void onVehicleMove(Packet_VehMove packet){
 		Entity ent = level.getEntity(packet.entid);
+		FvtmLogger.log(packet, packet.entid, ent);
 		if(ent == null || ent instanceof RootVehicle == false) return;
 		((RootVehicle)ent).setPosRotMot(packet.pos, packet.yaw, packet.pitch, packet.roll, packet.throttle, packet.steering, packet.fuel);
 	}
