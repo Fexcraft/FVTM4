@@ -10,6 +10,7 @@ import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
@@ -98,8 +99,15 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public void onVehicleMove(Packet_VehMove packet){
 		Entity ent = level.getEntity(packet.entid);
-		if(ent == null || ent instanceof RootVehicle == false) return;
+		if(ent instanceof RootVehicle == false) return;
 		((RootVehicle)ent).setPosRotMot(packet.pos, packet.yaw, packet.pitch, packet.roll, packet.throttle, packet.steering, packet.fuel);
+	}
+
+	@Override
+	public VehicleInstance getVehicle(int entid){
+		Entity ent = level.getEntity(entid);
+		if(ent instanceof RootVehicle == false) return null;
+		return ((RootVehicle)ent).vehicle;
 	}
 
 }
