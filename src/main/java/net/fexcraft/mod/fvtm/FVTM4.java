@@ -15,6 +15,10 @@ import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.ui.*;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuel;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMain;
+import net.fexcraft.mod.fvtm.ui.vehicle.VehicleMainCon;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
@@ -116,6 +120,8 @@ public class FVTM4 {
 		UniReg.registerMenu(UIKey.TOOLBOX_COLORS.key, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
 		UniReg.registerUI(UIKey.VEHICLE_MAIN.key, VehicleMain.class);
 		UniReg.registerMenu(UIKey.VEHICLE_MAIN.key, "assets/fvtm/uis/vehicle_main", VehicleMainCon.class);
+		UniReg.registerUI(UIKey.VEHICLE_FUEL.key, VehicleFuel.class);
+		UniReg.registerMenu(UIKey.VEHICLE_FUEL.key, "assets/fvtm/uis/vehicle_fuel", VehicleFuelCon.class);
 		//
 		FvtmResources.INSTANCE.init();
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(BuiltInRegistries.ITEM, addon.getID().id())));
