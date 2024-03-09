@@ -1,16 +1,13 @@
 package net.fexcraft.mod.fvtm.item;
 
-import java.util.List;
-import java.util.UUID;
-import javax.annotation.Nullable;
-
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,12 +16,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.UUID;
+
+import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class MaterialItem extends Item implements ContentItem<Material> {
+public class MaterialItem extends Item implements ContentItem<Material>, Fuel.FuelItem {
 
 	private Material material;
+	private SWI wrapper = new SWI(ItemStack.EMPTY);
 
 	public MaterialItem(Material material){
 		super((new Properties())
@@ -46,9 +50,10 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 			tooltip.add(GenericUtils.format("&9LockCode: &7" + getLockCode(stack)));
 		}
 		if(material.isFuelContainer()){
+			wrapper.stack = stack;
 			tooltip.add(GenericUtils.format("&9Container: &7" + (material.isUniversalFuelContainer() ? "universal" : ((material.getFuelType() == null) ? material.getFuelGroup() : material.getFuelType().getName()))));
-			tooltip.add(GenericUtils.format("&9Fuel Stored: &7" + getStoredFuelName(stack)));
-			tooltip.add(GenericUtils.format("&9Fuel Amount: &7" + getStoredFuelAmount(stack) + "mB"));
+			tooltip.add(GenericUtils.format("&9Fuel Stored: &7" + getStoredFuelName(wrapper)));
+			tooltip.add(GenericUtils.format("&9Fuel Amount: &7" + getStoredFuelAmount(wrapper) + "mB"));
 		}
 	}
 
@@ -60,41 +65,6 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 		return stack.getTag().getString("LockCode");
 	}
 
-	public Fuel getStoredFuelType(ItemStack stack){
-		if(!material.isFuelContainer()) return null;
-		if(material.getFuelType() != null) return material.getFuelType();
-		if(stack.hasTag()) return FvtmRegistry.getFuel(stack.getTag().getString("StoredFuelType"));
-		return null;
-	}
-
-	public int getStoredFuelAmount(ItemStack stack){
-		if(!material.isFuelContainer() || !stack.hasTag()) return 0;
-		return stack.getTag().getInt("StoredFuelAmount");
-	}
-
-	public String getStoredFuelName(ItemStack stack){
-		if(!material.isFuelContainer()) return "Nothing.";
-		if(material.getFuelType() != null) return material.getFuelType().getName();
-		if(stack.hasTag()) return "//TODO";
-		return "none";
-	}
-
-	public void extractFuel(ItemStack stack, int stored){
-		if(!stack.hasTag()) stack.setTag(new CompoundTag());
-		stack.getTag().putInt("StoredFuelAmount", stack.getTag().getInt("StoredFuelAmount") - stored);
-		if(stack.getTag().getInt("StoredFuelAmount") < 0){
-			stack.getTag().putInt("StoredFuelAmount", 0);
-		}
-	}
-
-	public void insertFuel(ItemStack stack, int stored){
-		if(!stack.hasTag()) stack.setTag(new CompoundTag());
-		stack.getTag().putInt("StoredFuelAmount", stack.getTag().getInt("StoredFuelAmount") + stored);
-		if(stack.getTag().getInt("StoredFuelAmount") > material.getFuelCapacity()){
-			stack.getTag().putInt("StoredFuelAmount", material.getFuelCapacity());
-		}
-	}
-
 	@Override
 	public Material getContent(){
 		return material;
@@ -103,6 +73,43 @@ public class MaterialItem extends Item implements ContentItem<Material> {
 	@Override
 	public ContentType getType(){
 		return ContentType.MATERIAL;
+	}
+
+	@Override
+	public Fuel getStoredFuelType(StackWrapper stack){
+		if(!material.isFuelContainer()) return null;
+		if(material.getFuelType() != null) return material.getFuelType();
+		if(stack.hasTag()) return getFuel(stack.getTag().getString("StoredFuelType"));
+		else return null;
+	}
+
+	@Override
+	public String getStoredFuelName(StackWrapper stack){
+		if(!material.isFuelContainer()) return "Nothing.";
+		if(material.getFuelType() != null) return material.getFuelType().getName();
+		if(stack.hasTag()) return FvtmRegistry.getFuelName(stack.getTag().getString("StoredFuelType"));
+		else return "none";
+	}
+
+	@Override
+	public int getStoredFuelAmount(StackWrapper stack){
+		if(!material.isFuelContainer() || !stack.hasTag()) return 0;
+		return stack.getTag().getInteger("StoredFuelAmount");
+	}
+
+	@Override
+	public void extractFuel(StackWrapper stack, int stored){
+		stack.createTagIfMissing();
+		stack.getTag().set("StoredFuelAmount", stack.getTag().getInteger("StoredFuelAmount") - stored);
+		if(stack.getTag().getInteger("StoredFuelAmount") < 0) stack.getTag().set("StoredFuelAmount", 0);
+	}
+
+	@Override
+	public void insertFuel(StackWrapper stack, int stored){
+		stack.createTagIfMissing();
+		stack.getTag().set("StoredFuelAmount", stack.getTag().getInteger("StoredFuelAmount") + stored);
+		if(stack.getTag().getInteger("StoredFuelAmount") > material.getFuelCapacity())
+			stack.getTag().set("StoredFuelAmount", material.getFuelCapacity());
 	}
 
 }
