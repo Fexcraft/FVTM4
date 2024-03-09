@@ -4,24 +4,27 @@ import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentItem;
+import net.fexcraft.mod.fvtm.data.Fuel;
+import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
-import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlag;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Map;
 
 import static net.fexcraft.mod.fvtm.FVTM4.ITEM_REGISTRY;
+import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -49,11 +52,11 @@ public class TabInitializer implements CTab {
 					if(tabin.contains(":")){
 						String[] split = tabin.split(":");
 						if(split[0].equals(registry.getKey()) && split[1].equals(id)){
-							out.accept(item);
+							accept(out, item);
 						}
 					}
 					else if(registry.getKey().equals(addonid) && tabin.equals(id)){
-						out.accept(item);
+						accept(out, item);
 					}
 				}
 			}
@@ -65,6 +68,22 @@ public class TabInitializer implements CTab {
 			}
 			else return ToolboxItem.REGOBJ0.get().getDefaultInstance();
 		}).build());
+	}
+
+	private void accept(CreativeModeTab.Output out, Item item){
+		if(item instanceof MaterialItem && ((MaterialItem)item).getContent().isFuelContainer()){
+			Material material = ((MaterialItem)item).getContent();
+			for(Fuel fuel : FUELS){
+				if(!material.isValidFuel(fuel)) continue;
+				CompoundTag compound = new CompoundTag();
+				compound.putString("StoredFuelType", fuel.getID().colon());
+				compound.putInt("StoredFuelAmount", material.getFuelCapacity());
+				ItemStack stack = item.getDefaultInstance();
+				stack.setTag(compound);
+				out.accept(stack);
+			}
+		}
+		out.accept(item);
 	}
 
 }
