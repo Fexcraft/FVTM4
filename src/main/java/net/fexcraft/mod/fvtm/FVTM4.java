@@ -25,6 +25,7 @@ import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.fvtm.util.TabInitializer;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -35,9 +36,11 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
@@ -114,6 +117,13 @@ public class FVTM4 {
 			//TODO Config.addListener(() -> ConditionRegistry.BUILDER = CondBuilder.run());
 		}
 		//
+		UISlot.SLOT_GETTER = (type, args) -> {
+			switch(type){
+				case "default":
+				default:
+					return new Slot((Container)args[0], (Integer)args[1], (Integer)args[2], (Integer)args[3]);
+			}
+		};
 		UniReg.registerUI(UIKey.DECORATION_EDITOR.key, DecoEditor.class);
 		UniReg.registerMenu(UIKey.DECORATION_EDITOR.key, "assets/fvtm/uis/deco_editor", DecoContainer.class);
 		UniReg.registerUI(UIKey.TOOLBOX_COLORS.key, ToolboxPainter.class);
@@ -121,7 +131,7 @@ public class FVTM4 {
 		UniReg.registerUI(UIKey.VEHICLE_MAIN.key, VehicleMain.class);
 		UniReg.registerMenu(UIKey.VEHICLE_MAIN.key, "assets/fvtm/uis/vehicle_main", VehicleMainCon.class);
 		UniReg.registerUI(UIKey.VEHICLE_FUEL.key, VehicleFuel.class);
-		UniReg.registerMenu(UIKey.VEHICLE_FUEL.key, "assets/fvtm/uis/vehicle_fuel", VehicleFuelCon.class);
+		UniReg.registerMenu(UIKey.VEHICLE_FUEL.key, "assets/fvtm/uis/vehicle_fuel", VehicleFuelConImpl.class);
 		//
 		FvtmResources.INSTANCE.init();
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(BuiltInRegistries.ITEM, addon.getID().id())));
