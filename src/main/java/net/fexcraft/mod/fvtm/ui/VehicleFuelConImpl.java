@@ -57,10 +57,10 @@ public class VehicleFuelConImpl extends VehicleFuelCon {
 	}
 
 	@Override
-	public void onClosed(EntityW entity){
+	public void onClosed(){
 		if(player.isOnClient()) return;
 		if(container.getItem(0).isEmpty()) return;
-		ServerPlayer player = entity.local();
+		ServerPlayer player = this.player.local();
 		if(player.isAlive() && !player.hasDisconnected()){
 			player.getInventory().placeItemBackInInventory(container.getItem(0));
 		}
