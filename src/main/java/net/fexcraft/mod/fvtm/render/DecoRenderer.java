@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.util.FvtmAttachments;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -15,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
 import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.util.FvtmAttachments.RENDERCACHE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -49,7 +51,7 @@ public class DecoRenderer extends EntityRenderer<Decoration> {
 				);
 			}
 			pose.scale(data.sclx, data.scly, data.sclz);
-			data.model.render(DefaultModel.RENDERDATA);
+			data.model.render(DefaultModel.RENDERDATA.set(data, deco, deco.getData(RENDERCACHE)));
 			pose.popPose();
 		}
 		pose.popPose();
