@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.util.FvtmAttachments;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.util.FvtmAttachments.RENDERCACHE;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 
 /**
@@ -55,9 +57,10 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		//TODO RenderCache cache = null;
 		Model vehmod = veh.vehicle.data.getType().getModel();
 		Renderer120.rentype = RenderType.entityCutout(veh.vehicle.data.getCurrentTexture().local());
+		RenderCache cache = veh.getData(RENDERCACHE);
 		if(vehmod != null){
 			pose.pushPose();
-			vehmod.render(RENDERDATA.set(veh.vehicle.data, veh, null, false, tick));
+			vehmod.render(RENDERDATA.set(veh.vehicle.data, veh, cache, false, tick));
 			pose.popPose();
 		}
 		else{
@@ -65,7 +68,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			//TODO render "missing model" model
 		}
 		if(veh.vehicle.data.getParts().size() > 0){
-			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, null, tick);
+			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, cache, tick);
 		}
 		//TODO install info
 		pose.popPose();
