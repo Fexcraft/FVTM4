@@ -202,6 +202,11 @@ public class PassImplPlus extends Passenger {
 	}
 
 	@Override
+	public void send(String str, Object... args){
+		entity.sendSystemMessage(Component.translatable(str, args));
+	}
+
+	@Override
 	public void bar(String s){
 		entity.sendSystemMessage(Component.translatable(s));//TODO
 	}
