@@ -128,6 +128,8 @@ public class FVTM4 {
 		UniReg.registerMenu(UIKey.VEHICLE_FUEL.key, "assets/fvtm/uis/vehicle_fuel", VehicleFuelConImpl.class);
 		UniReg.registerUI(UIKey.VEHICLE_ATTRIBUTES.key, VehicleAttributes.class);
 		UniReg.registerMenu(UIKey.VEHICLE_ATTRIBUTES.key, "assets/fvtm/uis/vehicle_attributes", VehicleAttributesCon.class);
+		UniReg.registerUI(UIKey.VEHICLE_INVENTORIES.key, VehicleInventories.class);
+		UniReg.registerMenu(UIKey.VEHICLE_INVENTORIES.key, "assets/fvtm/uis/vehicle_inventories", VehicleInventoriesCon.class);
 		FvtmAttachments.register(event);
 		//
 		FvtmResources.INSTANCE.init();
