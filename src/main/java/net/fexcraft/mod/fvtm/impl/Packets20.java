@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
@@ -51,8 +52,11 @@ public class Packets20 extends Packets {
 		PACKETS.put(Packet_VehKeyPressState.class, PI_VehKeyPressState.class);
 		PACKETS.put(Packet_SeatUpdate.class, PI_SeatUpdate.class);
 		PACKETS.put(Packet_SPUpdate.class, PI_SPUpdate.class);
-		LIS_SERVER.put("", (com, player) -> {
-			//
+		LIS_SERVER.put("vehicle_packet", (com, player) -> {
+			Level level = player.getWorld().local();
+			Entity ent = level.getEntity(com.getInteger("entity"));
+			if(ent == null) return;
+			((RootVehicle)ent).vehicle.packet(com, player);
 		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("deco", (tag, player) -> {
@@ -73,6 +77,12 @@ public class Packets20 extends Packets {
 				Entity ent = level.getEntity(tag.getInteger("vehicle"));
 				if(ent == null) return;
 				((RootVehicle)ent).vehicle.data.getColorChannel(tag.getString("channel")).packed = tag.getInteger("color");
+			});
+			LIS_CLIENT.put("vehicle_packet", (tag, player) -> {
+				Level level = player.getWorld().local();
+				Entity ent = level.getEntity(tag.getInteger("entity"));
+				if(ent == null) return;
+				((RootVehicle)ent).vehicle.packet(tag, player);
 			});
 		}
 	}
@@ -98,8 +108,9 @@ public class Packets20 extends Packets {
 	}
 
 	@Override
-	public void send(VehicleInstance vehicleInstance, TagCW com){
-
+	public void send(VehicleInstance vehicle, TagCW com){
+		com.set("entity", vehicle.entity.getId());
+		sendInRange(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle_packet", com);
 	}
 
 	@Override
