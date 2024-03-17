@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.Packets20;
+import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
@@ -19,6 +20,9 @@ import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
+import net.fexcraft.mod.uni.impl.SWI;
+import net.fexcraft.mod.uni.item.ItemWrapper;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -37,6 +41,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -95,6 +100,11 @@ public class FVTM4 {
 			protected void log0(Object obj){
 				LOGGER4.info(obj == null ? "null " + new Exception().getStackTrace()[2].toString() : obj.toString());
 			}
+		};
+		StackWrapper.SUPPLIER = obj -> {
+			if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
+			if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
+			return null;
 		};
 		if(EnvInfo.CLIENT){
 			Renderer.RENDERER = new Renderer120();
