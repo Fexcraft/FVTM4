@@ -5,8 +5,11 @@ import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
+import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -17,7 +20,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -58,6 +64,39 @@ public class Packets20 extends Packets {
 			if(ent == null) return;
 			((RootVehicle)ent).vehicle.packet(com, player);
 		});
+		LIS_CLIENT.put("vehicle", (com, player) -> {
+			Player entity = player.local();
+			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
+			if(vehicle == null) return;
+			vehicle.vehicle.packet(com, player);
+		});
+		LIS_SERVER.put("mount_seat", (com, player) -> {
+			Player entity = player.local();
+			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
+			int index = com.getInteger("seat");
+			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
+			vehicle.processSeatInteract(index, player.local(), InteractionHand.MAIN_HAND);
+		});
+		LIS_SERVER.put("install_part", (com, player) -> {
+			Player entity = player.local();
+			ItemStack stack = entity.getMainHandItem();
+			PartData data = ((PartItem)stack.getItem()).getData(TagCW.wrap(stack.getTag()));
+			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
+			String category = com.getString("category");
+			if(vehicle.vehicle.data.getPart(category) != null){
+				PartData oldpart = vehicle.vehicle.data.getPart(category);
+				boolean valid = oldpart.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData && ((DefaultPartInstallHandler.DPIHData)oldpart.getType().getInstallHandlerData()).swappable;
+				if(valid && vehicle.vehicle.data.deinstallPart(player, category, true)){
+					entity.addItem(oldpart.getNewStack().local());
+				}
+				else return;
+			}
+			data = vehicle.vehicle.data.installPart(player, data, com.getString("source") + ":" + category, true);
+			if(data == null){
+				entity.getMainHandItem().shrink(1);
+				vehicle.vehicle.sendVehicleData();
+			}
+		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("deco", (tag, player) -> {
 				Level level = player.getWorld().local();
@@ -83,6 +122,12 @@ public class Packets20 extends Packets {
 				Entity ent = level.getEntity(tag.getInteger("entity"));
 				if(ent == null) return;
 				((RootVehicle)ent).vehicle.packet(tag, player);
+			});
+			LIS_CLIENT.put("vehicle", (tag, player) -> {
+				Player entity = player.local();
+				RootVehicle vehicle = (RootVehicle)entity.level().getEntity(tag.getInteger("entity"));
+				if(vehicle == null) return;
+				vehicle.vehicle.packet(tag, player);
 			});
 		}
 	}
