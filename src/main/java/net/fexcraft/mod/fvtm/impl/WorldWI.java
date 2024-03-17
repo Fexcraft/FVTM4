@@ -115,8 +115,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public boolean noViewEntity(){
-		return net.minecraft.client.Minecraft.getInstance().crosshairPickEntity == null
-			|| net.minecraft.client.Minecraft.getInstance().crosshairPickEntity.level() == null;
+		return net.minecraft.client.Minecraft.getInstance().player == null;
 	}
 
 	@Override
@@ -135,7 +134,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public Passenger getClientPassenger(){
-		return null;
+		return (Passenger)net.minecraft.client.Minecraft.getInstance().player.getData(UniversalAttachments.PASSENGER);
 	}
 
 }
