@@ -19,6 +19,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+
+import java.util.ArrayList;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -108,6 +111,31 @@ public class WorldWI extends FvtmWorld {
 		Entity ent = level.getEntity(entid);
 		if(ent instanceof RootVehicle == false) return null;
 		return ((RootVehicle)ent).vehicle;
+	}
+
+	@Override
+	public boolean noViewEntity(){
+		return net.minecraft.client.Minecraft.getInstance().crosshairPickEntity == null
+			|| net.minecraft.client.Minecraft.getInstance().crosshairPickEntity.level() == null;
+	}
+
+	@Override
+	public ArrayList<VehicleInstance> getVehicles(V3D pos){
+		ArrayList<VehicleInstance> list = new ArrayList<>();
+		AABB aabb = new AABB(pos.x - 16, pos.y - 16, pos.z - 16, pos.x + 16, pos.y + 16, pos.z + 16);
+		float cr;
+		for(Entity entity : level.getEntities(null, aabb)){
+			if(entity instanceof RootVehicle == false) continue;
+				cr = ((RootVehicle)entity).vehicle.data.getAttribute("collision_range").asFloat() + 1;
+				if(cr < ((RootVehicle)entity).vehicle.entity.getPos().dis(pos)) continue;
+				list.add(((RootVehicle)entity).vehicle);
+		}
+		return list;
+	}
+
+	@Override
+	public Passenger getClientPassenger(){
+		return null;
 	}
 
 }
