@@ -31,7 +31,7 @@ public class Renderer120 extends Renderer<GLObject> {
 	public static MultiBufferSource buffer;
 	public static RenderType rentype;
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
-	public static Vec3f color = new Vec3f();
+	private static Vec3f color = new Vec3f();
 	public static int light;
 
 	public static void setColor(RGB col){
