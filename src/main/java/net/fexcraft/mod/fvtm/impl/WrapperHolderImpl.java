@@ -16,6 +16,8 @@ import net.minecraft.world.level.Level;
  */
 public class WrapperHolderImpl extends WrapperHolder {
 
+	private WorldW client;
+
 	@Override
 	public EntityW getEntity0(Object o){
 		return ((Entity)o).getData(UniversalAttachments.PASSENGER).local();
@@ -28,6 +30,14 @@ public class WrapperHolderImpl extends WrapperHolder {
 			WORLDS.put(o, new WorldWI((Level)o));
 		}
 		return WORLDS.get(o);
+	}
+
+	@Override
+	public <W extends WorldW> W getClientWorld0(){
+		if(client == null){
+			client = getWorld0(net.minecraft.client.Minecraft.getInstance().level);
+		}
+		return (W)client;
 	}
 
 	@Override
@@ -62,6 +72,11 @@ public class WrapperHolderImpl extends WrapperHolder {
 			case SOUTH: return (S)Direction.SOUTH;
 		}
 		return (S)dir;
+	}
+
+	@Override
+	public void reset(){
+		client = null;
 	}
 
 }
