@@ -10,15 +10,13 @@ import net.fexcraft.mod.fvtm.data.vehicle.SimplePhysData;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TireFunction;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.handler.TireInstallationHandler;
 import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
+import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
@@ -260,6 +258,7 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 		if(isRemoved() || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
 		ItemStack stack = player.getItemInHand(hand);
 		StackWrapper wrapper = FvtmResources.wrapStack(stack);
+		Passenger pass = (Passenger)player.getData(PASSENGER);
 		if(level().isClientSide){
 			if(!stack.isEmpty() && stack.getItem() instanceof PartItem == false) return InteractionResult.SUCCESS;
 			if(Lockable.isKey(wrapper.getItem())) return InteractionResult.SUCCESS;
@@ -267,10 +266,9 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 				player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.locked"));
 				return InteractionResult.SUCCESS;
 			}
-			//TODO ToggableHandler.handleClick(KeyPress.MOUSE_RIGHT, this, null, player, stack);
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle, null, pass, wrapper);
 			return InteractionResult.SUCCESS;
 		}
-		Passenger pass = (Passenger)player.getData(PASSENGER);
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass, wrapper);
 			vehicle.sendLockUpdate();
