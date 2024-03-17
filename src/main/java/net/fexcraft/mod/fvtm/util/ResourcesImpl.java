@@ -173,11 +173,6 @@ public class ResourcesImpl extends FvtmResources {
 	}
 
 	@Override
-	public boolean handleClick(KeyPress key, EntityW vehicle, SeatInstance seatInstance, EntityW player, StackWrapper stack){
-		return false;
-	}
-
-	@Override
 	public boolean sendToggle(Attribute<?> attr, EntityW vehicle, KeyPress key, Float val, EntityW player){
 		return false;
 	}
