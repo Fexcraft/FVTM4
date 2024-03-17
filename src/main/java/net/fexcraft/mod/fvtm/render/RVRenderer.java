@@ -2,22 +2,36 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.frl.Polyhedron;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
+import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.part.PartSlot;
+import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.impl.SWIE;
+import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.util.FvtmAttachments;
 import net.fexcraft.mod.fvtm.util.Rot;
+import net.fexcraft.mod.uni.item.StackWrapper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL11;
 
@@ -33,6 +47,13 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
  * @author Ferdinand Calo' (FEX___96)
  */
 public class RVRenderer extends EntityRenderer<RootVehicle> {
+
+	public static Polyhedron INSTALLCUBE = new Polyhedron();
+	static{
+		INSTALLCUBE.importMRT(new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, -0.5f, -0.5f, 1, 1, 1), false, 1f);
+	}
+	public static Vec3f INSTALLCOLOR = new Vec3f(0, 1, 1);
+	private static SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
 	public RVRenderer(EntityRendererProvider.Context context){
 		super(context);
@@ -70,13 +91,59 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		if(veh.vehicle.data.getParts().size() > 0){
 			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, cache, tick);
 		}
-		//TODO install info
+		renderInstallInfo(pose, veh, tick);
 		pose.popPose();
 		//
 		//TODO toggle info
 		//TODO containers
 		//TODO debug seats
 		pose.popPose();
+	}
+
+	private void renderInstallInfo(PoseStack pose, RootVehicle entity, float tick){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return;
+		if(entity.vehicle.data.getAttribute("collision_range").asFloat() + 1 < entity.distanceTo(Minecraft.getInstance().player)) return;
+		//
+		wrapper.stack = Minecraft.getInstance().player.getMainHandItem();
+		PartData part = wrapper.getContent(ContentType.PART);
+		if(part.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) return;
+		VehicleData data = entity.vehicle.data;
+		SwivelPoint point = null;
+		Renderer120.rentype = RenderType.lineStrip();
+		for(Map.Entry<String, PartSlots> ps : entity.vehicle.data.getPartSlotProviders().entrySet()){
+			V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
+			point = data.getRotationPointOfPart(ps.getKey());
+			for(PartSlot value : ps.getValue().values()){
+				if(data.hasPart(value.type)){
+					Part epart = data.getPart(value.type).getType();
+					if(!(epart.getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData) || !((DefaultPartInstallHandler.DPIHData)epart.getInstallHandlerData()).swappable) continue;
+				}
+				String type = value.type;
+				for(String str : part.getType().getCategories()){
+					if(str.equals(type)){
+						V3D pes = pos.add(value.pos);
+						if(point.isVehicle()){
+							Renderer120.pose.translate(pes.x, pes.y, pes.z);
+						}
+						else{
+							Renderer120.pose.pushPose();
+							V3D vec = point.getRelativeVector(pes);
+							Renderer120.pose.translate(vec.x, vec.y, vec.z);
+							Renderer120.rotateRad(point.getPivot().yaw(), AY);
+							Renderer120.rotateRad(point.getPivot().pitch(), AX);
+							Renderer120.rotateRad(point.getPivot().roll(), AZ);
+						}
+						Renderer120.pose.pushPose();
+						Renderer120.pose.scale(value.radius, value.radius, value.radius);
+						Renderer120.setColor(INSTALLCOLOR);
+						INSTALLCUBE.render();
+						Renderer120.pose.popPose();
+						if(!point.isVehicle()) Renderer120.pose.popPose();
+						else Renderer120.pose.translate(-pes.x, -pes.y, -pes.z);
+					}
+				}
+			}
+		}
 	}
 
 	private V3D getRotations(RootVehicle veh, float ticks){
@@ -129,9 +196,9 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	private static void rotate(PoseStack pose, Rot rot){
 		rot.rotate112();
 		Quaternionf q = new Quaternionf();
-        if(rot.vec().y != 0f) q.rotateAxis((float)Static.toRadians(rot.vec().y), AY);
-        if(rot.vec().x != 0f) q.rotateAxis((float)Static.toRadians(rot.vec().x), AX);
-        if(rot.vec().z != 0f) q.rotateAxis((float)Static.toRadians(rot.vec().z), AZ);
+		if(rot.vec().y != 0f) q.rotateAxis((float)Static.toRadians(rot.vec().y), AY);
+		if(rot.vec().x != 0f) q.rotateAxis((float)Static.toRadians(rot.vec().x), AX);
+		if(rot.vec().z != 0f) q.rotateAxis((float)Static.toRadians(rot.vec().z), AZ);
 		pose.mulPose(q);
 	}
 
