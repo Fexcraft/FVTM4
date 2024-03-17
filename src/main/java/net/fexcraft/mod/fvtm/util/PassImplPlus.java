@@ -90,6 +90,18 @@ public class PassImplPlus extends Passenger {
 	}
 
 	@Override
+	public V3D getEyeVec(){
+		Entity ent = net.minecraft.client.Minecraft.getInstance().crosshairPickEntity;
+		return ent == null ? V3D.NULL : new V3D(ent.getEyePosition().x, ent.getEyePosition().y, ent.getEyePosition().z);
+	}
+
+	@Override
+	public V3D getLookVec(){
+		Entity ent = net.minecraft.client.Minecraft.getInstance().crosshairPickEntity;
+		return ent == null ? V3D.NULL : new V3D(ent.getLookAngle().x, ent.getLookAngle().y, ent.getLookAngle().z);
+	}
+
+	@Override
 	public boolean isOnClient(){
 		return entity.level().isClientSide;
 	}
