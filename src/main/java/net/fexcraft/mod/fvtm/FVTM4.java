@@ -28,6 +28,7 @@ import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.FilePackResources;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
@@ -170,28 +171,19 @@ public class FVTM4 {
 
 		@SubscribeEvent
 		public void addPacks(AddPackFindersEvent event){
-			if(event.getPackType() == PackType.CLIENT_RESOURCES){
-				for(Addon addon : FvtmRegistry.ADDONS){
-					if(!addon.getLocation().isConfigPack() || addon.getFile() == null) continue;
-					Path rpath = addon.getFile().toPath();
-					Pack pack = Pack.create("fvtm/" + addon.getID().id(), Component.literal(addon.getName()), true, new Pack.ResourcesSupplier() {
-							private PackResources packres = new PathPackResources(addon.getName(), rpath, true);
-
-							@Override
-							public PackResources openPrimary(String s){
-								return packres;
-							}
-
-							@Override
-							public PackResources openFull(String s, Pack.Info info){
-								return packres;
-							}
-						}, new Pack.Info(Component.literal("FVTM Autoloaded Pack"), PackCompatibility.COMPATIBLE, FeatureFlagSet.of(), Collections.emptyList(), false),
-						Pack.Position.BOTTOM, true, PackSource.BUILT_IN);
-					event.addRepositorySource(cons -> {
-						if(pack != null) cons.accept(pack);
-					});
+			for(Addon addon : FvtmRegistry.ADDONS){
+				if(!addon.getLocation().isConfigPack() || addon.getFile() == null) continue;
+				Pack.ResourcesSupplier ressupp = null;
+				if(addon.getFile().isDirectory()){
+					ressupp = new PathPackResources.PathResourcesSupplier(addon.getFile().toPath(), true);
 				}
+				else{
+					ressupp = new FilePackResources.FileResourcesSupplier(addon.getFile(), true);
+				}
+				Pack pack = Pack.create("fvtm/" + addon.getID().id(), Component.literal(addon.getName()), true, ressupp, new Pack.Info(Component.literal("FVTM Autoloaded Pack"), PackCompatibility.COMPATIBLE, FeatureFlagSet.of(), Collections.emptyList(), false), Pack.Position.BOTTOM, false, PackSource.DEFAULT);
+				event.addRepositorySource(cons -> {
+					if(pack != null) cons.accept(pack);
+				});
 			}
 		}
 
