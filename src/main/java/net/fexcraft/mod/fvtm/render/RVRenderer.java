@@ -163,9 +163,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	public static void renderPoint(PoseStack pose, SwivelPoint point, RootVehicle vehicle, VehicleData data, RenderCache cache, float ticks){
 		ArrayList<Map.Entry<String, PartData>> parts = data.sorted_parts.get(point.id);
 		if(parts == null) return;
-		boolean veh = false;
 		pose.pushPose();
-		if(!(veh = point.isVehicle())){
+		if(!point.isVehicle()){
 			V3D temp0 = point.getPos();
 			V3D temp1 = point.getPrevPos();
 			V3D temp2 = new V3D(temp1.x + (temp0.x - temp1.x) * ticks, temp1.y + (temp0.y - temp1.y) * ticks, temp1.z + (temp0.z - temp1.z) * ticks);
@@ -178,6 +177,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			);
 		}
 		for(Map.Entry<String, PartData> entry : parts){
+			if(entry.getValue().getType().getModel() == null) continue;
 			pose.pushPose();
 			Renderer120.rentype = RenderType.entityCutout(entry.getValue().getCurrentTexture().local());
 			translate(pose, entry.getValue().getInstalledPos());
