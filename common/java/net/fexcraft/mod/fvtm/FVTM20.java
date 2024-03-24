@@ -11,10 +11,8 @@ import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
-import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
-import net.fexcraft.mod.fvtm.util.TabInitializer;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -24,8 +22,6 @@ import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.FMLPaths;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -33,7 +29,6 @@ import net.neoforged.fml.loading.FMLPaths;
 public class FVTM20 {
 
 	public static void init0(){
-		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
 		PassengerUtil.PASS_IMPL = PassImplPlus.class;
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		AABB.SUPPLIER = () -> new AABBI();
@@ -50,9 +45,6 @@ public class FVTM20 {
 		Config.addListener(() -> {
 			//
 		});
-		if(EnvInfo.CLIENT){
-			CTab.IMPL[0] = TabInitializer.class;
-		}
 		//
 		UISlot.SLOT_GETTER = (type, args) -> {
 			switch(type){
