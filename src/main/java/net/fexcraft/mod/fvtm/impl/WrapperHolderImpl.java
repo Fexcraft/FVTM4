@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.UniversalAttachments;
+import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.uni.world.CubeSide;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -20,7 +21,7 @@ public class WrapperHolderImpl extends WrapperHolder {
 
 	@Override
 	public EntityW getEntity0(Object o){
-		return ((Entity)o).getData(UniversalAttachments.PASSENGER).local();
+		return PassengerUtil.get((Entity)o);
 	}
 
 	@Override
