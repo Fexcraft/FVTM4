@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -109,7 +110,7 @@ public class Packets20 extends Packets {
 				Level level = player.getWorld().local();
 				Entity ent = level.getEntity(tag.getInteger("entity"));
 				if(ent == null) return;
-				((Passenger)ent.getData(PASSENGER)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
+				((Passenger)PassengerUtil.get(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
 			});
 			LIS_CLIENT.put("vehicle_color", (tag, player) -> {
 				Level level = player.getWorld().local();
@@ -240,11 +241,11 @@ public class Packets20 extends Packets {
 		}
 
 		private static <T extends PacketBase> void handlePacketServer(T packet, IPayloadContext context, PacketHandler<T> handler){
-			context.workHandler().submitAsync(handler.handleServer(packet, (Passenger)context.player().get().getData(PASSENGER)));
+			context.workHandler().submitAsync(handler.handleServer(packet, PassengerUtil.get(context.player().get())));
 		}
 
 		private static <T extends PacketBase> void handlePacketClient(T packet, IPayloadContext context, PacketHandler<T> handler){
-			context.workHandler().submitAsync(handler.handleClient(packet, (Passenger)context.player().get().getData(PASSENGER)));
+			context.workHandler().submitAsync(handler.handleClient(packet, PassengerUtil.get(context.player().get())));
 		}
 
 	}
