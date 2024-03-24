@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.UniversalAttachments;
+import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
@@ -96,7 +97,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public Passenger getPassenger(int source){
-		return (Passenger)level.getEntity(source).getData(UniversalAttachments.PASSENGER);
+		return PassengerUtil.get(level.getEntity(source));
 	}
 
 	@Override
@@ -134,7 +135,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public Passenger getClientPassenger(){
-		return (Passenger)net.minecraft.client.Minecraft.getInstance().player.getData(UniversalAttachments.PASSENGER);
+		return PassengerUtil.get(net.minecraft.client.Minecraft.getInstance().player);
 	}
 
 }
