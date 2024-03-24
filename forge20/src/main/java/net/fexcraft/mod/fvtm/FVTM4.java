@@ -1,10 +1,7 @@
 package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
-import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.entity.DecorationF;
-import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.entity.RootVehicleF;
+import net.fexcraft.mod.fvtm.entity.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -53,6 +50,13 @@ public class FVTM4 {
 			.setTrackingRange(256)
 			.build("decoration")
 	);
+	public static final RegistryObject<EntityType<WheelEntity>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
+		EntityType.Builder.of(WheelEntityF::new, MobCategory.MISC)
+			.sized(0.25F, 0.25F)
+			.setUpdateInterval(1)
+			.setTrackingRange(256)
+			.build("wheel")
+	);
 	public static final RegistryObject<EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
 		EntityType.Builder.of(RootVehicleF::new, MobCategory.MISC)
 			.sized(1F, 1F)
@@ -73,6 +77,8 @@ public class FVTM4 {
 		FvtmGetters.DECORATION_IMPL = DecorationF.class;
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_IMPL = RootVehicleF.class;
+		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
+		FvtmGetters.WHEEL_IMPL = WheelEntityF.class;
 		FVTM20.init0();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
