@@ -4,9 +4,11 @@ import com.mojang.logging.LogUtils;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.UniversalAttachments;
+import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.DecorationN;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.impl.AABBI;
@@ -20,7 +22,6 @@ import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
@@ -29,8 +30,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.FilePackResources;
-import net.minecraft.server.packs.PackResources;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
@@ -53,7 +52,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
 
-import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -70,7 +68,7 @@ public class FVTM4 {
 
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, "fvtm");
 	public static final DeferredHolder<EntityType<?>, EntityType<Decoration>> DECORATION_ENTITY = ENTITIES.register("decoration", () ->
-		EntityType.Builder.of(Decoration::new, MobCategory.MISC)
+		EntityType.Builder.of(DecorationN::new, MobCategory.MISC)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(10)
 			.setTrackingRange(256)
@@ -93,7 +91,7 @@ public class FVTM4 {
 
 	public FVTM4(IEventBus event){
 		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
-		UniversalAttachments.PASS_IMPL[0] = PassImplPlus.class;
+		PassengerUtil.PASS_IMPL = PassImplPlus.class;
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		AABB.SUPPLIER = () -> new AABBI();
 		FvtmLogger.LOGGER = new FvtmLogger() {
