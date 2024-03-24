@@ -18,31 +18,12 @@ public class DecorationN extends Decoration implements IEntityWithComplexSpawn {
 
 	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
-		try{
-			buffer.writeBoolean(this.locked);
-			buffer.writeInt(this.decos.size());
-			for(DecorationData deco : this.decos){
-				buffer.writeNbt(deco.write().local());
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
+		super.writeSpawnData(buffer);
 	}
 
 	@Override
 	public void readSpawnData(FriendlyByteBuf buffer){
-		try{
-			locked = buffer.readBoolean();
-			decos.clear();
-			int amount = buffer.readInt();
-			for(int i = 0; i < amount; i++){
-				this.decos.add(new DecorationData(TagCW.wrap(buffer.readNbt()), level().isClientSide));
-			}
-		}
-		catch(Exception e){
-			e.printStackTrace();
-		}
+		super.readSpawnData(buffer);
 	}
 
 }
