@@ -9,9 +9,18 @@ plugins {
 version = mod_version
 group = mod_group_id
 
-sourceSets.main.java.srcDirs += [
-    new File(file('..'), "/FVTM-Core/src")
-]
+sourceSets {
+    main {
+        java {
+            srcDirs += 'src/main/java'
+            srcDirs += new File(file('..'), "/FVTM-Core/src")
+        }
+        resources {
+            srcDirs += 'src/main/resources'
+            srcDirs += new File(file('..'), "/FVTM-Core/res")
+        }
+    }
+}
 
 repositories {
     mavenLocal()
