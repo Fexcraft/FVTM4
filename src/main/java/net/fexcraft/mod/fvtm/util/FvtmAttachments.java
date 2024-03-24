@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.util;
 
+import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.model.RenderCacheI;
 import net.neoforged.bus.api.IEventBus;
@@ -20,6 +21,7 @@ public class FvtmAttachments {
 
 	public static void register(IEventBus bus){
 		ATTACHMENT_TYPES.register(bus);
+		FvtmGetters.RENDERCACHE = entity -> entity.getData(RENDERCACHE);
 	}
 
 }
