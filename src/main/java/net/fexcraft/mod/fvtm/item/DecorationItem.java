@@ -4,9 +4,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.UniversalAttachments;
+import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.DecorationN;
 import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.minecraft.network.chat.Component;
@@ -38,11 +39,11 @@ public class DecorationItem extends Item {
 	public InteractionResult useOn(UseOnContext context){
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		ItemStack stack = context.getItemInHand();
-		final Decoration decoen = new Decoration(FVTM4.DECORATION_ENTITY.get(), context.getLevel());
+		final Decoration decoen = new DecorationN(FVTM4.DECORATION_ENTITY.get(), context.getLevel());
 		decoen.setPos(context.getClickLocation());
 		context.getLevel().addFreshEntity(decoen);
 		if(!context.getPlayer().isCreative()) stack.shrink(1);
-		context.getPlayer().getData(UniversalAttachments.PASSENGER).openUI(UIKey.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));
+		PassengerUtil.get(context.getPlayer()).openUI(UIKey.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));
 		return InteractionResult.SUCCESS;
 	}
 
