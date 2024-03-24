@@ -88,12 +88,16 @@ public class FVTM4 {
 
 	public FVTM4(IEventBus event){
 		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
+		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
 		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
 		FvtmGetters.DECORATION_IMPL = DecorationN.class;
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_IMPL = RootVehicleN.class;
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
 		FvtmGetters.WHEEL_IMPL = WheelEntityN.class;
+		if(EnvInfo.CLIENT){
+			CTab.IMPL[0] = TabInitializerN.class;
+		}
 		FVTM20.init0();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
