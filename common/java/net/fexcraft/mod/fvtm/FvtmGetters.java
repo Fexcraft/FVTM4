@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -17,11 +18,15 @@ import java.util.function.Supplier;
 public class FvtmGetters {
 
 	public static Supplier<EntityType<Decoration>> DECORATION_ENTITY;
-	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Class<? extends Decoration> DECORATION_IMPL;
 	//
 	public static Supplier<EntityType<RootVehicle>> ROOTVEHICLE_ENTITY;
 	public static Class<? extends RootVehicle> ROOTVEHICLE_IMPL;
+	//
+	public static Supplier<DecorationItem> DECORATION_ITEM;
+	public static Supplier<ToolboxItem> TOOLBOX0;
+	public static Supplier<ToolboxItem> TOOLBOX1;
+	public static Supplier<ToolboxItem> TOOLBOX2;
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 
