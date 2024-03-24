@@ -2,6 +2,9 @@ package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
 import net.fexcraft.mod.fvtm.entity.*;
+import net.fexcraft.mod.fvtm.util.CTab;
+import net.fexcraft.mod.fvtm.util.TabInitializerF;
+import net.fexcraft.mod.uni.EnvInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +28,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -73,12 +77,16 @@ public class FVTM4 {
 
 	public FVTM4(){
 		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
+		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
 		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
 		FvtmGetters.DECORATION_IMPL = DecorationF.class;
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_IMPL = RootVehicleF.class;
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
 		FvtmGetters.WHEEL_IMPL = WheelEntityF.class;
+		if(EnvInfo.CLIENT){
+			CTab.IMPL[0] = TabInitializerF.class;
+		}
 		FVTM20.init0();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
