@@ -636,7 +636,7 @@ public class RootVehicle extends Entity {
 		return vehicle.data.newItemStack().local();
 	}
 
-	@Override
+	//@Override
 	public void lerpTo(double x, double y, double z, float yrot, float xrot, int steps){
 		//
 	}
