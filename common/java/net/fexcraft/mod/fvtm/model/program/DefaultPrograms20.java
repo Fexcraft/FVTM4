@@ -11,10 +11,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.render.Renderer120;
-import net.minecraft.client.Minecraft;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.joml.Quaternionf;
-import org.lwjgl.opengl.GL11;
 
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
 import static net.fexcraft.mod.fvtm.render.Renderer120.*;

@@ -10,7 +10,6 @@ import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.root.WithItem;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,9 +29,9 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.FUELS;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class TabInitializer implements CTab {
+public class TabInitializerN implements CTab {
 
-	public TabInitializer(Addon addon, String id, String icon){
+	public TabInitializerN(Addon addon, String id, String icon){
 		FvtmLogger.LOGGER.debug("Registering CTab " + addon.getID().colon() + "-" + id);
 		final String addonid = addon.getID().id();
 		FVTM4.CREATIVE_MODE_TABS.register(addonid + "." + id, () -> CreativeModeTab.builder().withTabsBefore(CreativeModeTabs.SPAWN_EGGS).title(Component.literal(addon.getName())).displayItems((par, out) -> {
