@@ -168,9 +168,9 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public void registerFvtmItems(){
 		FvtmGetters.DECORATION_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
-		ToolboxItem.REGOBJ0 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_0", () -> new ToolboxItem(0));
-		ToolboxItem.REGOBJ1 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_1", () -> new ToolboxItem(1));
-		ToolboxItem.REGOBJ2 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_2", () -> new ToolboxItem(2));
+		FvtmGetters.TOOLBOX0 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_0", () -> new ToolboxItem(0));
+		FvtmGetters.TOOLBOX1 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_1", () -> new ToolboxItem(1));
+		FvtmGetters.TOOLBOX2 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_2", () -> new ToolboxItem(2));
 	}
 
 	@Override
