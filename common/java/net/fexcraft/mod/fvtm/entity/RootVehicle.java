@@ -43,7 +43,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +50,6 @@ import java.util.Map;
 
 import static net.fexcraft.lib.common.Static.rad180;
 import static net.fexcraft.lib.common.Static.rad90;
-import static net.fexcraft.mod.fcl.UniversalAttachments.PASSENGER;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
@@ -62,7 +60,7 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
+public class RootVehicle extends Entity {
 
 	public VehicleInstance vehicle;
 	public WheelTireData w_front_l;
@@ -181,7 +179,6 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 		vehicle.point.savePivot(com);
 	}
 
-	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		TagCW com = TagCW.create();
 		vehicle.point.savePivot(com);
@@ -192,7 +189,6 @@ public class RootVehicle extends Entity implements IEntityWithComplexSpawn {
 		buffer.writeNbt(com.local());
 	}
 
-	@Override
 	public void readSpawnData(FriendlyByteBuf buffer){
 		try{
 			TagCW com = TagCW.wrap(buffer.readNbt());
