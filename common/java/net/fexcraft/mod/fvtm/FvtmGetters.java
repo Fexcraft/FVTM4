@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.mod.fvtm.entity.Decoration;
+import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.minecraft.world.entity.Entity;
@@ -18,6 +19,9 @@ public class FvtmGetters {
 	public static Supplier<EntityType<Decoration>> DECORATION_ENTITY;
 	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Class<? extends Decoration> DECORATION_IMPL;
+	//
+	public static Supplier<EntityType<RootVehicle>> ROOTVEHICLE_ENTITY;
+	public static Class<? extends RootVehicle> ROOTVEHICLE_IMPL;
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 
