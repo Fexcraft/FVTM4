@@ -11,4 +11,4 @@ plugins {
 }
 
 include ':FCL20'
-project(':FCL20').projectDir = new File('/home/ferdinand/Documents/GitHub/FCL20')
+project(':FCL20').projectDir = new File('/home/ferdinand/Documents/GitHub/FCL20/neo20')
