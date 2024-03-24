@@ -72,7 +72,7 @@ public class FVTM4 {
 			.build("decoration")
 	);
 	public static final DeferredHolder<EntityType<?>, EntityType<WheelEntity>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
-		EntityType.Builder.of(WheelEntity::new, MobCategory.MISC)
+		EntityType.Builder.of(WheelEntityN::new, MobCategory.MISC)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
@@ -92,6 +92,8 @@ public class FVTM4 {
 		FvtmGetters.DECORATION_IMPL = DecorationN.class;
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_IMPL = RootVehicleN.class;
+		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
+		FvtmGetters.WHEEL_IMPL = WheelEntityN.class;
 		FVTM20.init0();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
