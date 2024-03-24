@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.entity;
 
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -104,7 +105,7 @@ public class Decoration extends Entity {
 			//ItemStack stack = getPickedResult(null);
 			ItemEntity entity = new ItemEntity(EntityType.ITEM, level());
 			entity.setPos(position().add(0.0D, 0.25D, 0.0D));
-			entity.setItem(new ItemStack(DecorationItem.REGOBJ.get(), 1));
+			entity.setItem(new ItemStack(FvtmGetters.DECORATION_ITEM.get(), 1));
 			level().addFreshEntity(entity);
 			kill();
 			return true;
