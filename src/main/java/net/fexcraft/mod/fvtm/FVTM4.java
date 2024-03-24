@@ -7,10 +7,7 @@ import net.fexcraft.mod.fcl.UniversalAttachments;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.AABB;
-import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.entity.DecorationN;
-import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.entity.WheelEntity;
+import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.Packets20;
 import net.fexcraft.mod.fvtm.impl.SWIE;
@@ -82,7 +79,7 @@ public class FVTM4 {
 			.build("wheel")
 	);
 	public static final DeferredHolder<EntityType<?>, EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
-		EntityType.Builder.of(RootVehicle::new, MobCategory.MISC)
+		EntityType.Builder.of(RootVehicleN::new, MobCategory.MISC)
 			.sized(1F, 1F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
@@ -90,71 +87,21 @@ public class FVTM4 {
 	);
 
 	public FVTM4(IEventBus event){
-		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
-		PassengerUtil.PASS_IMPL = PassImplPlus.class;
-		WrapperHolder.INSTANCE = new WrapperHolderImpl();
-		AABB.SUPPLIER = () -> new AABBI();
+		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
+		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
+		FvtmGetters.DECORATION_IMPL = DecorationN.class;
+		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
+		FvtmGetters.ROOTVEHICLE_IMPL = RootVehicleN.class;
+		FVTM20.init0();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
 			protected void log0(Object obj){
 				LOGGER4.info(obj == null ? "null " + new Exception().getStackTrace()[2].toString() : obj.toString());
 			}
 		};
-		StackWrapper.SUPPLIER = obj -> {
-			if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
-			if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
-			return null;
-		};
-		if(EnvInfo.CLIENT){
-			Renderer.RENDERER = new Renderer120();
-			GLO.SUPPLIER = (() -> new GLObject());
-		}
-		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
-		FvtmResources.INSTANCE = new ResourcesImpl();
-		//NeoForge.EVENT_BUS.register(FvtmResources.INSTANCE);
-		Config.addListener(() -> {
-			//
-		});
-		if(EnvInfo.CLIENT){
-			CTab.IMPL[0] = TabInitializer.class;
-			//TODO Config.addListener(() -> ConditionRegistry.BUILDER = CondBuilder.run());
-		}
-		//
-		UISlot.SLOT_GETTER = (type, args) -> {
-			switch(type){
-				case "default":
-				default:
-					return new Slot((Container)args[0], (Integer)args[1], (Integer)args[2], (Integer)args[3]);
-			}
-		};
-		UniReg.registerUI(UIKey.DECORATION_EDITOR.key, DecoEditor.class);
-		UniReg.registerMenu(UIKey.DECORATION_EDITOR.key, "assets/fvtm/uis/deco_editor", DecoContainer.class);
-		UniReg.registerUI(UIKey.TOOLBOX_COLORS.key, ToolboxPainter.class);
-		UniReg.registerMenu(UIKey.TOOLBOX_COLORS.key, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
-		UniReg.registerUI(UIKey.VEHICLE_MAIN.key, VehicleMain.class);
-		UniReg.registerMenu(UIKey.VEHICLE_MAIN.key, "assets/fvtm/uis/vehicle_main", VehicleMainCon.class);
-		UniReg.registerUI(UIKey.VEHICLE_FUEL.key, VehicleFuel.class);
-		UniReg.registerMenu(UIKey.VEHICLE_FUEL.key, "assets/fvtm/uis/vehicle_fuel", VehicleFuelConImpl.class);
-		UniReg.registerUI(UIKey.VEHICLE_ATTRIBUTES.key, VehicleAttributes.class);
-		UniReg.registerMenu(UIKey.VEHICLE_ATTRIBUTES.key, "assets/fvtm/uis/vehicle_attributes", VehicleAttributesCon.class);
-		UniReg.registerUI(UIKey.VEHICLE_INVENTORIES.key, VehicleInventories.class);
-		UniReg.registerMenu(UIKey.VEHICLE_INVENTORIES.key, "assets/fvtm/uis/vehicle_inventories", VehicleInventoriesCon.class);
 		FvtmAttachments.register(event);
-		//
-		FvtmResources.INSTANCE.init();
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(BuiltInRegistries.ITEM, addon.getID().id())));
-		//
-		FvtmResources.INSTANCE.registerFvtmBlocks();
-		FvtmResources.INSTANCE.registerFvtmItems();
-		FvtmResources.INSTANCE.registerAttributes();
-		FvtmResources.INSTANCE.registerFunctions();
-		FvtmResources.INSTANCE.registerHandlers();
-		FvtmResources.INSTANCE.searchContent();
-		FvtmResources.INSTANCE.createContentBlocks();
-		FvtmResources.INSTANCE.createContentItems();
-		if(EnvInfo.CLIENT){
-			FvtmResources.initModelSystem();
-		}
+		FVTM20.init1();
 		//
 		event.register(new PackAdder());
 		//register packets
