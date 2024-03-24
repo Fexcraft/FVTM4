@@ -46,7 +46,7 @@ public class DecoContainer extends ContainerInterface {
 				deco = FvtmRegistry.DECORATIONS.get(com.getString("key"));
 				entity.decos.add(deco.copy());
 				if(!client){
-					SEND_TO_CLIENT.accept(com);
+					SEND_TO_CLIENT.accept(com, player);
 				}
 				else{
 					entity.decos.get(entity.decos.size() - 1).copy(deco);
@@ -56,7 +56,7 @@ public class DecoContainer extends ContainerInterface {
 			case "rem":
 				entity.decos.remove(com.getInteger("idx"));
 				if(!client){
-					SEND_TO_CLIENT.accept(com);
+					SEND_TO_CLIENT.accept(com, player);
 				}
 				else{
 					((DecoEditor)ui).updateEntries();
@@ -80,7 +80,7 @@ public class DecoContainer extends ContainerInterface {
 						return;
 				}
 				deco.offset = pos;
-				if(!client) SEND_TO_CLIENT.accept(com);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			case "rot":
 				deco = entity.decos.get(com.getInteger("idx"));
@@ -97,7 +97,7 @@ public class DecoContainer extends ContainerInterface {
 					default:
 						return;
 				}
-				if(!client) SEND_TO_CLIENT.accept(com);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			case "scale":
 				deco = entity.decos.get(com.getInteger("idx"));
@@ -114,7 +114,7 @@ public class DecoContainer extends ContainerInterface {
 					default:
 						return;
 				}
-				if(!client) SEND_TO_CLIENT.accept(com);
+				if(!client) SEND_TO_CLIENT.accept(com, player);
 				break;
 			case "tex":
 				deco = entity.decos.get(com.getInteger("idx"));
@@ -122,7 +122,7 @@ public class DecoContainer extends ContainerInterface {
 				if(sel >= 0 && sel < deco.textures.size()){
 					deco.seltex = sel;
 					if(!client){
-						SEND_TO_CLIENT.accept(com);
+						SEND_TO_CLIENT.accept(com, player);
 						break;
 					}
 					DecoEditor decoEditor = (DecoEditor)ui;
@@ -133,7 +133,7 @@ public class DecoContainer extends ContainerInterface {
 				deco = entity.decos.get(com.getInteger("idx"));
 				(deco.getColorChannel(com.getString("channel"))).packed = com.getInteger("rgb");
 				if(!client){
-					SEND_TO_CLIENT.accept(com);
+					SEND_TO_CLIENT.accept(com, player);
 					break;
 				}
 				editor = (DecoEditor)ui;
