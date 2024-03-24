@@ -2,10 +2,10 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.util.Passenger;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.uni.item.StackWrapper;
@@ -23,22 +23,18 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class PassImplPlus extends Passenger {
+public class PassImplPlus extends Passenger implements net.fexcraft.mod.fvtm.sys.uni.Passenger {
 
-	private Entity entity;
 	private boolean notified;
 	private int vehicle;
 	private int seat;
 
-	public PassImplPlus(IAttachmentHolder iah){
-		super();
-		entity = (Entity)iah;
+	public PassImplPlus(Entity iah){
+		super(iah);
 	}
 
 	@Override
@@ -104,66 +100,6 @@ public class PassImplPlus extends Passenger {
 	}
 
 	@Override
-	public boolean isOnClient(){
-		return entity.level().isClientSide;
-	}
-
-	@Override
-	public int getId(){
-		return entity.getId();
-	}
-
-	@Override
-	public WorldW getWorld(){
-		return WrapperHolder.getWorld(entity.level());
-	}
-
-	@Override
-	public boolean isPlayer(){
-		return entity instanceof Player;
-	}
-
-	@Override
-	public boolean isAnimal(){
-		return entity instanceof Animal;
-	}
-
-	@Override
-	public boolean isHostile(){
-		return entity instanceof Mob;
-	}
-
-	@Override
-	public boolean isLiving(){
-		return entity instanceof LivingEntity;
-	}
-
-	@Override
-	public boolean isRiding(){
-		return entity.isPassenger();
-	}
-
-	@Override
-	public String getRegName(){
-		return BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString();
-	}
-
-	@Override
-	public <E> E local(){
-		return (E)entity;
-	}
-
-	@Override
-	public Object direct(){
-		return entity;
-	}
-
-	@Override
-	public V3D getPos(){
-		return new V3D(entity.position().x, entity.position().y, entity.position().z);
-	}
-
-	@Override
 	public void decreaseXZMotion(double x){
 		//
 	}
@@ -176,58 +112,6 @@ public class PassImplPlus extends Passenger {
 	@Override
 	public void openUI(UIKey key, V3I pos){
 		openUI(key.key, pos);
-	}
-
-	@Override
-	public void openUI(String id, V3I pos){
-		((Player)entity).openMenu(new MenuProvider() {
-			@Override
-			public Component getDisplayName(){
-				return Component.literal("Fexcraft Universal UI");
-			}
-
-			@Nullable
-			@Override
-			public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player){
-				return new UniCon(i, inventory, id, null, pos);
-			}
-		}, buf -> {
-			buf.writeInt(id.length());
-			buf.writeUtf(id);
-			buf.writeInt(pos.x);
-			buf.writeInt(pos.y);
-			buf.writeInt(pos.z);
-		});
-	}
-
-	@Override
-	public String getName(){
-		return entity.getName().getString();
-	}
-
-	@Override
-	public void drop(StackWrapper stack, float height){
-		entity.spawnAtLocation(stack.local(), height);
-	}
-
-	@Override
-	public void send(String s){
-		entity.sendSystemMessage(Component.translatable(s));
-	}
-
-	@Override
-	public void send(String str, Object... args){
-		entity.sendSystemMessage(Component.translatable(str, args));
-	}
-
-	@Override
-	public void bar(String s){
-		entity.sendSystemMessage(Component.translatable(s));//TODO
-	}
-
-	@Override
-	public void dismount(){
-		entity.unRide();
 	}
 
 }
