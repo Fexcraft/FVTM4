@@ -10,14 +10,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 
 import java.nio.charset.StandardCharsets;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class WheelEntity extends Entity implements IEntityWithComplexSpawn {
+public class WheelEntity extends Entity {
 
 	public RootVehicle root;
 	private boolean found;
@@ -93,7 +92,6 @@ public class WheelEntity extends Entity implements IEntityWithComplexSpawn {
 		return stepheight;
 	}
 
-	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		if(wheelid == null) return;
 		buffer.writeInt(vehid);
@@ -101,7 +99,6 @@ public class WheelEntity extends Entity implements IEntityWithComplexSpawn {
 		buffer.writeCharSequence(wheelid, StandardCharsets.UTF_8);
 	}
 
-	@Override
 	public void readSpawnData(FriendlyByteBuf buffer){
 		vehid = buffer.readInt();
 		wheelid = buffer.readCharSequence(buffer.readInt(), StandardCharsets.UTF_8).toString();
