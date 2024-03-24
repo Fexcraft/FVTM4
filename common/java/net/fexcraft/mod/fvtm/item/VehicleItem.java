@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.UniversalAttachments;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
@@ -9,11 +7,9 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.data.vehicle.Vehicle;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
-import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
-import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
