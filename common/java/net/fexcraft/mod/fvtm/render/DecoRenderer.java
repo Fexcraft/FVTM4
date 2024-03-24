@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
@@ -13,8 +14,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Quaternionf;
 
+import static net.fexcraft.mod.fvtm.FvtmGetters.getRenderCache;
 import static net.fexcraft.mod.fvtm.render.Renderer120.*;
-import static net.fexcraft.mod.fvtm.util.FvtmAttachments.RENDERCACHE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -49,7 +50,7 @@ public class DecoRenderer extends EntityRenderer<Decoration> {
 				);
 			}
 			pose.scale(data.sclx, data.scly, data.sclz);
-			data.model.render(DefaultModel.RENDERDATA.set(data, deco, deco.getData(RENDERCACHE)));
+			data.model.render(DefaultModel.RENDERDATA.set(data, deco, getRenderCache(deco)));
 			pose.popPose();
 		}
 		pose.popPose();
