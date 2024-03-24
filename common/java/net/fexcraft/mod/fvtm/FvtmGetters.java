@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
@@ -22,6 +23,9 @@ public class FvtmGetters {
 	//
 	public static Supplier<EntityType<RootVehicle>> ROOTVEHICLE_ENTITY;
 	public static Class<? extends RootVehicle> ROOTVEHICLE_IMPL;
+	//
+	public static Supplier<EntityType<WheelEntity>> WHEEL_ENTITY;
+	public static Class<? extends WheelEntity> WHEEL_IMPL;
 	//
 	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Supplier<ToolboxItem> TOOLBOX0;
