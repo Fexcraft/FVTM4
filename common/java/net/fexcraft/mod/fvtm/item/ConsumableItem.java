@@ -1,10 +1,6 @@
 package net.fexcraft.mod.fvtm.item;
 
-import java.util.List;
-import javax.annotation.Nullable;
-
 import net.fexcraft.mod.fvtm.data.Consumable;
-import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
@@ -15,6 +11,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
