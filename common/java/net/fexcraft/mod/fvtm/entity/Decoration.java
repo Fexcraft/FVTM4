@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -61,6 +62,33 @@ public class Decoration extends Entity {
 		ListTag list = new ListTag();
 		for(DecorationData deco : this.decos) list.add(deco.write().local());
 		tag.put("decorations", list);
+	}
+
+	public void writeSpawnData(FriendlyByteBuf buffer){
+		try{
+			buffer.writeBoolean(this.locked);
+			buffer.writeInt(this.decos.size());
+			for(DecorationData deco : this.decos){
+				buffer.writeNbt(deco.write().local());
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public void readSpawnData(FriendlyByteBuf buffer){
+		try{
+			locked = buffer.readBoolean();
+			decos.clear();
+			int amount = buffer.readInt();
+			for(int i = 0; i < amount; i++){
+				this.decos.add(new DecorationData(TagCW.wrap(buffer.readNbt()), level().isClientSide));
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
