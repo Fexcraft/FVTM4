@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fvtm.FVTM4;
+import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.Content;
@@ -166,7 +167,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmItems(){
-		DecorationItem.REGOBJ = FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
+		FvtmGetters.DECORATION_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
 		ToolboxItem.REGOBJ0 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_0", () -> new ToolboxItem(0));
 		ToolboxItem.REGOBJ1 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_1", () -> new ToolboxItem(1));
 		ToolboxItem.REGOBJ2 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_2", () -> new ToolboxItem(2));
