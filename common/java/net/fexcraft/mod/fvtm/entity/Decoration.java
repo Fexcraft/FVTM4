@@ -36,7 +36,7 @@ public class Decoration extends Entity {
 	public ArrayList<DecorationData> decos = new ArrayList<>();
 	protected boolean locked;
 
-	protected Decoration(EntityType<Decoration> type, Level level){
+	protected Decoration(EntityType<?> type, Level level){
 		super(type, level);
 	}
 
