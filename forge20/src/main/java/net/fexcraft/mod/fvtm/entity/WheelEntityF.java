@@ -10,7 +10,7 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
  */
 public class WheelEntityF extends WheelEntity implements IEntityAdditionalSpawnData {
 
-	public WheelEntityF(EntityType<WheelEntity> type, Level level){
+	public WheelEntityF(EntityType<WheelEntityF> type, Level level){
 		super(type, level);
 	}
 
