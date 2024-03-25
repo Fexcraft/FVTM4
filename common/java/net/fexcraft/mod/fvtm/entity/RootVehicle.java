@@ -641,6 +641,10 @@ public class RootVehicle extends Entity {
 		//
 	}
 
+	public void lerpTo(double x, double y, double z, float yr, float xr, int s, boolean b) {
+        //
+    }
+
 	public boolean processSeatInteract(int seatidx, ServerPlayer player, InteractionHand hand){
 		if(level().isClientSide || seatidx < 0 || seatidx >= vehicle.seats.size()) return false;
 		ItemStack stack = player.getItemInHand(hand);
