@@ -29,7 +29,7 @@ public class WheelEntity extends Entity {
 	public double motionY;
 	public double motionZ;
 
-	public WheelEntity(EntityType<WheelEntity> type, Level level){
+	public WheelEntity(EntityType<?> type, Level level){
 		super(type, level);
 	}
 
