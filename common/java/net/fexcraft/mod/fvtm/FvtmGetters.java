@@ -18,14 +18,9 @@ import java.util.function.Supplier;
  */
 public class FvtmGetters {
 
-	public static Supplier<EntityType<Decoration>> DECORATION_ENTITY;
-	public static Class<? extends Decoration> DECORATION_IMPL;
-	//
-	public static Supplier<EntityType<RootVehicle>> ROOTVEHICLE_ENTITY;
-	public static Class<? extends RootVehicle> ROOTVEHICLE_IMPL;
-	//
-	public static Supplier<EntityType<WheelEntity>> WHEEL_ENTITY;
-	public static Class<? extends WheelEntity> WHEEL_IMPL;
+	public static Supplier<EntityType<? extends Decoration>> DECORATION_ENTITY;
+	public static Supplier<EntityType<? extends RootVehicle>> ROOTVEHICLE_ENTITY;
+	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
 	//
 	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Supplier<ToolboxItem> TOOLBOX0;
@@ -35,16 +30,19 @@ public class FvtmGetters {
 	public static Function<Entity, RenderCache> RENDERCACHE;
 
 	public static Decoration getNewDecoration(Level level){
-		try{
-			return DECORATION_IMPL.getConstructor(EntityType.class, Level.class).newInstance(DECORATION_ENTITY.get(), level);
-		}
-		catch(Exception e){
-			throw new RuntimeException(e);
-		}
+		return DECORATION_ENTITY.get().create(level);
 	}
 
 	public static RenderCache getRenderCache(Entity entity){
 		return RENDERCACHE.apply(entity);
+	}
+
+	public static RootVehicle getNewVehicle(Level level){
+		return ROOTVEHICLE_ENTITY.get().create(level);
+	}
+
+	public static WheelEntity getNewWheel(Level level){
+		return WHEEL_ENTITY.get().create(level);
 	}
 
 }
