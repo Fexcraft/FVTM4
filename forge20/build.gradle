@@ -18,7 +18,7 @@ sourceSets {
         resources {
             srcDirs += 'src/main/resources'
             srcDirs += new File(file('..'), 'common/resources')
-            srcDirs += new File(file('...//'), "/FVTM-Core/res")
+            srcDirs += new File(file('../..'), "/FVTM-Core/res")
         }
     }
 }
