@@ -3,15 +3,17 @@ package net.fexcraft.mod.fvtm.impl;
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fvtm.Config;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.packet.PacketBase;
-import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
@@ -35,6 +37,13 @@ public abstract class Packets20 extends Packets {
 	public static final ResourceLocation VEHKEYSTATE_PACKET = new ResourceLocation("fvtm", "veh_keystate");
 	public static final ResourceLocation SEATUPDATE_PACKET = new ResourceLocation("fvtm", "seat_upd");
 	public static final ResourceLocation SPUPDATE_PACKET = new ResourceLocation("fvtm", "sp_upd");
+	//
+	public static Handler_TagListener HTL = new Handler_TagListener();
+	public static Handler_VehMove HVM = new Handler_VehMove();
+	public static Handler_VehKeyPress HVK = new Handler_VehKeyPress();
+	public static Handler_VehKeyPressState HVKS = new Handler_VehKeyPressState();
+	public static Handler_SeatUpdate HSU = new Handler_SeatUpdate();
+	public static Handler_SPUpdate HSPU = new Handler_SPUpdate();
 
 	@Override
 	public void init(){
@@ -131,6 +140,12 @@ public abstract class Packets20 extends Packets {
 	@Override
 	public void send(WorldW world, V3I pos){
 
+	}
+
+	@Override
+	public void send(VehicleInstance vehicle, TagCW com){
+		com.set("entity", vehicle.entity.getId());
+		sendInRange(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle_packet", com);
 	}
 
 }
