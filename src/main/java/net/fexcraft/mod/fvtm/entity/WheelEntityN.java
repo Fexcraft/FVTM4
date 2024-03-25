@@ -10,7 +10,7 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
  */
 public class WheelEntityN extends WheelEntity implements IEntityWithComplexSpawn {
 
-	public WheelEntityN(EntityType<WheelEntity> type, Level level){
+	public WheelEntityN(EntityType<WheelEntityN> type, Level level){
 		super(type, level);
 	}
 
