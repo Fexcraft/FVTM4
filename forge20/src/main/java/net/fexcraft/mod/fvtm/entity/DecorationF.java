@@ -12,7 +12,7 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
  */
 public class DecorationF extends Decoration implements IEntityAdditionalSpawnData {
 
-	public DecorationF(EntityType<Decoration> type, Level level){
+	public DecorationF(EntityType<DecorationF> type, Level level){
 		super(type, level);
 	}
 
