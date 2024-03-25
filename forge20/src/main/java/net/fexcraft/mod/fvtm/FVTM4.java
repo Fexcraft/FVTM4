@@ -36,6 +36,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -76,6 +78,12 @@ public class FVTM4 {
 			.setTrackingRange(256)
 			.build("vehicle")
 	);
+	//
+	public static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder.named(new ResourceLocation("fvtm", "channel"))
+		.clientAcceptedVersions(pro -> true)
+		.serverAcceptedVersions(pro -> true)
+		.networkProtocolVersion(() -> "fvtm4")
+		.simpleChannel();
 
 	public FVTM4(){
 		LOGGER4.info("MARKER " + IDLManager.INSTANCE[0]);
@@ -99,15 +107,15 @@ public class FVTM4 {
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(Registries.ITEM, addon.getID().id())));
 		FVTM20.init1();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		bus.addListener(this::commonSetup);
 		bus.register(new PackAdder());
 		ITEM_REGISTRY.values().forEach(reg -> reg.register(bus));
 		CREATIVE_MODE_TABS.register(bus);
 		ENTITIES.register(bus);
-		new Packets20F().init();
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event){
-		//
+		new Packets20F().init();
 	}
 
 	public static class PackAdder {
