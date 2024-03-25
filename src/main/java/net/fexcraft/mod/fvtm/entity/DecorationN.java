@@ -12,7 +12,7 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
  */
 public class DecorationN extends Decoration implements IEntityWithComplexSpawn {
 
-	public DecorationN(EntityType<Decoration> type, Level level){
+	public DecorationN(EntityType<DecorationN> type, Level level){
 		super(type, level);
 	}
 
