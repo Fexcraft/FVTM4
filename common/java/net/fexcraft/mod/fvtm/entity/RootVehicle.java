@@ -333,7 +333,7 @@ public class RootVehicle extends Entity {
 		if(!level().isClientSide){
 			for(Map.Entry<String, WheelTireData> entry : vehicle.wheeldata.entrySet()){
 				if(!wheels.containsKey(entry.getKey()) || !wheels.get(entry.getKey()).isAddedToWorld()){
-					wheels.put(entry.getKey(), new WheelEntity(FVTM4.WHEEL_ENTITY.get(), level()).init(this, entry.getKey()));
+					wheels.put(entry.getKey(), FvtmGetters.getNewWheel(level()).init(this, entry.getKey()));
 					level().addFreshEntity(wheels.get(entry.getKey()));
 				}
 			}
