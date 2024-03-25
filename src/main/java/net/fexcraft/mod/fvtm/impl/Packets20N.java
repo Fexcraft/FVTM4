@@ -2,11 +2,8 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
-import net.fexcraft.mod.fvtm.Config;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
-import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
-import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -35,12 +32,6 @@ public class Packets20N extends Packets20 {
 		PACKETS.put(Packet_VehKeyPressState.class, PI_VehKeyPressState.class);
 		PACKETS.put(Packet_SeatUpdate.class, PI_SeatUpdate.class);
 		PACKETS.put(Packet_SPUpdate.class, PI_SPUpdate.class);
-	}
-
-	@Override
-	public void send(VehicleInstance vehicle, TagCW com){
-		com.set("entity", vehicle.entity.getId());
-		sendInRange(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle_packet", com);
 	}
 
 	@Override
@@ -135,13 +126,6 @@ public class Packets20N extends Packets20 {
 	}
 
 	//---//---//---//
-
-	public static Handler_TagListener HTL = new Handler_TagListener();
-	public static Handler_VehMove HVM = new Handler_VehMove();
-	public static Handler_VehKeyPress HVK = new Handler_VehKeyPress();
-	public static Handler_VehKeyPressState HVKS = new Handler_VehKeyPressState();
-	public static Handler_SeatUpdate HSU = new Handler_SeatUpdate();
-	public static Handler_SPUpdate HSPU = new Handler_SPUpdate();
 
 	public static class PI_TagListener extends Packet_TagListener implements CustomPacketPayload {
 
