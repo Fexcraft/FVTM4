@@ -10,7 +10,7 @@ import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
  */
 public class RootVehicleN extends RootVehicle implements IEntityWithComplexSpawn {
 
-	public RootVehicleN(EntityType<RootVehicle> type, Level level){
+	public RootVehicleN(EntityType<RootVehicleN> type, Level level){
 		super(type, level);
 	}
 
