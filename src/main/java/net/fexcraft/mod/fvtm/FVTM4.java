@@ -8,10 +8,7 @@ import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.entity.*;
-import net.fexcraft.mod.fvtm.impl.AABBI;
-import net.fexcraft.mod.fvtm.impl.Packets20;
-import net.fexcraft.mod.fvtm.impl.SWIE;
-import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
+import net.fexcraft.mod.fvtm.impl.*;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.ui.*;
@@ -64,21 +61,21 @@ public class FVTM4 {
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, "fvtm");
 
 	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(Registries.ENTITY_TYPE, "fvtm");
-	public static final DeferredHolder<EntityType<?>, EntityType<Decoration>> DECORATION_ENTITY = ENTITIES.register("decoration", () ->
+	public static final DeferredHolder<EntityType<?>, EntityType<DecorationN>> DECORATION_ENTITY = ENTITIES.register("decoration", () ->
 		EntityType.Builder.of(DecorationN::new, MobCategory.MISC)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(10)
 			.setTrackingRange(256)
 			.build("decoration")
 	);
-	public static final DeferredHolder<EntityType<?>, EntityType<WheelEntity>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
+	public static final DeferredHolder<EntityType<?>, EntityType<WheelEntityN>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
 		EntityType.Builder.of(WheelEntityN::new, MobCategory.MISC)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
 			.build("wheel")
 	);
-	public static final DeferredHolder<EntityType<?>, EntityType<RootVehicle>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
+	public static final DeferredHolder<EntityType<?>, EntityType<RootVehicleN>> VEHICLE_ENTITY = ENTITIES.register("vehicle", () ->
 		EntityType.Builder.of(RootVehicleN::new, MobCategory.MISC)
 			.sized(1F, 1F)
 			.setUpdateInterval(1)
@@ -88,23 +85,20 @@ public class FVTM4 {
 
 	public FVTM4(IEventBus event){
 		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
-		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
-		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
-		FvtmGetters.DECORATION_IMPL = DecorationN.class;
-		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
-		FvtmGetters.ROOTVEHICLE_IMPL = RootVehicleN.class;
-		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
-		FvtmGetters.WHEEL_IMPL = WheelEntityN.class;
-		if(EnvInfo.CLIENT){
-			CTab.IMPL[0] = TabInitializerN.class;
-		}
-		FVTM20.init0();
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
 			protected void log0(Object obj){
 				LOGGER4.info(obj == null ? "null " + new Exception().getStackTrace()[2].toString() : obj.toString());
 			}
 		};
+		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
+		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
+		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
+		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
+		if(EnvInfo.CLIENT){
+			CTab.IMPL[0] = TabInitializerN.class;
+		}
+		FVTM20.init0();
 		FvtmAttachments.register(event);
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(BuiltInRegistries.ITEM, addon.getID().id())));
 		FVTM20.init1();
@@ -115,7 +109,7 @@ public class FVTM4 {
 		CREATIVE_MODE_TABS.register(event);
 		ENTITIES.register(event);
 		//NeoForge.EVENT_BUS.register(this);
-		new Packets20().init();
+		new Packets20N().init();
 	}
 
 	public static class PackAdder {
@@ -131,7 +125,7 @@ public class FVTM4 {
 				else{
 					ressupp = new FilePackResources.FileResourcesSupplier(addon.getFile(), true);
 				}
-				Pack pack = Pack.create("fvtm/" + addon.getID().id(), Component.literal(addon.getName()), true, ressupp, new Pack.Info(Component.literal("FVTM Autoloaded Pack"), PackCompatibility.COMPATIBLE, FeatureFlagSet.of(), Collections.emptyList(), false), Pack.Position.BOTTOM, false, PackSource.DEFAULT);
+				Pack pack = Pack.create("fvtm/" + addon.getID().id(), Component.literal(addon.getName()), true, ressupp, new Pack.Info(Component.literal("FVTM Auto-loaded Pack"), PackCompatibility.COMPATIBLE, FeatureFlagSet.of(), Collections.emptyList(), false), Pack.Position.BOTTOM, false, PackSource.DEFAULT);
 				event.addRepositorySource(cons -> {
 					if(pack != null) cons.accept(pack);
 				});
