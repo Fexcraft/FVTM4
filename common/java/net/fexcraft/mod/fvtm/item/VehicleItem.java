@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.item;
 
 import net.fexcraft.mod.fvtm.FVTM4;
+import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -95,7 +96,7 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 		if(context.getLevel().isClientSide) return InteractionResult.PASS;
 		ItemStack stack = context.getItemInHand();
 		VehicleData data = getDataFromTag(stack.getTag());
-		RootVehicle veh = new RootVehicle(FVTM4.VEHICLE_ENTITY.get(), context.getLevel());
+		RootVehicle veh = FvtmGetters.getNewVehicle(context.getLevel());
 		veh.setPos(context.getClickLocation().add(0, 2, 0));
 		veh.init(data);
 		context.getLevel().addFreshEntity(veh);
