@@ -22,6 +22,7 @@ import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
+import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +30,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -182,6 +184,11 @@ public class ResourcesImpl extends FvtmResources {
 	@Override
 	public Object getBlockMaterial(String key, boolean allownull){
 		return null;
+	}
+
+	@Override
+	public void spawnRoadMarker(WorldW world, QV3D vector, UUID nid){
+		//TODO
 	}
 
 }
