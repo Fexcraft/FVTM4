@@ -88,6 +88,11 @@ public class PassImplPlus extends Passenger implements net.fexcraft.mod.fvtm.sys
 	}
 
 	@Override
+	public boolean isShiftDown(){
+		return entity.isShiftKeyDown();
+	}
+
+	@Override
 	public void decreaseXZMotion(double x){
 		//
 	}
