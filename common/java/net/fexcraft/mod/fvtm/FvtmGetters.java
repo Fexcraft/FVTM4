@@ -4,6 +4,7 @@ import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.entity.WheelEntity;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
+import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.minecraft.world.entity.Entity;
@@ -23,6 +24,7 @@ public class FvtmGetters {
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
 	//
 	public static Supplier<DecorationItem> DECORATION_ITEM;
+	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
 	public static Supplier<ToolboxItem> TOOLBOX0;
 	public static Supplier<ToolboxItem> TOOLBOX1;
 	public static Supplier<ToolboxItem> TOOLBOX2;
