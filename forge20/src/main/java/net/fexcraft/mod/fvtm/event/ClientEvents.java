@@ -53,7 +53,7 @@ public class ClientEvents {
 
 	@SubscribeEvent
 	public static void registerKeys(RegisterKeyMappingsEvent event){
-		event.register(engine_toggle = new KeyMapping("key.fvtm.engine", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_RCONTROL, category));
+		event.register(engine_toggle = new KeyMapping("key.fvtm.engine", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_I, category));
 		event.register(inventory_open = new KeyMapping("key.fvtm.vehicle_inventory", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_R, category));
 		event.register(toggables = new KeyMapping("key.fvtm.vehicle_toggle", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_K, category));
 		event.register(script_ui = new KeyMapping("key.fvtm.vehicle_scripts", KeyConflictContext.VEHICLE, InputConstants.Type.KEYSYM, InputConstants.KEY_G, category));
