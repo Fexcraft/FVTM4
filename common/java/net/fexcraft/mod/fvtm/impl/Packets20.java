@@ -47,19 +47,8 @@ public abstract class Packets20 extends Packets {
 
 	@Override
 	public void init(){
+		super.init();
 		INSTANCE = this;
-		LIS_SERVER.put("vehicle_packet", (com, player) -> {
-			Level level = player.getWorld().local();
-			Entity ent = level.getEntity(com.getInteger("entity"));
-			if(ent == null) return;
-			((RootVehicle)ent).vehicle.packet(com, player);
-		});
-		LIS_CLIENT.put("vehicle", (com, player) -> {
-			Player entity = player.local();
-			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
-			if(vehicle == null) return;
-			vehicle.vehicle.packet(com, player);
-		});
 		LIS_SERVER.put("mount_seat", (com, player) -> {
 			Player entity = player.local();
 			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
@@ -107,18 +96,6 @@ public abstract class Packets20 extends Packets {
 				if(ent == null) return;
 				((RootVehicle)ent).vehicle.data.getColorChannel(tag.getString("channel")).packed = tag.getInteger("color");
 			});
-			LIS_CLIENT.put("vehicle_packet", (tag, player) -> {
-				Level level = player.getWorld().local();
-				Entity ent = level.getEntity(tag.getInteger("entity"));
-				if(ent == null) return;
-				((RootVehicle)ent).vehicle.packet(tag, player);
-			});
-			LIS_CLIENT.put("vehicle", (tag, player) -> {
-				Player entity = player.local();
-				RootVehicle vehicle = (RootVehicle)entity.level().getEntity(tag.getInteger("entity"));
-				if(vehicle == null) return;
-				vehicle.vehicle.packet(tag, player);
-			});
 		}
 	}
 
@@ -145,7 +122,12 @@ public abstract class Packets20 extends Packets {
 	@Override
 	public void send(VehicleInstance vehicle, TagCW com){
 		com.set("entity", vehicle.entity.getId());
-		sendInRange(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle_packet", com);
+		if(vehicle.entity.isOnClient()){
+			send(Packet_TagListener.class, "vehicle", com);
+		}
+		else{
+			sendInRange(Packet_TagListener.class, vehicle.entity.getWorld(), vehicle.entity.getPos(), Config.VEHICLE_UPDATE_RANGE, "vehicle", com);
+		}
 	}
 
 }
