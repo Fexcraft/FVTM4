@@ -652,7 +652,7 @@ public class RootVehicle extends Entity {
 		Passenger pass = PassengerUtil.get(player);
 		if(Lockable.isKey(FvtmRegistry.getItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass, new SWI(stack));
-			sendLockStateUpdate();
+			vehicle.sendLockUpdate();
 			return true;
 		}
 		if(vehicle.data.getLock().isLocked()){
@@ -710,10 +710,6 @@ public class RootVehicle extends Entity {
 			return true;
 		}
 		return false;
-	}
-
-	private void sendLockStateUpdate(){
-		//TODO
 	}
 
 }
