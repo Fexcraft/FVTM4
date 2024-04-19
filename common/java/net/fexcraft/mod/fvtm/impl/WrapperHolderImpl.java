@@ -11,6 +11,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+import java.util.UUID;
+
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
@@ -72,6 +75,11 @@ public class WrapperHolderImpl extends WrapperHolder {
 			case SOUTH: return (S)Direction.SOUTH;
 		}
 		return (S)dir;
+	}
+
+	@Override
+	public List<UUID> getOnlinePlayerIDs0(){
+		return null;
 	}
 
 	@Override
