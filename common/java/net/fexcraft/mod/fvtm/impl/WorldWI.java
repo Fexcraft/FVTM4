@@ -79,6 +79,11 @@ public class WorldWI extends FvtmWorld {
 	}
 
 	@Override
+	public StateWrapper getStateAt(V3I pos){
+		return null;
+	}
+
+	@Override
 	public SeatInstance getSeat(int entid, int seatid){
 		Entity ent = level.getEntity(entid);
 		if(ent == null || ent instanceof RootVehicle == false) return null;
@@ -133,6 +138,21 @@ public class WorldWI extends FvtmWorld {
 	@Override
 	public Passenger getClientPassenger(){
 		return PassengerUtil.get(net.minecraft.client.Minecraft.getInstance().player);
+	}
+
+	@Override
+	public boolean isFvtmRoad(StateWrapper state){
+		return false;
+	}
+
+	@Override
+	public int getRoadHeight(StateWrapper state){
+		return 0;
+	}
+
+	@Override
+	public StateWrapper getRoadWithHeight(StateWrapper block, int height){
+		return null;
 	}
 
 }
