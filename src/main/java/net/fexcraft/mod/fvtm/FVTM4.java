@@ -68,6 +68,13 @@ public class FVTM4 {
 			.setTrackingRange(256)
 			.build("decoration")
 	);
+	public static final DeferredHolder<EntityType<?>, EntityType<RoadMarkerN>> ROAD_MARKER_ENTITY = ENTITIES.register("road_marker", () ->
+		EntityType.Builder.of(RoadMarkerN::new, MobCategory.MISC)
+			.sized(0.24F, 0.48F)
+			.setUpdateInterval(10)
+			.setTrackingRange(256)
+			.build("road_marker")
+	);
 	public static final DeferredHolder<EntityType<?>, EntityType<WheelEntityN>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
 		EntityType.Builder.of(WheelEntityN::new, MobCategory.MISC)
 			.sized(0.25F, 0.25F)
@@ -93,6 +100,7 @@ public class FVTM4 {
 		};
 		EnvInfo.CLIENT = FMLLoader.getDist().isClient();
 		FvtmGetters.DECORATION_ENTITY = () -> DECORATION_ENTITY.get();
+		FvtmGetters.ROAD_MARKER_ENTITY = () -> ROAD_MARKER_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
 		if(EnvInfo.CLIENT){
