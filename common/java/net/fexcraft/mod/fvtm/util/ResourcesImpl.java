@@ -9,6 +9,7 @@ import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
+import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
@@ -28,6 +29,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.io.InputStream;
 import java.util.UUID;
@@ -184,7 +186,11 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void spawnRoadMarker(WorldW world, QV3D vector, UUID nid){
-		//TODO
+		RoadMarker marker = FvtmGetters.getNewRoadMarker(world.local());
+		marker.queueid = nid;
+		marker.position = vector;
+		marker.setPos(vector.vec.x, vector.vec.y + 1, vector.vec.z);
+		((Level)world.direct()).addFreshEntity(marker);
 	}
 
 }
