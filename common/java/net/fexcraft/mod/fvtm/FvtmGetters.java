@@ -1,8 +1,6 @@
 package net.fexcraft.mod.fvtm;
 
-import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.entity.WheelEntity;
+import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
@@ -20,6 +18,7 @@ import java.util.function.Supplier;
 public class FvtmGetters {
 
 	public static Supplier<EntityType<? extends Decoration>> DECORATION_ENTITY;
+	public static Supplier<EntityType<? extends RoadMarker>> ROAD_MARKER_ENTITY;
 	public static Supplier<EntityType<? extends RootVehicle>> ROOTVEHICLE_ENTITY;
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
 	//
@@ -33,6 +32,10 @@ public class FvtmGetters {
 
 	public static Decoration getNewDecoration(Level level){
 		return DECORATION_ENTITY.get().create(level);
+	}
+
+	public static RoadMarker getNewRoadMarker(Level level){
+		return ROAD_MARKER_ENTITY.get().create(level);
 	}
 
 	public static RenderCache getRenderCache(Entity entity){
