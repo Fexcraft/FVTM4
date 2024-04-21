@@ -7,6 +7,7 @@ import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.DecoRenderer;
 import net.fexcraft.mod.fvtm.render.RVRenderer;
+import net.fexcraft.mod.fvtm.render.RoadMarkerRenderer;
 import net.fexcraft.mod.fvtm.render.WheelRenderer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -45,6 +46,7 @@ public class ClientEvents {
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent event){
 		EntityRenderers.register(FVTM4.DECORATION_ENTITY.get(), ctx -> new DecoRenderer(ctx));
+		EntityRenderers.register(FVTM4.ROAD_MARKER_ENTITY.get(), ctx -> new RoadMarkerRenderer(ctx));
 		EntityRenderers.register(FVTM4.WHEEL_ENTITY.get(), ctx -> new WheelRenderer(ctx));
 		EntityRenderers.register(FVTM4.VEHICLE_ENTITY.get(), ctx -> new RVRenderer(ctx));
 		//
