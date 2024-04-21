@@ -10,6 +10,9 @@ import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.ui.*;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
+import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
@@ -57,6 +60,12 @@ public class FVTM20 {
 		UniReg.registerMenu(UIKey.DECORATION_EDITOR.key, "assets/fvtm/uis/deco_editor", DecoContainer.class);
 		UniReg.registerUI(UIKey.TOOLBOX_COLORS.key, ToolboxPainter.class);
 		UniReg.registerMenu(UIKey.TOOLBOX_COLORS.key, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
+		//
+		UniReg.registerUI(UIKey.ROAD_TOOL.key, RoadToolUI.class);
+		UniReg.registerMenu(UIKey.ROAD_TOOL.key, "assets/fvtm/uis/road_tool", RoadToolConImpl.class);
+		UniReg.registerUI(UIKey.ROAD_TOOL.key, RoadToolCustomUI.class);
+		UniReg.registerMenu(UIKey.ROAD_TOOL.key, "assets/fvtm/uis/road_tool", RoadToolCustomCon.class);
+		//
 		UniReg.registerUI(UIKey.VEHICLE_MAIN.key, VehicleMain.class);
 		UniReg.registerMenu(UIKey.VEHICLE_MAIN.key, "assets/fvtm/uis/vehicle_main", VehicleMainCon.class);
 		UniReg.registerUI(UIKey.VEHICLE_FUEL.key, VehicleFuel.class);
