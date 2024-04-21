@@ -1,9 +1,14 @@
 package net.fexcraft.mod.fvtm.ui;
 
+import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
+import net.fexcraft.mod.fvtm.util.CompatUtil;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -75,5 +80,29 @@ public class RoadInventory implements Container {
 	public void clearContent(){
 		stacks.clear();
 	}
+
+    public static class RoadSlot extends Slot {
+
+        private FvtmWorld world;
+    	private boolean road, any;
+
+        public RoadSlot(FvtmWorld world, Container inventory, int index, int x, int y, boolean road, boolean any){
+            super(inventory, index, x, y);
+            this.world = world;
+            this.road = road;
+            this.any = any;
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack){
+        	if(stack.getItem() instanceof BlockItem == false) return false;
+        	if(!any && (road || this.getSlotIndex() == 0)){
+        		BlockItem iblock = (BlockItem)stack.getItem();
+        		return world.isFvtmRoad(iblock.getBlock().defaultBlockState()) || CompatUtil.isValidFurenikus(BuiltInRegistries.BLOCK.getKey(iblock.getBlock()).toString());
+        	}
+        	else return true;
+        }
+
+    }
 
 }
