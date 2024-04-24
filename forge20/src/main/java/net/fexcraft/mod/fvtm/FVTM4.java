@@ -1,8 +1,7 @@
 package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
-import net.fexcraft.mod.fcl.util.PassProvider;
-import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
@@ -21,12 +20,11 @@ import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -40,7 +38,6 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
@@ -91,6 +88,8 @@ public class FVTM4 {
 		.serverAcceptedVersions(pro -> true)
 		.networkProtocolVersion(() -> "fvtm4")
 		.simpleChannel();
+	//
+	public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(Registries.BLOCK, "fvtm");
 
 	public FVTM4(){
 		LOGGER4.info("MARKER " + IDLManager.INSTANCE[0]);
@@ -120,6 +119,7 @@ public class FVTM4 {
 		ITEM_REGISTRY.values().forEach(reg -> reg.register(bus));
 		CREATIVE_MODE_TABS.register(bus);
 		ENTITIES.register(bus);
+		BLOCK_REGISTRY.register(bus);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event){
