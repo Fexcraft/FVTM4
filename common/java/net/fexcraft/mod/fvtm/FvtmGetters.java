@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm;
 
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
@@ -7,6 +8,7 @@ import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.Level;
 
 import java.util.function.Function;
@@ -27,6 +29,8 @@ public class FvtmGetters {
 	public static Supplier<ToolboxItem> TOOLBOX0;
 	public static Supplier<ToolboxItem> TOOLBOX1;
 	public static Supplier<ToolboxItem> TOOLBOX2;
+	public static Supplier<Asphalt>[] ASPHALT = new Supplier[16];
+	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 
