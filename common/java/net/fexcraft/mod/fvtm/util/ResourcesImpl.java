@@ -5,16 +5,15 @@ import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
-import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
-import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
@@ -22,11 +21,11 @@ import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -162,7 +161,10 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmBlocks(){
-
+		for(int idx = 0; idx < FvtmGetters.ASPHALT.length; idx++){
+			int index = idx;
+			FvtmGetters.ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.register("asphalt_" + idx, () -> new Asphalt(index));
+		}
 	}
 
 	@Override
@@ -172,6 +174,10 @@ public class ResourcesImpl extends FvtmResources {
 		FvtmGetters.TOOLBOX0 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_0", () -> new ToolboxItem(0));
 		FvtmGetters.TOOLBOX1 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_1", () -> new ToolboxItem(1));
 		FvtmGetters.TOOLBOX2 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_2", () -> new ToolboxItem(2));
+		for(int idx = 0; idx < FvtmGetters.ASPHALT.length; idx++){
+			int index = idx;
+			FvtmGetters.ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(FvtmGetters.ASPHALT[index].get(), new Item.Properties()));
+		}
 	}
 
 	@Override
