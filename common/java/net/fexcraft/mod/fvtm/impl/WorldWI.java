@@ -16,9 +16,12 @@ import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
@@ -157,6 +160,12 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public StateWrapper getRoadWithHeight(StateWrapper block, int height){
+		if(block.getBlock() instanceof Asphalt == false){
+			ResourceLocation rl = BuiltInRegistries.BLOCK.getKey((Block)block.getBlock());
+			String str = rl.toString();
+			str = str.substring(0, str.lastIndexOf("_") + 1);
+			return StateWrapper.of(BuiltInRegistries.BLOCK.get(new ResourceLocation(str + height)).defaultBlockState());
+		}
 		return StateWrapper.of(FvtmGetters.ASPHALT[height].get().defaultBlockState());
 	}
 
