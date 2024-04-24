@@ -1,25 +1,12 @@
 package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
-import net.fexcraft.lib.frl.GLO;
-import net.fexcraft.lib.frl.Renderer;
-import net.fexcraft.mod.fcl.UniversalAttachments;
-import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
-import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.*;
-import net.fexcraft.mod.fvtm.model.GLObject;
-import net.fexcraft.mod.fvtm.render.Renderer120;
-import net.fexcraft.mod.fvtm.ui.*;
-import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.item.ItemWrapper;
-import net.fexcraft.mod.uni.item.StackWrapper;
-import net.fexcraft.mod.uni.ui.UISlot;
-import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -28,14 +15,12 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -89,6 +74,8 @@ public class FVTM4 {
 			.setTrackingRange(256)
 			.build("vehicle")
 	);
+	//
+	public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(Registries.BLOCK, "fvtm");
 
 	public FVTM4(IEventBus event){
 		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
@@ -116,6 +103,7 @@ public class FVTM4 {
 		ITEM_REGISTRY.values().forEach(reg -> reg.register(event));
 		CREATIVE_MODE_TABS.register(event);
 		ENTITIES.register(event);
+		BLOCK_REGISTRY.register(event);
 		//NeoForge.EVENT_BUS.register(this);
 		new Packets20N().init();
 	}
