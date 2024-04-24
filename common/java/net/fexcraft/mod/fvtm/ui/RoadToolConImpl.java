@@ -19,6 +19,7 @@ public class RoadToolConImpl extends RoadToolCon {
 
 	public RoadToolConImpl(JsonMap map, EntityW player, V3I pos){
 		super(map, player, pos);
+		initInv();
 	}
 
 	@Override
