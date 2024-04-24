@@ -3,6 +3,8 @@ package net.fexcraft.mod.fvtm.impl;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
@@ -60,7 +62,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public void setBlockState(V3I pos, StateWrapper state, int flag){
-		//
+		level.setBlock(new BlockPos(pos.x, pos.y, pos.z), state.local(), flag);
 	}
 
 	@Override
@@ -80,7 +82,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public StateWrapper getStateAt(V3I pos){
-		return null;
+		return StateWrapper.of(level.getBlockState(new BlockPos(pos.x, pos.y, pos.z)));
 	}
 
 	@Override
@@ -142,17 +144,20 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public boolean isFvtmRoad(StateWrapper state){
-		return false;
+		return state.getBlock() instanceof Asphalt;
 	}
 
 	@Override
 	public int getRoadHeight(StateWrapper state){
+		if(state.getBlock() instanceof Asphalt){
+			return ((Asphalt)state.getBlock()).height;
+		}
 		return 0;
 	}
 
 	@Override
 	public StateWrapper getRoadWithHeight(StateWrapper block, int height){
-		return null;
+		return StateWrapper.of(FvtmGetters.ASPHALT[height].get().defaultBlockState());
 	}
 
 }
