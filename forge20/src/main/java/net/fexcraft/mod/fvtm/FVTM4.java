@@ -1,7 +1,6 @@
 package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
-import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
@@ -70,7 +69,7 @@ public class FVTM4 {
 			.build("road_marker")
 	);
 	public static final RegistryObject<EntityType<WheelEntityF>> WHEEL_ENTITY = ENTITIES.register("wheel", () ->
-		EntityType.Builder.of(WheelEntityF::new, MobCategory.MISC)
+		EntityType.Builder.of((EntityType.EntityFactory<WheelEntityF>)(type, level) -> new WheelEntityF(type, level), MobCategory.MISC)
 			.sized(0.25F, 0.25F)
 			.setUpdateInterval(1)
 			.setTrackingRange(256)
@@ -107,6 +106,7 @@ public class FVTM4 {
 		FvtmGetters.ROAD_MARKER_ENTITY = () -> ROAD_MARKER_ENTITY.get();
 		FvtmGetters.ROOTVEHICLE_ENTITY = () -> VEHICLE_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
+		FvtmGetters.WHEEL_ENTITY_CLASS = WheelEntityF.class;
 		FvtmGetters.RENDERCACHE = entity -> entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializerF.class;
