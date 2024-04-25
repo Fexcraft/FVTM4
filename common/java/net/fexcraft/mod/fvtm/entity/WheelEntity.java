@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.sys.uni.WheelTireData;
 import net.minecraft.nbt.CompoundTag;
@@ -33,7 +34,8 @@ public class WheelEntity extends Entity {
 		super(type, level);
 	}
 
-	public WheelEntity init(RootVehicle veh, String wid){
+	public WheelEntity(RootVehicle veh, String wid){
+		super(FvtmGetters.WHEEL_ENTITY.get(), veh.level());
 		vehid = (root = veh).getId();
 		wheelid = wid;
 		wheel = root.vehicle.data.getWheelSlots().get(wid);
@@ -44,17 +46,16 @@ public class WheelEntity extends Entity {
 				level().addFreshEntity(new ItemEntity(level(), position().x, position().y, position().z, root.vehicle.data.newItemStack().local()));
 				root.kill();
 			}
-			return null;
+			return;
 		}
 		if(!root.vehicle.data.getWheelPositions().containsKey(wheelid)){
 			kill();
-			return null;
+			return;
 		}
 		pos = root.vehicle.data.getWheelPositions().get(wheelid);
 		V3D vec = root.vehicle.pivot().get_vector(pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
 		setOldPosAndRot();
-		return this;
 	}
 
 	private void setStepHeight(){
