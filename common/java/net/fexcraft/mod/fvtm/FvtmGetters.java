@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.Level;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -23,6 +24,7 @@ public class FvtmGetters {
 	public static Supplier<EntityType<? extends RoadMarker>> ROAD_MARKER_ENTITY;
 	public static Supplier<EntityType<? extends RootVehicle>> ROOTVEHICLE_ENTITY;
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
+	public static Class<? extends WheelEntity> WHEEL_ENTITY_CLASS;
 	//
 	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
@@ -50,8 +52,13 @@ public class FvtmGetters {
 		return ROOTVEHICLE_ENTITY.get().create(level);
 	}
 
-	public static WheelEntity getNewWheel(Level level){
-		return WHEEL_ENTITY.get().create(level);
+	public static WheelEntity getNewWheel(RootVehicle veh, String wid){
+		try{
+			return WHEEL_ENTITY_CLASS.getConstructor(RootVehicle.class, String.class).newInstance(veh, wid);
+		}
+		catch(InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e){
+			throw new RuntimeException(e);
+		}
 	}
 
 }
