@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
+import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.uni.IDL;
@@ -136,6 +137,7 @@ public class ResourcesImpl extends FvtmResources {
 			return null;
 		});
 		DefaultPrograms20.init();
+		ConditionalPrograms.init();
 	}
 
 	@Override
