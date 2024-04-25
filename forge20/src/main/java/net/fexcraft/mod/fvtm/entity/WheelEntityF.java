@@ -17,6 +17,10 @@ public class WheelEntityF extends WheelEntity implements IEntityAdditionalSpawnD
 		super(type, level);
 	}
 
+	public WheelEntityF(RootVehicle veh, String str){
+		super(veh, str);
+	}
+
 	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		super.writeSpawnData(buffer);
