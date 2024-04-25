@@ -1,7 +1,9 @@
 package net.fexcraft.mod.fvtm;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.fexcraft.app.json.JsonArray;
+import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
@@ -11,8 +13,9 @@ import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.ui.*;
-import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
@@ -26,9 +29,14 @@ import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -99,7 +107,33 @@ public class FVTM20 {
 	}
 
 	public static LiteralArgumentBuilder<CommandSourceStack> genCommand(){
-		return Commands.literal("fvtm");
+		return Commands.literal("fvtm").then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
+			Player player = ctx.getSource().getPlayerOrException();
+			Passenger pass = PassengerUtil.get(player);
+			JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+			if(map == null || map.empty()){
+				pass.send("No last road data in item.");
+				return 0;
+			}
+			String dim = map.getString("LastRoadDim", "minecraft:overworld");
+			if(!dim.equals(player.level().dimension().location().toString())){
+				pass.send("Last road was placed in &6DIM" + map.getString("LastRoadDim", "unknown"));
+				pass.send("You are currenctly in &6DIM" + player.level().dimension().location());
+				return 0;
+			}
+			map.rem("LastRoadDim");
+			pass.send("&oUndo-ing last placed road...");
+			for(String str : map.value.keySet()){
+				JsonArray array = map.getArray(str);
+				V3I vec = V3I.fromString(str);
+				BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
+				Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(array.get(0).string_value()));
+				player.level().setBlock(pos, block.defaultBlockState(), 3);
+			}
+			RoadPlacingCache.remLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+			pass.send("&7Last road undone.");
+			return 0;
+		})));
 	}
 
 }
