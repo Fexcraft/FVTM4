@@ -1,5 +1,7 @@
 package net.fexcraft.mod.fvtm;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
@@ -22,6 +24,8 @@ import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -92,6 +96,10 @@ public class FVTM20 {
 		if(EnvInfo.CLIENT){
 			FvtmResources.initModelSystem();
 		}
+	}
+
+	public static LiteralArgumentBuilder<CommandSourceStack> genCommand(){
+		return Commands.literal("fvtm");
 	}
 
 }
