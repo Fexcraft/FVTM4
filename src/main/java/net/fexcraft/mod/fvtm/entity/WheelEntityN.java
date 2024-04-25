@@ -14,6 +14,10 @@ public class WheelEntityN extends WheelEntity implements IEntityWithComplexSpawn
 		super(type, level);
 	}
 
+	public WheelEntityN(RootVehicle veh, String str){
+		super(veh, str);
+	}
+
 	@Override
 	public void writeSpawnData(FriendlyByteBuf buffer){
 		super.writeSpawnData(buffer);
