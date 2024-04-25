@@ -27,6 +27,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -152,6 +153,11 @@ public class FVTM4 {
 			if(event.getObject() instanceof Decoration || event.getObject() instanceof RootVehicle){
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheProvider(event.getObject()));
 			}
+		}
+
+		@SubscribeEvent
+		public static void onCmdReg(RegisterCommandsEvent event){
+			event.getDispatcher().register(FVTM20.genCommand());
 		}
 
 	}
