@@ -19,9 +19,10 @@ import static net.fexcraft.mod.fvtm.render.Renderer120.*;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DefaultPrograms20 {
+public class DefaultPrograms20 extends DefaultPrograms {
 
 	public static void init(){
+		DefaultPrograms.init();
 		ModelGroup.PROGRAMS.add(new Program() {
 			public String id(){
 				return "fvtm:rgb_primary";
