@@ -27,6 +27,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.slf4j.Logger;
@@ -126,6 +127,16 @@ public class FVTM4 {
 					if(pack != null) cons.accept(pack);
 				});
 			}
+		}
+
+	}
+
+	@Mod.EventBusSubscriber(modid = MODID)
+	public static class Events {
+
+		@SubscribeEvent
+		public static void onCmdReg(RegisterCommandsEvent event){
+			event.getDispatcher().register(FVTM20.genCommand());
 		}
 
 	}
