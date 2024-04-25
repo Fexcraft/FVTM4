@@ -333,7 +333,7 @@ public class RootVehicle extends Entity {
 		if(!level().isClientSide){
 			for(Map.Entry<String, WheelTireData> entry : vehicle.wheeldata.entrySet()){
 				if(!wheels.containsKey(entry.getKey()) || !wheels.get(entry.getKey()).isAddedToWorld()){
-					wheels.put(entry.getKey(), FvtmGetters.getNewWheel(level()).init(this, entry.getKey()));
+					wheels.put(entry.getKey(), FvtmGetters.getNewWheel(this, entry.getKey()));
 					level().addFreshEntity(wheels.get(entry.getKey()));
 				}
 			}
@@ -390,6 +390,7 @@ public class RootVehicle extends Entity {
 			WheelEntity fr = wheels.get(w_front_r.id);
 			WheelEntity rl = wheels.get(w_rear_l.id);
 			WheelEntity rr = wheels.get(w_rear_r.id);
+			if(fl == null) return;
 			V3D fron = new V3D((fl.position().x + fr.position().x) * 0.5, (fl.position().y + fr.position().y) * 0.5, (fl.position().z + fr.position().z) * 0.5);
 			V3D rear = new V3D((rl.position().x + rr.position().x) * 0.5, (rl.position().y + rr.position().y) * 0.5, (rl.position().z + rr.position().z) * 0.5);
 			V3D left = new V3D((fl.position().x + rl.position().x) * 0.5, (fl.position().y + rl.position().y) * 0.5, (fl.position().z + rl.position().z) * 0.5);
