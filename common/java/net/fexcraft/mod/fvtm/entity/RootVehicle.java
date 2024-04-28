@@ -100,6 +100,7 @@ public class RootVehicle extends Entity {
 		wheels.clear();
 		wheel_radius = 0;
 		for(Map.Entry<String, V3D> entry : vehicle.data.getWheelPositions().entrySet()){
+			if(entry.getKey().endsWith(":tire")) continue;
 			WheelTireData wheel = new WheelTireData(entry.getKey());
 			wheel.pos = entry.getValue();
 			PartData part = vehicle.data.getPart(entry.getKey());
