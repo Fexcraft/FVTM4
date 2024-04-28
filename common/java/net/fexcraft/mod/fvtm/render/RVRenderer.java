@@ -168,8 +168,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			pose.translate(temp2.x, temp2.y, temp2.z);
 			pose.mulPose(new Quaternionf()
 				.rotateAxis((float)Static.toRadians(-rot.x), AY)
-				.rotateAxis((float)Static.toRadians(rot.y), AX)
-				.rotateAxis((float)Static.toRadians(rot.z), AZ)
+				.rotateAxis((float)Static.toRadians(-rot.y), AX)
+				.rotateAxis((float)Static.toRadians(-rot.z), AZ)
 			);
 		}
 		for(Map.Entry<String, PartData> entry : parts){
