@@ -6,6 +6,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
+import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
 import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
@@ -76,7 +77,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.steering){
 					attr = (AttrFloat)data.vehicle.getAttribute("steering_angle");
 					am = attr.initial + data.partialticks * (attr.value - attr.initial);
@@ -99,7 +100,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
 				if(slot != null && slot.steering) rotateDeg(data.vehicle.getAttribute("steering_angle").asFloat(), AY);
 			}
@@ -117,7 +118,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
 				rotateDeg(data.vehicle.getAttribute("wheel_angle").asFloat(), AX);
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
@@ -136,7 +137,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 			public void pre(ModelGroup list, ModelRenderData data){
 				pushPose();
-				slot = data.part.getFunction(WheelFunction.class, "fvtm:wheel").getWheelPos(data.vehicle);
+				slot = data.part.getFunction(GetWheelPos.class, "fvtm:wheel", "fvtm:tire").getWheelPos(data.vehicle);
 				if(slot != null && slot.mirror) rotateRad(Static.rad180, AY);
 				if(slot != null && slot.steering) rotateDeg(-data.vehicle.getAttribute("steering_angle").asFloat(), AY);
 			}
