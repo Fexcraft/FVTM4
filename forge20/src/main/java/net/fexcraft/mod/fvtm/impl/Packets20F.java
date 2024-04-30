@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3D;
+import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.packet.*;
@@ -97,7 +98,7 @@ public class Packets20F extends Packets20 {
 			return handler.handleServer(packet, PassengerUtil.get(context.get().getSender()));
 		}
 		else{
-			return handler.handleClient(packet, PassengerUtil.get(net.minecraft.client.Minecraft.getInstance().player));
+			return handler.handleClient(packet, PassengerUtil.get(ClientPacketPlayer.get()));
 		}
 	}
 
@@ -107,8 +108,8 @@ public class Packets20F extends Packets20 {
 			return handler.handleServer(packet, PassengerUtil.get(context.get().getSender()));
 		}
 		else{
-			if(net.minecraft.client.Minecraft.getInstance().player == null) return () -> {};
-			return handler.handleClient(packet, PassengerUtil.get(net.minecraft.client.Minecraft.getInstance().player));
+			if(ClientPacketPlayer.get() == null) return () -> {};
+			return handler.handleClient(packet, PassengerUtil.get(ClientPacketPlayer.get()));
 		}
 	}
 
