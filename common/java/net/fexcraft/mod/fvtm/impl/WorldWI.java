@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
+import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.block.Asphalt;
@@ -13,6 +14,7 @@ import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.uni.item.StackWrapper;
+import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.StateWrapper;
 import net.minecraft.core.BlockPos;
@@ -123,7 +125,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public boolean noViewEntity(){
-		return net.minecraft.client.Minecraft.getInstance().player == null;
+		return ClientPacketPlayer.get() == null;
 	}
 
 	@Override
@@ -142,7 +144,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public Passenger getClientPassenger(){
-		return PassengerUtil.get(net.minecraft.client.Minecraft.getInstance().player);
+		return PassengerUtil.get(ClientPacketPlayer.get());
 	}
 
 	@Override
@@ -167,6 +169,11 @@ public class WorldWI extends FvtmWorld {
 			return StateWrapper.of(BuiltInRegistries.BLOCK.get(new ResourceLocation(str + height)).defaultBlockState());
 		}
 		return StateWrapper.of(FvtmGetters.ASPHALT[height].get().defaultBlockState());
+	}
+
+	@Override
+	public void handleBlockEntityPacket(TagCW com, Passenger player){
+
 	}
 
 }
