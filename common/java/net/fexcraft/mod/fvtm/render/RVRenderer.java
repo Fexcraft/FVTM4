@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
+import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polyhedron;
@@ -22,6 +23,10 @@ import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -31,6 +36,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
+import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -49,6 +55,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		INSTALLCUBE.importMRT(new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, -0.5f, -0.5f, 1, 1, 1), false, 1f);
 	}
 	public static Vec3f INSTALLCOLOR = new Vec3f(0, 1, 1);
+	public static Vec3f SEATCOLOR = new Vec3f(1, 1, 0);
 	private static SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
 	public RVRenderer(EntityRendererProvider.Context context){
@@ -92,7 +99,40 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		//
 		//TODO toggle info
 		//TODO containers
-		//TODO debug seats
+		if(DebugUtils.ACTIVE){
+			Renderer120.rentype = RenderType.lineStrip();
+			pose.pushPose();
+			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
+			pose.scale(scale, scale, scale);
+			Renderer120.setColor(RGB.BLUE);
+			DebugUtils.SPHERE.render();
+			Renderer120.resetColor();
+			pose.popPose();
+			//
+			renderSeats(pose, veh.vehicle);
+		}
+		pose.popPose();
+	}
+
+	private void renderSeats(PoseStack pose, VehicleInstance vehicle){
+		if(vehicle.seats.isEmpty()) return;
+		pose.pushPose();
+		Renderer120.rentype = RenderType.lineStrip();
+		float scale;
+		for(SeatInstance seat : vehicle.seats){
+			pose.pushPose();
+			scale = seat.seat.scale() * 0.5f;
+			V3D pos = seat.seat.pos;
+			if(!seat.point.isVehicle()){
+				pos = seat.point.getRelativeVector(pos);
+			}
+			pose.translate(pos.x, pos.y, pos.z);
+			Renderer120.pose.scale(scale, scale, scale);
+			Renderer120.setColor(SEATCOLOR);
+			INSTALLCUBE.render();
+			pose.popPose();
+		}
+		Renderer120.resetColor();
 		pose.popPose();
 	}
 
