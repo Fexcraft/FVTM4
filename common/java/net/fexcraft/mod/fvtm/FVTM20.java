@@ -19,6 +19,7 @@ import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
+import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.uni.EnvInfo;
@@ -104,36 +105,43 @@ public class FVTM20 {
 		if(EnvInfo.CLIENT){
 			FvtmResources.initModelSystem();
 		}
+		FvtmResources.INSTANCE.registerRecipes();
 	}
 
 	public static LiteralArgumentBuilder<CommandSourceStack> genCommand(){
-		return Commands.literal("fvtm").then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
-			Player player = ctx.getSource().getPlayerOrException();
-			Passenger pass = PassengerUtil.get(player);
-			JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
-			if(map == null || map.empty()){
-				pass.send("No last road data in item.");
+		return Commands.literal("fvtm")
+			.then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
+				Player player = ctx.getSource().getPlayerOrException();
+				Passenger pass = PassengerUtil.get(player);
+				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+				if(map == null || map.empty()){
+					pass.send("No last road data in item.");
+					return 0;
+				}
+				String dim = map.getString("LastRoadDim", "minecraft:overworld");
+				if(!dim.equals(player.level().dimension().location().toString())){
+					pass.send("Last road was placed in &6DIM" + map.getString("LastRoadDim", "unknown"));
+					pass.send("You are currenctly in &6DIM" + player.level().dimension().location());
+					return 0;
+				}
+				map.rem("LastRoadDim");
+				pass.send("&oUndo-ing last placed road...");
+				for(String str : map.value.keySet()){
+					JsonArray array = map.getArray(str);
+					V3I vec = V3I.fromString(str);
+					BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
+					Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(array.get(0).string_value()));
+					player.level().setBlock(pos, block.defaultBlockState(), 3);
+				}
+				RoadPlacingCache.remLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
+				pass.send("&7Last road undone.");
 				return 0;
-			}
-			String dim = map.getString("LastRoadDim", "minecraft:overworld");
-			if(!dim.equals(player.level().dimension().location().toString())){
-				pass.send("Last road was placed in &6DIM" + map.getString("LastRoadDim", "unknown"));
-				pass.send("You are currenctly in &6DIM" + player.level().dimension().location());
+			})))
+			.then(Commands.literal("debug").executes(ctx -> {
+				DebugUtils.ACTIVE = !DebugUtils.ACTIVE;
 				return 0;
-			}
-			map.rem("LastRoadDim");
-			pass.send("&oUndo-ing last placed road...");
-			for(String str : map.value.keySet()){
-				JsonArray array = map.getArray(str);
-				V3I vec = V3I.fromString(str);
-				BlockPos pos = new BlockPos(vec.x, vec.y, vec.z);
-				Block block = BuiltInRegistries.BLOCK.get(new ResourceLocation(array.get(0).string_value()));
-				player.level().setBlock(pos, block.defaultBlockState(), 3);
-			}
-			RoadPlacingCache.remLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
-			pass.send("&7Last road undone.");
-			return 0;
-		})));
+			})
+		);
 	}
 
 }
