@@ -1,7 +1,8 @@
 package net.fexcraft.mod.fvtm.item;
 
-import net.fexcraft.mod.fvtm.FVTM4;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.ContentItem.ContentDataItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
@@ -11,20 +12,28 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
+import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.common.util.NonNullLazy;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -112,6 +121,25 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 	@Override
 	public ContentType getType(){
 		return ContentType.VEHICLE;
+	}
+
+	@Override
+	public void initializeClient(Consumer<IClientItemExtensions> consumer){
+		consumer.accept(new IClientItemExtensions() {
+			private static final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(() -> new BlockEntityWithoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()){
+				@Override
+				public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack pose, MultiBufferSource src, int v0, int v1){
+					if(!stack.hasTag()) return;
+					VehicleData data = FvtmResources.getVehicleData(stack.getTag());
+					if(data != null && data.getType().getModel() != null) data.getType().getModel().render(DefaultModel.RENDERDATA);
+				}
+			});
+
+			@Override
+			public BlockEntityWithoutLevelRenderer getCustomRenderer(){
+				return renderer.get();
+			}
+		});
 	}
 
 }
