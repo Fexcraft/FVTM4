@@ -13,12 +13,14 @@ import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.function.part.EngineFunction;
 import net.fexcraft.mod.fvtm.function.part.TransmissionFunction;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
+import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -131,7 +133,13 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 				public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack pose, MultiBufferSource src, int v0, int v1){
 					if(!stack.hasTag()) return;
 					VehicleData data = FvtmResources.getVehicleData(stack.getTag());
-					if(data != null && data.getType().getModel() != null) data.getType().getModel().render(DefaultModel.RENDERDATA);
+					if(data != null && data.getType().getModel() != null){
+						Renderer120.pose = pose;
+						Renderer120.buffer = src;
+						Renderer120.light = v0;
+						Renderer120.rentype = RenderType.entityCutout(data.getCurrentTexture().local());
+						data.getType().getModel().render(DefaultModel.RENDERDATA);
+					}
 				}
 			});
 
