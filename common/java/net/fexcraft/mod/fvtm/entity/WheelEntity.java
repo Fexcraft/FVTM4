@@ -40,14 +40,14 @@ public class WheelEntity extends Entity {
 		wheel = root.vehicle.wheeldata.get(wid);
 		setStepHeight();
 		//
-		if(root.vehicle.data.getWheelPositions().isEmpty()){
+		if(root.vehicle.wheeldata.isEmpty()){
 			if(!root.isRemoved()){
 				level().addFreshEntity(new ItemEntity(level(), position().x, position().y, position().z, root.vehicle.data.newItemStack().local()));
 				root.kill();
 			}
 			return;
 		}
-		if(!root.vehicle.data.getWheelPositions().containsKey(wheelid)){
+		if(!root.vehicle.wheeldata.containsKey(wheelid)){
 			kill();
 			return;
 		}
