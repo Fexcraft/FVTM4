@@ -22,8 +22,7 @@ public class WheelEntity extends Entity {
 	public RootVehicle root;
 	private boolean found;
 	private int vehid;
-	public WheelSlot wheel;
-	public V3D pos;
+	public WheelTireData wheel;
 	public String wheelid;
 	private float stepheight = 1.125f;
 	public double motionX;
@@ -38,7 +37,7 @@ public class WheelEntity extends Entity {
 		super(FvtmGetters.WHEEL_ENTITY.get(), veh.level());
 		vehid = (root = veh).getId();
 		wheelid = wid;
-		wheel = root.vehicle.data.getWheelSlots().get(wid);
+		wheel = root.vehicle.wheeldata.get(wid);
 		setStepHeight();
 		//
 		if(root.vehicle.data.getWheelPositions().isEmpty()){
@@ -52,8 +51,7 @@ public class WheelEntity extends Entity {
 			kill();
 			return;
 		}
-		pos = root.vehicle.data.getWheelPositions().get(wheelid);
-		V3D vec = root.vehicle.pivot().get_vector(pos);
+		V3D vec = root.vehicle.pivot().get_vector(wheel.pos);
 		setPos(root.position().x + vec.x, root.position().y + vec.y, root.position().z + vec.z);
 		setOldPosAndRot();
 	}
@@ -107,7 +105,7 @@ public class WheelEntity extends Entity {
 		if(root == null) return;
 		setPos(root.position());
 		if(root.vehicle.data == null) return;
-		wheel = root.vehicle.data.getWheelSlots().get(wheelid);
+		wheel = root.vehicle.wheeldata.get(wheelid);
 	}
 
 	@Override
