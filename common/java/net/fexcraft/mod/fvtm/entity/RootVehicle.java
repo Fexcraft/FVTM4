@@ -503,7 +503,7 @@ public class RootVehicle extends Entity {
 	protected void align(){
 		setOldPosAndRot();
 		if(wheels.isEmpty() || vehicle.front == null) return;
-		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getRearConnector());
+		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getConnectorFor(vehicle.data.getType().getCategories()));
 		conn.add(vehicle.front.getV3D());
 		setPos(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;
