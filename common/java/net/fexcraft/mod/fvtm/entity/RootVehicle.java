@@ -17,6 +17,7 @@ import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
 import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.MathUtils;
@@ -266,11 +267,30 @@ public class RootVehicle extends Entity {
 				}
 				return InteractionResult.SUCCESS;
 			}
-			/*else if(stack.getItem() instanceof VehicleItem){
-				//TODO check if trailer and connect
+			else if(stack.getItem() instanceof VehicleItem && vehicle.type.isLandVehicle()){
+				VehicleData data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTag()));
+				if(data.getType().isTrailer()){
+					if(!vehicle.data.hasCompatibleConnector(data.getType().getCategories())){
+						pass.send("interact.fvtm.vehicle.no_compatible_connector");
+						FvtmLogger.debug(vehicle.data.getConnectors());
+						return InteractionResult.SUCCESS;
+					}
+                	//TODO position/data validation
+					if(vehicle.rear != null){
+						pass.send("interact.fvtm.vehicle.disconnect_trailer");
+						return InteractionResult.SUCCESS;
+					}
+					RootVehicle veh = FvtmGetters.getNewVehicle(level());
+					veh.vehicle.front = this.vehicle;
+					vehicle.rear = veh.vehicle;
+					veh.vehicle.point.updatePrevAxe();
+					veh.vehicle.point.getPivot().copy(vehicle.point.getPivot());
+					veh.setPos(position());
+					level().addFreshEntity(veh);
+				}
 				return InteractionResult.SUCCESS;
 			}
-			else if(stack.getItem() instanceof ContainerItem){
+			/*else if(stack.getItem() instanceof ContainerItem){
 				//TODO open container ui
 				return InteractionResult.SUCCESS;
 			}*/
@@ -403,9 +423,8 @@ public class RootVehicle extends Entity {
 					wheel.setYRot((float)(wheel.getYRot() + vehicle.steer_yaw));
 				}
 				wheel.motionX *= 0.9;
-				wheel.motionY *= 0.9;
 				wheel.motionZ *= 0.9;
-				wheel.motionY -= GRAVITY_20th;
+				wheel.motionY = -GRAVITY_20th;
 				wheel.move(MoverType.SELF, wheel.motion());
 				V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 				dest.x = (dest.x - (wheel.position().x - position().x)) * 0.5;
@@ -430,7 +449,7 @@ public class RootVehicle extends Entity {
 					wheel.motionX *= 0.9;
 					//wheel.motionY *= 0.9;
 					wheel.motionZ *= 0.9;
-					wheel.motionY /*-*/ = -GRAVITY;
+					wheel.motionY /*-*/ = -GRAVITY_20th;
 					double steer = Math.toRadians(vehicle.steer_yaw);
 					if(engine != null && (needsnofuel || consumed)){
 						double scal = 0;
@@ -471,6 +490,7 @@ public class RootVehicle extends Entity {
 					}
 				}
 				move(MoverType.SELF, new Vec3(move.x, move.y, move.z));
+				vehicle.speed = Math.sqrt(move.x * move.x + move.z * move.z);
 			}
 		}
 	}
@@ -485,7 +505,7 @@ public class RootVehicle extends Entity {
 		vehicle.throttle = vehicle.front.throttle;
 		double thr = Math.abs(vehicle.throttle);
 		double rawy = vehicle.front.pivot().deg_yaw() - vehicle.pivot().deg_yaw();
-		double diff = rawy * thr * 0.2;
+		double diff = rawy * vehicle.front.speed * 0.2;
 		diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
 		vehicle.pivot().set_rotation(vehicle.pivot().yaw() + Math.toRadians(diff), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
 		alignWheels();
