@@ -431,7 +431,7 @@ public class RootVehicle extends Entity {
 				wheel.motionZ *= 0.9;
 				wheel.motionY -= GRAVITY_20th;
 				wheel.move(MoverType.SELF, wheel.motion());
-				V3D dest = vehicle.pivot().get_vector(wheel.pos);
+				V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 				dest.x = (dest.x - (wheel.position().x - position().x)) * 0.5;
 				dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
 				dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
@@ -482,7 +482,7 @@ public class RootVehicle extends Entity {
 						}
 					}
 					wheel.move(MoverType.SELF, wheel.motion());
-					V3D dest = vehicle.pivot().get_vector(wheel.pos);
+					V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 					dest.x = (dest.x - (wheel.position().x - position().x)) * 0.5;
 					dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
 					dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
@@ -520,7 +520,7 @@ public class RootVehicle extends Entity {
 		for(WheelEntity wheel : wheels.values()){
 			wheel.setOnGround(true);
 			wheel.setYRot(vehicle.pivot().deg_yaw());
-			V3D dest = vehicle.pivot().get_vector(wheel.pos);
+			V3D dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 			dest.x = (dest.x - (wheel.position().x - position().x)) * 0.5;
 			dest.y = (dest.y - (wheel.position().y - position().y)) * 0.5;
 			dest.z = (dest.z - (wheel.position().z - position().z)) * 0.5;
@@ -528,7 +528,7 @@ public class RootVehicle extends Entity {
 				wheel.move(MoverType.SELF, new Vec3(dest.x, dest.y, dest.z));
 			}
 			if(wheel.position().distanceTo(position()) > wheel.getHorSpeed() * 2){
-				dest = vehicle.pivot().get_vector(wheel.pos);
+				dest = vehicle.pivot().get_vector(wheel.wheel.pos);
 				wheel.setPos(dest.x + position().x, dest.y + position().y, dest.z + position().z);
 			}
 		}
