@@ -283,6 +283,7 @@ public class RootVehicle extends Entity {
 					RootVehicle veh = FvtmGetters.getNewVehicle(level());
 					veh.vehicle.front = this.vehicle;
 					vehicle.rear = veh.vehicle;
+					veh.init(data);
 					veh.vehicle.point.updatePrevAxe();
 					veh.vehicle.point.getPivot().copy(vehicle.point.getPivot());
 					veh.setPos(position());
@@ -500,10 +501,9 @@ public class RootVehicle extends Entity {
 		setOldPosAndRot();
 		if(wheels.isEmpty() || vehicle.front == null) return;
 		V3D conn = vehicle.front.pivot().get_vector(vehicle.front.data.getConnectorFor(vehicle.data.getType().getCategories()));
-		conn.add(vehicle.front.getV3D());
+		conn = conn.add(vehicle.front.getV3D());
 		setPos(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;
-		double thr = Math.abs(vehicle.throttle);
 		double rawy = vehicle.front.pivot().deg_yaw() - vehicle.pivot().deg_yaw();
 		double diff = rawy * vehicle.front.speed * 0.2;
 		diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
