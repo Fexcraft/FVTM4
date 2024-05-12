@@ -63,10 +63,6 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 public class RootVehicle extends Entity {
 
 	public VehicleInstance vehicle;
-	public WheelTireData w_front_l;
-	public WheelTireData w_front_r;
-	public WheelTireData w_rear_l;
-	public WheelTireData w_rear_r;
 	protected SimplePhysData spdata;
 	public HashMap<String, WheelEntity> wheels = new HashMap<>();
 	public BoundingBox renderbox;
@@ -112,10 +108,11 @@ public class RootVehicle extends Entity {
 				wheel_radius += ((WheelInstallationHandler.WheelData)part.getType().getInstallHandlerData()).getRadius();
 			}
 			wheel.function = part.getFunction(TireFunction.class, "fvtm:tire").getTireAttr(part);
+			wheel.steering = vehicle.data.getWheelSlots().get(entry.getKey()).steering;
+			wheel.mirror = vehicle.data.getWheelSlots().get(entry.getKey()).mirror;
 			vehicle.wheeldata.put(entry.getKey(), wheel);
 		}
-		assignWheels();
-		assignWheels();
+		vehicle.assignWheels();
 		wheel_radius /= vehicle.wheeldata.size();
 		vehicle.seats.clear();
 		for(int i = 0; i < vehicle.data.getSeats().size(); i++){
@@ -127,27 +124,6 @@ public class RootVehicle extends Entity {
 		if(level().isClientSide){
 			int cr = (int)vehicle.data.getAttributeFloat("collision_range", 2f);
 			renderbox = new BoundingBox(-cr, -cr, -cr, cr, cr, cr);
-		}
-	}
-
-	private void assignWheels(){
-		w_front_l = w_front_r = w_rear_l = w_rear_r = new WheelTireData();
-		for(WheelTireData wheel : vehicle.wheeldata.values()){
-			if(wheel.pos.x <= w_front_l.pos.x && wheel.pos.z <= w_front_l.pos.z){
-				w_front_l = wheel;
-				continue;
-			}
-			if(wheel.pos.x >= w_front_r.pos.x && wheel.pos.z <= w_front_r.pos.z){
-				w_front_r = wheel;
-				continue;
-			}
-			if(wheel.pos.x <= w_rear_l.pos.x && wheel.pos.z >= w_rear_l.pos.z){
-				w_rear_l = wheel;
-				continue;
-			}
-			if(wheel.pos.x >= w_rear_r.pos.x && wheel.pos.z >= w_rear_r.pos.z){
-				w_rear_r = wheel;
-			}
 		}
 	}
 
@@ -387,10 +363,10 @@ public class RootVehicle extends Entity {
 			move(!VEHICLES_NEED_FUEL || creative);
 			if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity.direct()).align();
 			//
-			WheelEntity fl = wheels.get(w_front_l.id);
-			WheelEntity fr = wheels.get(w_front_r.id);
-			WheelEntity rl = wheels.get(w_rear_l.id);
-			WheelEntity rr = wheels.get(w_rear_r.id);
+			WheelEntity fl = wheels.get(vehicle.w_front_l.id);
+			WheelEntity fr = wheels.get(vehicle.w_front_r.id);
+			WheelEntity rl = wheels.get(vehicle.w_rear_l.id);
+			WheelEntity rr = wheels.get(vehicle.w_rear_r.id);
 			if(fl == null) return;
 			V3D fron = new V3D((fl.position().x + fr.position().x) * 0.5, (fl.position().y + fr.position().y) * 0.5, (fl.position().z + fr.position().z) * 0.5);
 			V3D rear = new V3D((rl.position().x + rr.position().x) * 0.5, (rl.position().y + rr.position().y) * 0.5, (rl.position().z + rr.position().z) * 0.5);
