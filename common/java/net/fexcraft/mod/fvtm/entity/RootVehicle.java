@@ -504,11 +504,11 @@ public class RootVehicle extends Entity {
 		conn = conn.add(vehicle.front.getV3D());
 		setPos(conn.x, conn.y, conn.z);
 		vehicle.throttle = vehicle.front.throttle;
-		double rawy = vehicle.front.pivot().deg_yaw() - vehicle.pivot().deg_yaw();
-		double diff = rawy * vehicle.front.speed * 0.2;
-		diff = rawy > 0 ? (diff > rawy ? rawy : diff) : (diff < rawy ? rawy : diff);
-		vehicle.pivot().set_rotation(vehicle.pivot().yaw() + Math.toRadians(diff), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
-		alignWheels();
+		WheelEntity wl = wheels.get(vehicle.w_rear_l.id);
+		WheelEntity wr = wheels.get(vehicle.w_rear_r.id);
+		vehicle.pivot().set_rotation(-Math.atan2((wl.position().x + wr.position().x) * 0.5 - conn.x, (wl.position().z + wr.position().z) * 0.5 - conn.z), vehicle.pivot().pitch(), vehicle.pivot().roll(), false);
+		//alignWheels();
+		if(vehicle.rear != null) ((RootVehicle)vehicle.rear.entity).align();
 	}
 
 	protected void alignWheels(){
