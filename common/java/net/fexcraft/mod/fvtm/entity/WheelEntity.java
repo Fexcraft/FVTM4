@@ -92,7 +92,11 @@ public class WheelEntity extends Entity {
 	}
 
 	public void writeSpawnData(FriendlyByteBuf buffer){
-		if(wheelid == null) return;
+		if(wheelid == null){
+			buffer.writeInt(0);
+			buffer.writeInt(0);
+			return;
+		}
 		buffer.writeInt(vehid);
 		buffer.writeInt(wheelid.length());
 		buffer.writeCharSequence(wheelid, StandardCharsets.UTF_8);
