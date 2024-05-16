@@ -53,8 +53,7 @@ import static net.fexcraft.lib.common.Static.rad180;
 import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY;
-import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.GRAVITY_20th;
+import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.*;
 import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 
@@ -120,7 +119,7 @@ public class RootVehicle extends Entity {
 			vehicle.seats.add(new SeatInstance(vehicle, i));
 		}
 		if(!level().isClientSide && vehicle.front != null){
-			//TODO send connection state update
+			vehicle.sendUpdate(PKT_UPD_CONNECTOR);
 		}
 		if(level().isClientSide){
 			int cr = (int)vehicle.data.getAttributeFloat("collision_range", 2f);
@@ -246,7 +245,7 @@ public class RootVehicle extends Entity {
 		}
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass, wrapper);
-			vehicle.sendLockUpdate();
+			vehicle.sendUpdate(PKT_UPD_LOCK);
 			return InteractionResult.SUCCESS;
 		}
 		if(!stack.isEmpty()){
@@ -650,7 +649,7 @@ public class RootVehicle extends Entity {
 		Passenger pass = PassengerUtil.get(player);
 		if(Lockable.isKey(FvtmRegistry.getItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) && !isFuelContainer(stack.getItem())){
 			vehicle.data.getLock().toggle(pass, new SWI(stack));
-			vehicle.sendLockUpdate();
+			vehicle.sendUpdate(PKT_UPD_LOCK);
 			return true;
 		}
 		if(vehicle.data.getLock().isLocked()){
