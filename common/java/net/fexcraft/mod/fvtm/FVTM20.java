@@ -12,6 +12,7 @@ import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
+import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
@@ -54,6 +55,7 @@ public class FVTM20 {
 			return null;
 		};
 		if(EnvInfo.CLIENT){
+			Config.addListener(DefaultPrograms::setupBlinkerTimer);
 			Renderer.RENDERER = new Renderer120();
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
@@ -104,6 +106,9 @@ public class FVTM20 {
 		FvtmResources.INSTANCE.createContentItems();
 		if(EnvInfo.CLIENT){
 			FvtmResources.initModelSystem();
+			if(DefaultPrograms.BLINKER_TIMER == null){
+				DefaultPrograms.setupBlinkerTimer();
+			}
 		}
 		FvtmResources.INSTANCE.registerRecipes();
 	}
