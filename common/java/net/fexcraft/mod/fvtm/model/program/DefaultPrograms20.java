@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.model.program;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
@@ -11,7 +12,9 @@ import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
+import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import static net.fexcraft.mod.fvtm.model.ProgramUtils.FLOAT_SUPP;
@@ -24,6 +27,26 @@ public class DefaultPrograms20 extends DefaultPrograms {
 
 	public static void init(){
 		DefaultPrograms.init();
+		GLOW = new Program() {
+			private RenderType old;
+			@Override
+			public String id(){
+				return "fvtm:glow_internal";
+			}
+			@Override
+			public void pre(ModelGroup list, ModelRenderData data){
+				old = rentype;
+				rentype = RenderType.entityTranslucentEmissive(data.vehicle.getCurrentTexture().local());
+			}
+			@Override
+			public void post(ModelGroup list, ModelRenderData data){
+				rentype = old;
+			}
+			@Override
+			public RenderOrder order(){
+				return RenderOrder.BLENDED;
+			}
+		};
 		ModelGroup.PROGRAMS.add(new Program() {
 			public String id(){
 				return "fvtm:rgb_primary";
