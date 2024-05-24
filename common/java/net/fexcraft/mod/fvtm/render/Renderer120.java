@@ -30,6 +30,7 @@ public class Renderer120 extends Renderer<GLObject> {
 	public static PoseStack pose;
 	public static MultiBufferSource buffer;
 	public static RenderType rentype;
+	public static VertexConsumer cons;
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static Vec3f color = new Vec3f();
 	public static int light;
@@ -76,7 +77,7 @@ public class Renderer120 extends Renderer<GLObject> {
 				.rotateAxis(Static.toRadians(poly.rotZ), AZ)
 			);
 		}
-		VertexConsumer cons = buffer.getBuffer(rentype);
+		if(buffer != null) cons = buffer.getBuffer(rentype);
 		Matrix4f verma = pose.last().pose();
 		Matrix3f norma = pose.last().normal();
 		for(Polygon poli : poly.polygons){
