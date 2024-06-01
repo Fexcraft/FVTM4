@@ -16,10 +16,10 @@ import java.util.HashMap;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-@Mod.EventBusSubscriber(modid = "fvtm", bus = Mod.EventBusSubscriber.Bus.FORGE, value = { Dist.CLIENT })
+//@Mod.EventBusSubscriber(modid = "fvtm", bus = Mod.EventBusSubscriber.Bus.FORGE, value = { Dist.CLIENT })
 public class ForgeClientEvents {
 
-	@SubscribeEvent
+	//@SubscribeEvent
 	public static void onPlayerRender(RenderPlayerEvent.Pre event){
 		Renderer120.pose = event.getPoseStack();
 		Renderer120.buffer = event.getMultiBufferSource();
