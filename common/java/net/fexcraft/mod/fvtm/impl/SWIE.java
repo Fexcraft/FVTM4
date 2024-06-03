@@ -2,10 +2,7 @@ package net.fexcraft.mod.fvtm.impl;
 
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
-import net.fexcraft.mod.fvtm.item.ConsumableItem;
-import net.fexcraft.mod.fvtm.item.MaterialItem;
-import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +32,7 @@ public class SWIE extends net.fexcraft.mod.uni.impl.SWI {
 			case VEHICLE: return stack.getItem() instanceof VehicleItem;
 			//TODO case FVTM_BLOCK: return stack.getItem() instanceof BlockItem;
 			//TODO case CONTAINER: return stack.getItem() instanceof ContainerItem;
+			case FVTM_TOOLBOX: return stack.getItem() instanceof ToolboxItem;
 		}
 		return super.isItemOf(type);
 	}
