@@ -240,7 +240,7 @@ public class RootVehicle extends Entity {
 				player.sendSystemMessage(Component.translatable("interact.fvtm.vehicle.locked"));
 				return InteractionResult.SUCCESS;
 			}
-			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle, null, pass, wrapper);
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, vehicle.data, vehicle.iref(), null, pass, wrapper);
 			return InteractionResult.SUCCESS;
 		}
 		if(Lockable.isKey(wrapper.getItem()) && !isFuelContainer(stack.getItem())){
