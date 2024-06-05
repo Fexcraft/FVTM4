@@ -7,7 +7,9 @@ import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
+import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
@@ -27,6 +29,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -124,6 +127,12 @@ public class WorldWI extends FvtmWorld {
 	}
 
 	@Override
+	public Map.Entry<VehicleData, InteractionHandler.InteractRef> getInteractRef(TagCW packet){
+		//TODO
+		return null;
+	}
+
+	@Override
 	public boolean noViewEntity(){
 		return ClientPacketPlayer.get() == null;
 	}
@@ -140,6 +149,12 @@ public class WorldWI extends FvtmWorld {
 				list.add(((RootVehicle)entity).vehicle);
 		}
 		return list;
+	}
+
+	@Override
+	public Map<VehicleData, InteractionHandler.InteractRef> getVehicleDatas(V3D pos){
+		//TODO
+		return Map.of();
 	}
 
 	@Override
