@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
@@ -167,6 +168,7 @@ public class ResourcesImpl extends FvtmResources {
 			int index = idx;
 			FvtmGetters.ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.register("asphalt_" + idx, () -> new Asphalt(index));
 		}
+		FvtmGetters.LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.register("vehicle_lift", () -> new VehicleLiftBlock());
 	}
 
 	@Override
@@ -180,6 +182,7 @@ public class ResourcesImpl extends FvtmResources {
 			int index = idx;
 			FvtmGetters.ASPHALT_ITEM[idx] = FVTM4.ITEM_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new BlockItem(FvtmGetters.ASPHALT[index].get(), new Item.Properties()));
 		}
+		FvtmGetters.LIFT_BLOCK_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("vehicle_lift", () -> new BlockItem(FvtmGetters.LIFT_BLOCK.get(), new Item.Properties()));
 	}
 
 	@Override
