@@ -1,6 +1,9 @@
 package net.fexcraft.mod.fvtm;
 
+import com.mojang.datafixers.types.Type;
 import com.mojang.logging.LogUtils;
+import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
+import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
@@ -24,6 +27,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -89,7 +93,11 @@ public class FVTM4 {
 		.networkProtocolVersion(() -> "fvtm4")
 		.simpleChannel();
 	//
-	public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(Registries.BLOCK, "fvtm");
+	//public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(Registries.BLOCK, "fvtm");
+	//
+	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
+	public static final RegistryObject<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY = BLOCKENTS.register("vehicle_lift", () ->
+		BlockEntityType.Builder.of(VehicleLiftEntity::new, FvtmGetters.LIFT_BLOCK.get()).build());
 
 	public FVTM4(){
 		LOGGER4.info("MARKER " + IDLManager.INSTANCE[0]);
@@ -120,7 +128,7 @@ public class FVTM4 {
 		ITEM_REGISTRY.values().forEach(reg -> reg.register(bus));
 		CREATIVE_MODE_TABS.register(bus);
 		ENTITIES.register(bus);
-		BLOCK_REGISTRY.register(bus);
+		//BLOCK_REGISTRY.register(bus);
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event){
