@@ -1,6 +1,8 @@
 package net.fexcraft.mod.fvtm;
 
 import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
+import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
@@ -10,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Function;
@@ -26,6 +29,8 @@ public class FvtmGetters {
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
 	public static Class<? extends WheelEntity> WHEEL_ENTITY_CLASS;
 	//
+	public static Supplier<BlockEntityType<? extends VehicleLiftEntity>> LIFT_ENTITY;
+	//
 	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
 	public static Supplier<ToolboxItem> TOOLBOX0;
@@ -33,6 +38,8 @@ public class FvtmGetters {
 	public static Supplier<ToolboxItem> TOOLBOX2;
 	public static Supplier<Asphalt>[] ASPHALT = new Supplier[16];
 	public static Supplier<BlockItem>[] ASPHALT_ITEM = new Supplier[16];
+	public static Supplier<VehicleLiftBlock> LIFT_BLOCK;
+	public static Supplier<BlockItem> LIFT_BLOCK_ITEM;
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 
