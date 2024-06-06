@@ -29,7 +29,7 @@ public class FvtmGetters {
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
 	public static Class<? extends WheelEntity> WHEEL_ENTITY_CLASS;
 	//
-	public static Supplier<BlockEntityType<? extends VehicleLiftEntity>> LIFT_ENTITY;
+	public static Supplier<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY;
 	//
 	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
