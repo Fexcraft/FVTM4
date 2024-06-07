@@ -31,15 +31,13 @@ public class DecoRenderer extends EntityRenderer<Decoration> {
 	public void render(Decoration deco, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		pose.pushPose();
 		pose.translate(0.0F, 0.5F, 0.0F);
-		Renderer120.pose = pose;
-		Renderer120.buffer = buffer;
-		Renderer120.light = light;
+		Renderer120.set(pose, buffer, light);
 		for(DecorationData data : deco.decos){
 			if(data.model == null){
 				//FvtmLogger.LOGGER.debug(data.modelid);
 				continue;
 			}
-			Renderer120.rentype = RenderType.entityCutout(data.textures.get(data.seltex).local());
+			Renderer120.set(RenderType.entityCutout(data.textures.get(data.seltex).local()));
 			pose.pushPose();
 			pose.translate(data.offset.x16, data.offset.y16, data.offset.z16);
 			if(data.rotx != 0.0F || data.roty != 0.0F || data.rotz != 0.0F){
