@@ -31,10 +31,8 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker> {
 	@Override
 	public void render(RoadMarker marker, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		pose.pushPose();
-		Renderer120.pose = pose;
-		Renderer120.buffer = buffer;
-		Renderer120.light = light;
-		Renderer120.rentype = RenderType.entityCutout(texture);
+		Renderer120.set(pose, buffer, light);
+		Renderer120.set(RenderType.entityCutout(texture));
 		pose.mulPose(new Quaternionf().rotateAxis(Static.rad180, AZ));
 		RoadMarkerModel.INST.marker.render();
 		if(marker.queueid == null){
