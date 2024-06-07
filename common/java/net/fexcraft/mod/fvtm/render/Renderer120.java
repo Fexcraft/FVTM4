@@ -27,13 +27,16 @@ public class Renderer120 extends Renderer<GLObject> {
 	public static Vector3f AY = new Vector3f(0, 1, 0);
 	public static Vector3f AX = new Vector3f(1, 0, 0);
 	public static Vector3f AZ = new Vector3f(0, 0, 1);
-	public static PoseStack pose;
-	public static MultiBufferSource buffer;
-	public static RenderType rentype;
-	public static VertexConsumer cons;
+	//
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static Vec3f color = new Vec3f();
-	public static int light;
+	//
+	public static PoseStack pose;
+	private static MultiBufferSource buffer;
+	private static VertexConsumer cons;
+	private static RenderType rentype;
+	private static int overlay = OverlayTexture.NO_OVERLAY;
+	private static int light;
 
 	public static void setColor(RGB col){
 		float[] arr = col.toFloatArray();
@@ -66,6 +69,10 @@ public class Renderer120 extends Renderer<GLObject> {
 		pose.popPose();
 	}
 
+	public static RenderType rentype(){
+		return rentype;
+	}
+
 	public void render(Polyhedron<GLObject> poly){
 		if(!poly.visible) return;
 		pose.pushPose();
@@ -85,7 +92,7 @@ public class Renderer120 extends Renderer<GLObject> {
 				Vector4f vec = verma.transform(new Vector4f(vert.vector.x, vert.vector.y, vert.vector.z, 1.0F));
 				Vector3f norm = norma.transform(new Vector3f(vert.norm.x, vert.norm.y, vert.norm.z));
 				//if(vert.color() == null){
-					cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
+					cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, 1.0F, vert.u, vert.v, overlay, light, norm.x, norm.y, norm.z);
 				//}
 				//else{
 				//	cons.vertex(vec.x, vec.y, vec.z, (vert.color()).x, (vert.color()).y, (vert.color()).z, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
@@ -97,6 +104,46 @@ public class Renderer120 extends Renderer<GLObject> {
 
 	public void delete(Polyhedron<GLObject> poly){
 		//
+	}
+
+	public static void set(PoseStack ps, MultiBufferSource mbs, int lgt, int ol){
+		pose = ps;
+		buffer = mbs;
+		cons = null;
+		light = lgt;
+		overlay = ol;
+	}
+
+	public static void set(PoseStack ps, MultiBufferSource mbs, int lgt){
+		pose = ps;
+		buffer = mbs;
+		cons = null;
+		light = lgt;
+		overlay = OverlayTexture.NO_OVERLAY;
+	}
+
+	public static void set(PoseStack ps, VertexConsumer con, int lgt, int ol){
+		pose = ps;
+		buffer = null;
+		cons = con;
+		light = lgt;
+		overlay = ol;
+	}
+
+	public static void set(PoseStack ps, VertexConsumer con, int lgt){
+		pose = ps;
+		buffer = null;
+		cons = con;
+		light = lgt;
+		overlay = OverlayTexture.NO_OVERLAY;
+	}
+
+	public static void set(RenderType type){
+		rentype = type;
+	}
+
+	public static void rentype(RenderType type){
+		rentype = type;
 	}
 
 }
