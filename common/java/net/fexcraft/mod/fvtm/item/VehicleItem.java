@@ -134,10 +134,8 @@ public class VehicleItem extends Item implements ContentDataItem<Vehicle, Vehicl
 					if(!stack.hasTag()) return;
 					VehicleData data = FvtmResources.getVehicleData(stack.getTag());
 					if(data != null && data.getType().getModel() != null){
-						Renderer120.pose = pose;
-						Renderer120.buffer = src;
-						Renderer120.light = v0;
-						Renderer120.rentype = RenderType.entityCutout(data.getCurrentTexture().local());
+						Renderer120.set(pose, src, v0);
+						Renderer120.set(RenderType.entityCutout(data.getCurrentTexture().local()));
 						data.getType().getModel().render(DefaultModel.RENDERDATA);
 					}
 				}
