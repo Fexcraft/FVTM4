@@ -26,7 +26,6 @@ import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.fvtm.util.GLUtils112;
 import net.fexcraft.mod.fvtm.util.Rot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -36,7 +35,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
-import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -74,13 +72,11 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			.rotateAxis((float)Static.toRadians(rot.y), AX)
 			.rotateAxis((float)Static.toRadians(rot.z), AZ)
 		);
-		Renderer120.pose = pose;
-		Renderer120.buffer = buffer;
-		Renderer120.light = light;
+		Renderer120.set(pose, buffer, light);
 		//
 		pose.pushPose();
 		Model vehmod = veh.vehicle.data.getType().getModel();
-		Renderer120.rentype = RenderType.entityCutout(veh.vehicle.data.getCurrentTexture().local());
+		Renderer120.set(RenderType.entityCutout(veh.vehicle.data.getCurrentTexture().local()));
 		RenderCache cache = FvtmGetters.getRenderCache(veh);
 		if(vehmod != null){
 			pose.pushPose();
@@ -100,7 +96,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		//TODO toggle info
 		//TODO containers
 		if(DebugUtils.ACTIVE){
-			Renderer120.rentype = RenderType.lineStrip();
+			Renderer120.set(RenderType.lineStrip());
 			pose.pushPose();
 			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
 			pose.scale(scale, scale, scale);
@@ -117,7 +113,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	private void renderSeats(PoseStack pose, VehicleInstance vehicle){
 		if(vehicle.seats.isEmpty()) return;
 		pose.pushPose();
-		Renderer120.rentype = RenderType.lineStrip();
+		Renderer120.set(RenderType.lineStrip());
 		float scale;
 		for(SeatInstance seat : vehicle.seats){
 			pose.pushPose();
@@ -145,7 +141,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		if(part.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) return;
 		VehicleData data = entity.vehicle.data;
 		SwivelPoint point = null;
-		Renderer120.rentype = RenderType.lineStrip();
+		Renderer120.set(RenderType.lineStrip());
 		for(Map.Entry<String, PartSlots> ps : entity.vehicle.data.getPartSlotProviders().entrySet()){
 			V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
 			point = data.getRotationPointOfPart(ps.getKey());
@@ -215,7 +211,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		for(Map.Entry<String, PartData> entry : parts){
 			if(entry.getValue().getType().getModel() == null) continue;
 			pose.pushPose();
-			Renderer120.rentype = RenderType.entityCutout(entry.getValue().getCurrentTexture().local());
+			Renderer120.set(RenderType.entityCutout(entry.getValue().getCurrentTexture().local()));
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
 			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
