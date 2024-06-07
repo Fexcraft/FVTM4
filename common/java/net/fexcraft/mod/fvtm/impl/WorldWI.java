@@ -5,11 +5,13 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
+import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_VehMove;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
@@ -26,6 +28,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
@@ -188,7 +191,14 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public void handleBlockEntityPacket(TagCW com, Passenger player){
-
+		BlockPos pos = BlockPos.of(com.getLong("pos"));
+		BlockEntity tile = level.getBlockEntity(pos);
+		if(tile instanceof PacketListener){
+			((PacketListener)tile).handle(com, player);
+		}
+		else{
+			FvtmLogger.debug("No receiver for packet '" + com + "' found. Dest: " + pos);
+		}
 	}
 
 }
