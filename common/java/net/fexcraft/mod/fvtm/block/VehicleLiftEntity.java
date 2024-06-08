@@ -61,10 +61,10 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener {
 	@Override
 	public void load(CompoundTag com){
 		super.load(com);
-		int meta = com.getInt("Rot");
+		rot = com.getInt("Rot");
 		if(com.contains("VehicleData")){
 			data = FvtmResources.getVehicleData(com.getCompound("VehicleData"));
-			data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(meta), true);
+			data.getRotationPoint(SwivelPoint.DEFAULT).getPivot().set_yaw(-(float)BlockType.GENERIC_4ROT.getRotationFor(rot), true);
 		}
 		liftstate = com.getDouble("LiftState");
 		updateState();
@@ -85,7 +85,9 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener {
 	@Override
 	public void handleUpdateTag(CompoundTag tag){
 		load(tag);
-	}	public void updateState(){
+	}
+
+	public void updateState(){
 		if(data == null){
 			liftstate = 0;
 			return;
