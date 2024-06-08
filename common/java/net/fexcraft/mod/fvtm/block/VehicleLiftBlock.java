@@ -1,7 +1,10 @@
 package net.fexcraft.mod.fvtm.block;
 
 import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -13,6 +16,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
@@ -66,6 +70,28 @@ public class VehicleLiftBlock extends Block implements EntityBlock {
 		if(entity == null) return;
 		VehicleLiftEntity lift = (VehicleLiftEntity)entity;
 		lift.rot = placer.getDirection().ordinal();
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit){
+		if(level.isClientSide || hand == InteractionHand.OFF_HAND) return InteractionResult.PASS;
+		if(player.isShiftKeyDown()){
+			VehicleLiftEntity tile = (VehicleLiftEntity)level.getBlockEntity(pos);
+			if(tile != null){
+				tile.setVehicle(ItemStack.EMPTY);
+				return InteractionResult.SUCCESS;
+			}
+			return InteractionResult.SUCCESS;
+		}
+		if(player.getMainHandItem().getItem() instanceof VehicleItem){
+			VehicleLiftEntity tile = (VehicleLiftEntity)level.getBlockEntity(pos);
+			if(tile != null){
+				tile.setVehicle(player.getMainHandItem());
+				if(!player.isCreative()) player.getMainHandItem().shrink(1);
+				return InteractionResult.SUCCESS;
+			}
+		}
+		return InteractionResult.PASS;
     }
 
 }
