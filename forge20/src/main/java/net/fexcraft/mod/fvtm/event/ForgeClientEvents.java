@@ -4,9 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +19,7 @@ import java.util.HashMap;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-//@Mod.EventBusSubscriber(modid = "fvtm", bus = Mod.EventBusSubscriber.Bus.FORGE, value = { Dist.CLIENT })
+@Mod.EventBusSubscriber(modid = "fvtm", bus = Mod.EventBusSubscriber.Bus.FORGE, value = { Dist.CLIENT })
 public class ForgeClientEvents {
 
 	//@SubscribeEvent
@@ -39,6 +44,14 @@ public class ForgeClientEvents {
 		}
 		//Renderer120.rentype = RenderType.entityCutout(data.getCurrentTexture().local());
 		//data.getType().getModel().render(DefaultModel.RENDERDATA);
+	}
+
+	@SubscribeEvent
+	public static void onLevelRender(RenderLevelStageEvent event){
+		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
+		Renderer120.set(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines()), 0);
+		Renderer120.set(RenderType.lines());
+		DebugUtils.SPHERE.render();
 	}
 
 }
