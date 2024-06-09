@@ -61,6 +61,14 @@ public class Renderer120 extends Renderer<GLObject> {
 		pose.mulPose(new Quaternionf().rotateAxis(by, axe));
 	}
 
+	public static void rotateDeg(PoseStack pose, float by, Vector3f axe){
+		pose.mulPose(new Quaternionf().rotateAxis(Static.toRadians(by), axe));
+	}
+
+	public static void rotateRad(PoseStack pose, float by, Vector3f axe){
+		pose.mulPose(new Quaternionf().rotateAxis(by, axe));
+	}
+
 	public static void pushPose(){
 		pose.pushPose();
 	}
