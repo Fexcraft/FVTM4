@@ -214,7 +214,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			Renderer120.set(RenderType.entityCutout(entry.getValue().getCurrentTexture().local()));
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
-			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
+			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
 			pose.popPose();
 		}
 		for(SwivelPoint sub : point.subs) renderPoint(pose, sub, vehicle, data, cache, ticks);
