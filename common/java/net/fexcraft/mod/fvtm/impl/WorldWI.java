@@ -7,6 +7,8 @@ import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
+import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
@@ -29,10 +31,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -131,8 +133,15 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public Map.Entry<VehicleData, InteractionHandler.InteractRef> getInteractRef(TagCW packet){
-		//TODO
-		return null;
+		if(packet.has("entity")){
+			VehicleInstance inst = getVehicle(packet.getInteger("entity"));
+			return inst == null ? null : new AbstractMap.SimpleEntry<>(inst.data, inst.iref());
+		}
+		else{
+			V3I pos = new V3I(packet.getIntArray("lift"), 0);
+			VehicleLiftEntity tile = (VehicleLiftEntity)level.getBlockEntity(new BlockPos(pos.x, pos.y, pos.z));
+			return tile == null ? null : new AbstractMap.SimpleEntry<>(tile.getVehicleData(), tile.iref());
+		}
 	}
 
 	@Override
@@ -140,24 +149,56 @@ public class WorldWI extends FvtmWorld {
 		return ClientPacketPlayer.get() == null;
 	}
 
+	private static AABB aabb = new AABB(-20, -20, -20, 20, 20, 20);
+
 	@Override
 	public ArrayList<VehicleInstance> getVehicles(V3D pos){
 		ArrayList<VehicleInstance> list = new ArrayList<>();
-		AABB aabb = new AABB(pos.x - 16, pos.y - 16, pos.z - 16, pos.x + 16, pos.y + 16, pos.z + 16);
-		float cr;
-		for(Entity entity : level.getEntities(null, aabb)){
-			if(entity instanceof RootVehicle == false) continue;
-				cr = ((RootVehicle)entity).vehicle.data.getAttribute("collision_range").asFloat() + 1;
-				if(cr < ((RootVehicle)entity).vehicle.entity.getPos().dis(pos)) continue;
-				list.add(((RootVehicle)entity).vehicle);
+		VehicleInstance inst = null;
+		List<Entity> entities = level.getEntities(null, aabb.move(pos.x, pos.y, pos.z));
+		for(Entity entity : entities){
+			if(entity instanceof RootVehicle){
+				inst = ((RootVehicle)entity).vehicle;
+				for(InteractZone zone : inst.data.getInteractZones().values()){
+					if(list.contains(inst)) break;
+					if(zone.inRange(inst, pos)) list.add(inst);
+				}
+			}
 		}
 		return list;
 	}
 
 	@Override
 	public Map<VehicleData, InteractionHandler.InteractRef> getVehicleDatas(V3D pos){
-		//TODO
-		return Map.of();
+		LinkedHashMap<VehicleData, InteractionHandler.InteractRef> map = new LinkedHashMap<>();
+		VehicleInstance inst = null;
+		List<Entity> entities = level.getEntities(null, aabb.move(pos.x, pos.y, pos.z));
+		VehicleLiftEntity lift;
+		for(Entity entity : entities){
+			if(entity instanceof RootVehicle){
+				inst = ((RootVehicle)entity).vehicle;
+				for(InteractZone zone : inst.data.getInteractZones().values()){
+					if(map.containsKey(inst.data)) break;
+					if(zone.inRange(inst, pos)) map.put(inst.data, new InteractionHandler.InteractRef(inst));
+				}
+			}
+		}
+		int xx = (int)pos.x >> 4, zz = (int)pos.z >> 4;
+		for(int x = -1; x < 2; x++){
+			for(int z = -1; z < 2; z++){
+				LevelChunk chunk = level.getChunk(xx + x, zz + z);
+				for(BlockEntity tile : chunk.getBlockEntities().values()){
+					if(!(tile instanceof VehicleLiftEntity)) continue;
+					if((lift = (VehicleLiftEntity)tile).getVehicleData() == null) continue;
+					for(InteractZone zone : lift.getVehicleData().getInteractZones().values()){
+						if(map.containsKey(lift.getVehicleData())) break;
+						if(zone.inRange(lift.getVehicleData(), lift.getVehicleDataPos(), pos))
+							map.put(lift.getVehicleData(), lift.iref());
+					}
+				}
+			}
+		}
+		return map;
 	}
 
 	@Override
