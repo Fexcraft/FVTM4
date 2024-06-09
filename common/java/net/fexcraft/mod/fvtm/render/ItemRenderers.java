@@ -28,7 +28,6 @@ public class ItemRenderers {
 	public static final NonNullLazy<BlockEntityWithoutLevelRenderer> VEHICLE_RENDERER = NonNullLazy.of(() -> new BlockEntityWithoutLevelRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()) {
 		@Override
 		public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack pose, MultiBufferSource src, int v0, int v1){
-			FvtmLogger.marker(stack.getDisplayName());
 			VehicleData data = FvtmGetters.VEHDATACACHE.apply(stack).getContent();
 			if(data != null && data.getType().getModel() != null){
 				VehicleModel model = (VehicleModel)data.getType().getModel();
