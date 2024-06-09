@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.ContentType;
+import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.data.part.PartSlot;
@@ -90,7 +91,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		if(veh.vehicle.data.getParts().size() > 0){
 			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, cache, tick);
 		}
-		renderInstallInfo(pose, veh, tick);
+		renderInstallInfo(pose, veh.vehicle.getV3D(), veh.vehicle.data);
 		pose.popPose();
 		//
 		//TODO toggle info
@@ -132,17 +133,24 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		pose.popPose();
 	}
 
-	private void renderInstallInfo(PoseStack pose, RootVehicle entity, float tick){
+	public static void renderInstallInfo(PoseStack pose, V3D vehpos, VehicleData data){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return;
-		if(entity.vehicle.data.getAttribute("collision_range").asFloat() + 1 < entity.distanceTo(Minecraft.getInstance().player)) return;
+		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
+		boolean inrange = false;
+		for(InteractZone zone : data.getInteractZones().values()){
+			if(zone.inRange(data, vehpos, ply)){
+				inrange = true;
+				break;
+			}
+		}
+		if(!inrange) return;
 		//
 		wrapper.stack = Minecraft.getInstance().player.getMainHandItem();
 		PartData part = wrapper.getContent(ContentType.PART);
 		if(part.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) return;
-		VehicleData data = entity.vehicle.data;
 		SwivelPoint point = null;
 		Renderer120.set(RenderType.lineStrip());
-		for(Map.Entry<String, PartSlots> ps : entity.vehicle.data.getPartSlotProviders().entrySet()){
+		for(Map.Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 			V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
 			point = data.getRotationPointOfPart(ps.getKey());
 			for(PartSlot value : ps.getValue().values()){
