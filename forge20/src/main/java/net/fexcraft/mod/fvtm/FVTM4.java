@@ -1,15 +1,15 @@
 package net.fexcraft.mod.fvtm;
 
-import com.mojang.datafixers.types.Type;
 import com.mojang.logging.LogUtils;
-import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
+import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.util.CTab;
 import net.fexcraft.mod.fvtm.util.RenderCacheProvider;
 import net.fexcraft.mod.fvtm.util.TabInitializerF;
+import net.fexcraft.mod.fvtm.util.VehicleDataCacheProvider;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IDLM;
@@ -26,6 +26,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -116,6 +117,7 @@ public class FVTM4 {
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY_CLASS = WheelEntityF.class;
 		FvtmGetters.RENDERCACHE = entity -> entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
+		FvtmGetters.VEHDATACACHE = stack -> stack.getCapability(VehicleDataCacheProvider.CAPABILITY).resolve().get();
 		FvtmGetters.LIFT_ENTITY = () -> LIFT_ENTITY.get();
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializerF.class;
@@ -159,10 +161,17 @@ public class FVTM4 {
 	public static class Events {
 
 		@SubscribeEvent
-		public static void onAttachCapsEvent(AttachCapabilitiesEvent<Entity> event){
+		public static void onAttackEntityCaps(AttachCapabilitiesEvent<Entity> event){
 			if(!EnvInfo.CLIENT) return;
 			if(event.getObject() instanceof Decoration || event.getObject() instanceof RootVehicle){
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheProvider(event.getObject()));
+			}
+		}
+
+		@SubscribeEvent
+		public static void onAttackStackCaps(AttachCapabilitiesEvent<ItemStack> event){
+			if(event.getObject().getItem() instanceof VehicleItem){
+				event.addCapability(new ResourceLocation("fvtm:itemcache"), new VehicleDataCacheProvider(event.getObject()));
 			}
 		}
 
