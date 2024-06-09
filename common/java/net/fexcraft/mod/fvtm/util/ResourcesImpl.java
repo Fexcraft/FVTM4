@@ -29,10 +29,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -139,6 +141,14 @@ public class ResourcesImpl extends FvtmResources {
 		});
 		DefaultPrograms20.init();
 		ConditionalPrograms.init();
+	}
+
+	@Override
+	public void initModels(){
+		ArrayList<String> tt = new ArrayList<>();
+		for(ItemDisplayContext value : ItemDisplayContext.values()) tt.add(value.name());
+		TransformMap.TYPES = tt.toArray(new String[0]);
+		super.initModels();
 	}
 
 	@Override
