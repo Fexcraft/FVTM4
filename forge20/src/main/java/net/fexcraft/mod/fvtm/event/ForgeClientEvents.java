@@ -46,7 +46,7 @@ public class ForgeClientEvents {
 		//data.getType().getModel().render(DefaultModel.RENDERDATA);
 	}
 
-	@SubscribeEvent
+	//@SubscribeEvent
 	public static void onLevelRender(RenderLevelStageEvent event){
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
 		Renderer120.set(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines()), 0);
