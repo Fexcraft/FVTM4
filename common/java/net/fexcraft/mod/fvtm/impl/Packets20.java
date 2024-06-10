@@ -56,26 +56,6 @@ public abstract class Packets20 extends Packets {
 			if(index < 0 || index > vehicle.vehicle.seats.size()) return;
 			vehicle.processSeatInteract(index, player.local(), InteractionHand.MAIN_HAND);
 		});
-		LIS_SERVER.put("install_part", (com, player) -> {
-			Player entity = player.local();
-			ItemStack stack = entity.getMainHandItem();
-			PartData data = ((PartItem)stack.getItem()).getData(TagCW.wrap(stack.getTag()));
-			RootVehicle vehicle = (RootVehicle)entity.level().getEntity(com.getInteger("entity"));
-			String category = com.getString("category");
-			if(vehicle.vehicle.data.getPart(category) != null){
-				PartData oldpart = vehicle.vehicle.data.getPart(category);
-				boolean valid = oldpart.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData && ((DefaultPartInstallHandler.DPIHData)oldpart.getType().getInstallHandlerData()).swappable;
-				if(valid && vehicle.vehicle.data.deinstallPart(player, category, true)){
-					entity.addItem(oldpart.getNewStack().local());
-				}
-				else return;
-			}
-			data = vehicle.vehicle.data.installPart(player, data, com.getString("source") + ":" + category, true);
-			if(data == null){
-				entity.getMainHandItem().shrink(1);
-				vehicle.vehicle.sendUpdate(VehicleInstance.PKT_UPD_VEHICLEDATA);
-			}
-		});
 		if(EnvInfo.CLIENT){
 			LIS_CLIENT.put("deco", (tag, player) -> {
 				Level level = player.getWorld().local();
