@@ -2,14 +2,14 @@ package net.fexcraft.mod.fvtm.event;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -52,6 +52,22 @@ public class ForgeClientEvents {
 		Renderer120.set(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines()), 0);
 		Renderer120.set(RenderType.lines());
 		DebugUtils.SPHERE.render();
+	}
+
+	private static RootVehicle vehicle;
+
+	@SubscribeEvent
+	public static void onLevelRender(RenderGuiOverlayEvent event){
+		if(Minecraft.getInstance().player.getVehicle() instanceof RootVehicle && event.getOverlay().id().getPath().equals("hotbar")){
+			vehicle = (RootVehicle)Minecraft.getInstance().player.getVehicle();
+			event.getGuiGraphics().drawString(Minecraft.getInstance().font, "Throttle: " + round(vehicle.vehicle.throttle), 10, 10, 0xffffff);
+			event.getGuiGraphics().drawString(Minecraft.getInstance().font, "Steering: " + round(vehicle.vehicle.steer_yaw), 10, 20, 0xffffff);
+			event.getGuiGraphics().drawString(Minecraft.getInstance().font, "Speed: " + round(vehicle.vehicle.speed), 10, 30, 0xffffff);
+		}
+	}
+
+	private static double round(double var){
+		return (int)(var * 100) / 100D;
 	}
 
 }
