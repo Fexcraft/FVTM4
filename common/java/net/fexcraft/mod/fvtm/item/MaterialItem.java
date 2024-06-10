@@ -6,7 +6,6 @@ import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.data.Material;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
-import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +27,7 @@ import static net.fexcraft.mod.fvtm.FvtmRegistry.getFuel;
 public class MaterialItem extends Item implements ContentItem<Material>, Fuel.FuelItem {
 
 	private Material material;
-	private SWI wrapper = new SWI(ItemStack.EMPTY);
+	private StackWrapper wrapper = StackWrapper.wrap(ItemStack.EMPTY);
 
 	public MaterialItem(Material material){
 		super((new Properties())
@@ -50,7 +49,7 @@ public class MaterialItem extends Item implements ContentItem<Material>, Fuel.Fu
 			tooltip.add(GenericUtils.format("&9LockCode: &7" + getLockCode(stack)));
 		}
 		if(material.isFuelContainer()){
-			wrapper.stack = stack;
+			wrapper.set(stack);
 			tooltip.add(GenericUtils.format("&9Container: &7" + (material.isUniversalFuelContainer() ? "universal" : ((material.getFuelType() == null) ? material.getFuelGroup() : material.getFuelType().getName()))));
 			tooltip.add(GenericUtils.format("&9Fuel Stored: &7" + getStoredFuelName(wrapper)));
 			tooltip.add(GenericUtils.format("&9Fuel Amount: &7" + getStoredFuelAmount(wrapper) + "mB"));
