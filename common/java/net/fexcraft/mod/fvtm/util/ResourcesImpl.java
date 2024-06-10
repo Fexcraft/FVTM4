@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.Content;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.addon.AddonLocation;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
+import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.fvtm.model.Transforms;
 import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
@@ -19,7 +20,6 @@ import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
-import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.ItemWrapper;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
@@ -72,7 +72,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerRecipes(){
-		StackWrapper.EMPTY = new SWI(ItemStack.EMPTY);
+		StackWrapper.EMPTY = new SWIE(ItemStack.EMPTY);
 	}
 
 	private ItemWrapper wrapwrapper(IDL id, Supplier<Item> item){
@@ -90,22 +90,22 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public StackWrapper newStack0(ItemWrapper item){
-		return new SWI(item);
+		return new SWIE(item);
 	}
 
 	@Override
 	public StackWrapper newStack0(TagCW com){
-		return new SWI(ItemStack.of(com.local()));
+		return new SWIE(ItemStack.of(com.local()));
 	}
 
 	@Override
 	public StackWrapper newStack0(Object item){
-		return new SWI(new IWI((Item)item));
+		return new SWIE(new IWI((Item)item));
 	}
 
 	@Override
 	public StackWrapper wrapStack0(Object stack){
-		return new SWI((ItemStack)stack);
+		return new SWIE((ItemStack)stack);
 	}
 
 	@Override
