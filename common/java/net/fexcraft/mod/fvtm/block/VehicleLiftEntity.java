@@ -10,7 +10,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.LiftingPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
-import net.fexcraft.mod.fvtm.handler.InteractionHandler;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
+import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRefHolder;
 import net.fexcraft.mod.fvtm.impl.WorldWI;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
@@ -32,9 +33,9 @@ import net.minecraft.world.phys.AABB;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class VehicleLiftEntity extends BlockEntity implements PacketListener {
+public class VehicleLiftEntity extends BlockEntity implements PacketListener, InteractRefHolder {
 
-	private InteractionHandler.InteractRef ref = new InteractionHandler.InteractRef();
+	private InteractRef ref = new InteractRef(this);
 	private VehicleData data;
 	public double liftstate;
 	private double lowest;
@@ -134,6 +135,7 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener {
 		if(stack.getItem() instanceof VehicleItem){
 			data = ((VehicleItem)stack.getItem()).getData(TagCW.wrap(stack.getTag()));
 		}
+		setChanged();
 		sendUpdate();
 	}
 
@@ -177,7 +179,7 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener {
 		return new V3I(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ());
 	}
 
-	public InteractionHandler.InteractRef iref(){
+	public InteractRef iref(){
 		return ref.set(getV3I(), worldPosition.asLong(), getVehicleDataPos());
 	}
 
@@ -185,5 +187,10 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener {
 	public AABB getRenderBoundingBox(){
         return WorldWI.aabb.move(getBlockPos());
     }
+
+	@Override
+	public void markChanged(){
+		setChanged();
+	}
 
 }
