@@ -2,11 +2,11 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
-import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.Vec3f;
+import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
+import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -18,10 +18,13 @@ import net.fexcraft.mod.fvtm.data.part.PartSlot;
 import net.fexcraft.mod.fvtm.data.part.PartSlots;
 import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
+import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
 import net.fexcraft.mod.fvtm.impl.SWIE;
+import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
+import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.Model;
 import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
@@ -51,9 +54,24 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 
 	public static Polyhedron INSTALLCUBE = new Polyhedron();
 	static{
-		INSTALLCUBE.importMRT(new ModelRendererTurbo(null, 0, 0, 16, 16).addBox(-0.5f, -0.5f, -0.5f, 1, 1, 1), false, 1f);
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(1, 0, 0) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 0, 1) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 0), new Vertex(1, 0, 1) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 1), new Vertex(1, 0, 1) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 1, 0), new Vertex(1, 1, 0) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 1, 0), new Vertex(0, 1, 1) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 1, 0), new Vertex(1, 1, 1) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 1, 1), new Vertex(1, 1, 1) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 1, 0) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 0), new Vertex(1, 1, 0) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 1), new Vertex(0, 1, 1) }));
+		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 1), new Vertex(1, 1, 1) }));
+		INSTALLCUBE.pos(-.5f, -.5f, -.5f);
 	}
-	public static Vec3f INSTALLCOLOR = new Vec3f(0, 1, 1);
+	public static Vec3f CYNCOLOR = new Vec3f(0, 1, 1);
+	public static Vec3f REDCOLOR = new Vec3f(1, 0, 0);
+	public static Vec3f GRNCOLOR = new Vec3f(0, 1, 0);
+	public static Vec3f YLWCOLOR = new Vec3f(1, 1, 0);
 	public static Vec3f SEATCOLOR = new Vec3f(1, 1, 0);
 	private static SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
@@ -91,20 +109,25 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		if(veh.vehicle.data.getParts().size() > 0){
 			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, cache, tick);
 		}
-		renderInstallInfo(pose, veh.vehicle.getV3D(), veh.vehicle.data);
+		V3D vp = veh.vehicle.getV3D();
+		if(isInRange(vp, veh.vehicle.data)){
+			renderInstallInfo(pose, vp, veh.vehicle.data);
+			renderWheelInstallInfo(pose, veh.vehicle.data);
+			renderRemovalInfo(pose, veh.vehicle.data);
+		}
 		pose.popPose();
 		//
 		//TODO toggle info
 		//TODO containers
 		if(DebugUtils.ACTIVE){
-			Renderer120.set(RenderType.lineStrip());
+			/*Renderer120.set(RenderType.lines());
 			pose.pushPose();
 			float scale = veh.vehicle.data.getAttribute("collision_range").asFloat();
 			pose.scale(scale, scale, scale);
 			Renderer120.setColor(RGB.BLUE);
 			DebugUtils.SPHERE.render();
 			Renderer120.resetColor();
-			pose.popPose();
+			pose.popPose();*/
 			//
 			renderSeats(pose, veh.vehicle);
 		}
@@ -114,7 +137,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	private void renderSeats(PoseStack pose, VehicleInstance vehicle){
 		if(vehicle.seats.isEmpty()) return;
 		pose.pushPose();
-		Renderer120.set(RenderType.lineStrip());
+		Renderer120.set(RenderType.lines());
 		float scale;
 		for(SeatInstance seat : vehicle.seats){
 			pose.pushPose();
@@ -133,8 +156,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		pose.popPose();
 	}
 
-	public static void renderInstallInfo(PoseStack pose, V3D vehpos, VehicleData data){
-		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return;
+	public static boolean isInRange(V3D vehpos, VehicleData data){
 		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
 		boolean inrange = false;
 		for(InteractZone zone : data.getInteractZones().values()){
@@ -143,13 +165,16 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 				break;
 			}
 		}
-		if(!inrange) return;
-		//
+		return inrange;
+	}
+
+	public static void renderInstallInfo(PoseStack pose, V3D vehpos, VehicleData data){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return;
 		wrapper.stack = Minecraft.getInstance().player.getMainHandItem();
 		PartData part = wrapper.getContent(ContentType.PART);
 		if(part.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) return;
 		SwivelPoint point = null;
-		Renderer120.set(RenderType.lineStrip());
+		Renderer120.set(RenderType.lines());
 		for(Map.Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 			V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
 			point = data.getRotationPointOfPart(ps.getKey());
@@ -163,28 +188,116 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 					if(str.equals(type)){
 						V3D pes = pos.add(value.pos);
 						if(point.isVehicle()){
-							Renderer120.pose.translate(pes.x, pes.y, pes.z);
+							pose.translate(pes.x, pes.y, pes.z);
 						}
 						else{
-							Renderer120.pose.pushPose();
+							pose.pushPose();
 							V3D vec = point.getRelativeVector(pes);
-							Renderer120.pose.translate(vec.x, vec.y, vec.z);
-							Renderer120.rotateRad(point.getPivot().yaw(), AY);
-							Renderer120.rotateRad(point.getPivot().pitch(), AX);
-							Renderer120.rotateRad(point.getPivot().roll(), AZ);
+							pose.translate(vec.x, vec.y, vec.z);
+							rotateRad(point.getPivot().yaw(), AY);
+							rotateRad(point.getPivot().pitch(), AX);
+							rotateRad(point.getPivot().roll(), AZ);
 						}
-						Renderer120.pose.pushPose();
-						Renderer120.pose.scale(value.radius, value.radius, value.radius);
-						Renderer120.setColor(INSTALLCOLOR);
+						pose.pushPose();
+						pose.scale(value.radius, value.radius, value.radius);
+						Renderer120.setColor(CYNCOLOR);
 						INSTALLCUBE.render();
-						Renderer120.pose.popPose();
-						if(!point.isVehicle()) Renderer120.pose.popPose();
-						else Renderer120.pose.translate(-pes.x, -pes.y, -pes.z);
+						pose.popPose();
+						if(!point.isVehicle()) pose.popPose();
+						else pose.translate(-pes.x, -pes.y, -pes.z);
 					}
 				}
 			}
 		}
 		Renderer120.resetColor();
+	}
+
+	public static void renderWheelInstallInfo(PoseStack pose, VehicleData data){
+		int impact = isImpact();
+		PartData wt = isWheelOrTire();
+		if(impact < 0 && wt == null) return;
+		Renderer120.set(RenderType.lines());
+		boolean red;
+		if(impact > -1){
+			red = data.getType().getImpactWrenchLevel() > impact;
+			for(WheelSlot slot : data.getWheelSlots().values()){
+				pose.pushPose();
+				pose.translate(slot.position.x, slot.position.y, slot.position.z);
+				pose.scale(slot.max_radius, slot.max_radius, slot.max_radius);
+				Renderer120.setColor(red ? REDCOLOR : CYNCOLOR);
+				INSTALLCUBE.render();
+				pose.popPose();
+			}
+		}
+		if(wt != null){
+			WheelSlot slot;
+			boolean wheel = wt.hasFunction("fvtm:wheel");
+			boolean tire = wt.hasFunction("fvtm:tire");
+			boolean green;
+			for(Map.Entry<String, WheelSlot> entry : data.getWheelSlots().entrySet()){
+				green = wt.getType().getInstallHandler().validInstall(FvtmLogger.NONE, wt, entry.getKey(), data, true);
+				red = wheel ? data.hasPart(entry.getKey()) : data.hasPart(entry.getKey() + ":tire");
+				slot = entry.getValue();
+				pose.pushPose();
+				pose.translate(slot.position.x, slot.position.y, slot.position.z);
+				pose.scale(slot.max_radius, slot.max_radius, slot.max_radius);
+				Renderer120.setColor(red ? REDCOLOR : green ? GRNCOLOR : CYNCOLOR);
+				INSTALLCUBE.render();
+				pose.popPose();
+			}
+		}
+		Renderer120.resetColor();
+	}
+
+	public static void renderRemovalInfo(PoseStack pose, VehicleData data){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem == false) return;
+		if(((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var > 0) return;
+		Renderer120.set(RenderType.lines());
+		boolean rem;
+		SwivelPoint point;
+		V3D pos;
+		for(Map.Entry<String, PartData> entry : data.getParts().entrySet()){
+			if(entry.getValue().getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) continue;
+			rem = ((DefaultPartInstallHandler.DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
+			point = data.getRotationPointOfPart(entry.getKey());
+			pos = entry.getValue().getInstalledPos();
+			if(point.isVehicle()){
+				pose.translate(pos.x, pos.y, pos.z);
+			}
+			else{
+				pose.pushPose();
+				pos = point.getRelativeVector(pos);
+				pose.translate(pos.x, pos.y, pos.z);
+				rotateDeg(pose, point.getPivot().deg_yaw(), AY);
+				rotateDeg(pose, point.getPivot().deg_pitch(), AX);
+				rotateDeg(pose, point.getPivot().deg_roll(), AZ);
+			}
+			pose.pushPose();
+			if(rem){
+				pose.scale(.25f, .25f, .25f);
+				Renderer120.setColor(YLWCOLOR);
+			}
+			else{
+				pose.scale(.125f, .125f, .125f);
+				Renderer120.setColor(REDCOLOR);
+			}
+			INSTALLCUBE.render();
+			pose.popPose();
+			if(!point.isVehicle()) pose.popPose();
+			else pose.translate(-pos.x, -pos.y, -pos.z);
+		}
+		Renderer120.resetColor();
+	}
+
+	private static int isImpact(){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof MaterialItem == false) return -1;
+		return ((MaterialItem)Minecraft.getInstance().player.getMainHandItem().getItem()).getContent().getImpactLevel();
+	}
+
+	private static PartData isWheelOrTire(){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return null;
+		PartData data = FvtmGetters.PARTDATACACHE.apply(Minecraft.getInstance().player.getMainHandItem()).getContent();
+		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
 	}
 
 	private V3D getRotations(RootVehicle veh, float ticks){
