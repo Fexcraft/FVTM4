@@ -8,6 +8,7 @@ import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.model.RenderCache;
+import net.fexcraft.mod.fvtm.util.ItemDataCache.PartDataCache;
 import net.fexcraft.mod.fvtm.util.ItemDataCache.VehicleDataCache;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -45,6 +46,7 @@ public class FvtmGetters {
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 	public static Function<ItemStack, VehicleDataCache> VEHDATACACHE;
+	public static Function<ItemStack, PartDataCache> PARTDATACACHE;
 
 	public static Decoration getNewDecoration(Level level){
 		return DECORATION_ENTITY.get().create(level);
