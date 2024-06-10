@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
+import net.fexcraft.mod.fvtm.impl.WorldWI;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -178,5 +180,10 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener {
 	public InteractionHandler.InteractRef iref(){
 		return ref.set(getV3I(), worldPosition.asLong(), getVehicleDataPos());
 	}
+
+	@Override
+	public AABB getRenderBoundingBox(){
+        return WorldWI.aabb.move(getBlockPos());
+    }
 
 }
