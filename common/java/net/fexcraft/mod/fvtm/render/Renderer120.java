@@ -24,9 +24,10 @@ import org.joml.Vector4f;
  */
 public class Renderer120 extends Renderer<GLObject> {
 
-	public static Vector3f AY = new Vector3f(0, 1, 0);
-	public static Vector3f AX = new Vector3f(1, 0, 0);
-	public static Vector3f AZ = new Vector3f(0, 0, 1);
+	public static final Vector3f AY = new Vector3f(0, 1, 0);
+	public static final Vector3f AX = new Vector3f(1, 0, 0);
+	public static final Vector3f AZ = new Vector3f(0, 0, 1);
+	public static final Vector3f NULLVEC = new Vector3f(0, 0, 0);
 	//
 	public static final Vec3f DEFCOLOR = new Vec3f(1, 1, 1);
 	private static Vec3f color = new Vec3f();
@@ -98,7 +99,7 @@ public class Renderer120 extends Renderer<GLObject> {
 		for(Polygon poli : poly.polygons){
 			for(Vertex vert : poli.vertices){
 				Vector4f vec = verma.transform(new Vector4f(vert.vector.x, vert.vector.y, vert.vector.z, 1.0F));
-				Vector3f norm = norma.transform(new Vector3f(vert.norm.x, vert.norm.y, vert.norm.z));
+				Vector3f norm = norma.transform(vert.norm == null ? NULLVEC : new Vector3f(vert.norm.x, vert.norm.y, vert.norm.z));
 				//if(vert.color() == null){
 					cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, 1.0F, vert.u, vert.v, overlay, light, norm.x, norm.y, norm.z);
 				//}
