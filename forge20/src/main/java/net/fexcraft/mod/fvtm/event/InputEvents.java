@@ -111,42 +111,44 @@ public class InputEvents {
 		}
 	}
 
-    @SubscribeEvent
-    public static void clickEmpty(PlayerInteractEvent.RightClickEmpty event){
-        if(event.getHand() == InteractionHand.MAIN_HAND){
-            InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()));
-        }
-    }
+	@SubscribeEvent
+	public static void clickEmpty(PlayerInteractEvent.RightClickEmpty event){
+		if(event.getHand() == InteractionHand.MAIN_HAND){
+			InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()));
+		}
+	}
 
-    @SubscribeEvent
-    public static void clickEmpty(PlayerInteractEvent.LeftClickEmpty event){
-        if(event.getHand() == InteractionHand.MAIN_HAND){
-            InteractionHandler.handle(KeyPress.MOUSE_MAIN, StackWrapper.wrap(event.getItemStack()));
-        }
-    }
+	@SubscribeEvent
+	public static void clickEmpty(PlayerInteractEvent.LeftClickEmpty event){
+		if(event.getHand() == InteractionHand.MAIN_HAND){
+			InteractionHandler.handle(KeyPress.MOUSE_MAIN, StackWrapper.wrap(event.getItemStack()));
+		}
+	}
 
-    @SubscribeEvent
-    public static void clickItem(PlayerInteractEvent.RightClickItem event){
-        if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()))){
-        	event.setCanceled(true);
-        	event.setCancellationResult(InteractionResult.PASS);
-        }
-    }
+	@SubscribeEvent
+	public static void clickItem(PlayerInteractEvent.RightClickItem event){
+		if(!event.getLevel().isClientSide) return;
+		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()))){
+			event.setCanceled(true);
+			event.setCancellationResult(InteractionResult.PASS);
+		}
+	}
 
-    @SubscribeEvent
-    public static void clickBlock(PlayerInteractEvent.RightClickBlock event){
-        if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()))){
-        	event.setCanceled(true);
-        	event.setCancellationResult(InteractionResult.PASS);
-        }
-    }
+	@SubscribeEvent
+	public static void clickBlock(PlayerInteractEvent.RightClickBlock event){
+		if(!event.getLevel().isClientSide) return;
+		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_RIGHT, StackWrapper.wrap(event.getItemStack()))){
+			event.setCanceled(true);
+			event.setCancellationResult(InteractionResult.PASS);
+		}
+	}
 
-    @SubscribeEvent
-    public static void clickBlock(PlayerInteractEvent.LeftClickBlock event){
-        if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, StackWrapper.wrap(event.getItemStack()))){
-        	event.setCanceled(true);
-        	event.setCancellationResult(InteractionResult.PASS);
-        }
-    }
+	@SubscribeEvent
+	public static void clickBlock(PlayerInteractEvent.LeftClickBlock event){
+		if(event.getHand() == InteractionHand.MAIN_HAND && InteractionHandler.handle(KeyPress.MOUSE_MAIN, StackWrapper.wrap(event.getItemStack()))){
+			event.setCanceled(true);
+			event.setCancellationResult(InteractionResult.PASS);
+		}
+	}
 
 }
