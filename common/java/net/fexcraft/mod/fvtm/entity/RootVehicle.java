@@ -23,7 +23,6 @@ import net.fexcraft.mod.fvtm.ui.UIKey;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
-import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -648,7 +647,7 @@ public class RootVehicle extends Entity {
 		SeatInstance seat = vehicle.seats.get(seatidx);
 		Passenger pass = PassengerUtil.get(player);
 		if(Lockable.isKey(FvtmRegistry.getItem(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())) && !isFuelContainer(stack.getItem())){
-			vehicle.data.getLock().toggle(pass, new SWI(stack));
+			vehicle.data.getLock().toggle(pass, StackWrapper.wrap(stack));
 			vehicle.sendUpdate(PKT_UPD_LOCK);
 			return true;
 		}
