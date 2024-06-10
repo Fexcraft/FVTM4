@@ -184,6 +184,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 				}
 			}
 		}
+		Renderer120.resetColor();
 	}
 
 	private V3D getRotations(RootVehicle veh, float ticks){
