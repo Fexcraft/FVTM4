@@ -8,7 +8,6 @@ import net.fexcraft.mod.fvtm.data.part.PartFunction;
 import net.fexcraft.mod.fvtm.data.root.ItemTextureable.TextureableItem;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler.DPIHData;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
-import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
@@ -55,7 +54,7 @@ public class PartItem extends Item implements ContentDataItem<Part, PartData>, T
 			}
         }
         if(!data.getFunctions().isEmpty()){
-			StackWrapper wrapper = new SWI(stack);
+			StackWrapper wrapper = StackWrapper.wrap(stack);
 			ArrayList<String> tips = new ArrayList<>();
             for(PartFunction func : data.getFunctions().values()){
 				func.addInformation(wrapper, WrapperHolder.getWorld(world), data, tips, flag.isAdvanced());
