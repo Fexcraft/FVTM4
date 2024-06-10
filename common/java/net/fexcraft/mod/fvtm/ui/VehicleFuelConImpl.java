@@ -4,7 +4,6 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
-import net.fexcraft.mod.uni.impl.SWI;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -18,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 public class VehicleFuelConImpl extends VehicleFuelCon {
 
 	private SimpleContainer container;
-	private SWI wrapper = new SWI(ItemStack.EMPTY);
+	private StackWrapper wrapper = StackWrapper.wrap(ItemStack.EMPTY);
 
 	public VehicleFuelConImpl(JsonMap map, EntityW player, V3I pos){
 		super(map, player, pos);
@@ -37,7 +36,7 @@ public class VehicleFuelConImpl extends VehicleFuelCon {
 
 	@Override
 	public StackWrapper getInventoryContent(int index){
-		wrapper.stack = container.getItem(index);
+		wrapper.set(container.getItem(index));
 		return wrapper;
 	}
 
