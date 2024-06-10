@@ -51,9 +51,12 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 			if(data.getParts().size() > 0){
 				RVRenderer.renderPoint(pose, data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);
 			}
-			RVRenderer.renderInstallInfo(pose, tile.getVehicleDataPos(), data);
-			//EffectRenderer.renderWheelInstallInfo(tile.getVehicleDataPos(), data);
-			//EffectRenderer.renderRemovalInfo(tile.getVehicleDataPos(), data);
+			V3D vdp = tile.getVehicleDataPos();
+			if(RVRenderer.isInRange(vdp, data)){
+				RVRenderer.renderInstallInfo(pose, vdp, data);
+				RVRenderer.renderWheelInstallInfo(pose, data);
+				RVRenderer.renderRemovalInfo(pose, data);
+			}
 			pose.popPose();
 			Renderer120.set(RenderType.entityCutout(TEXTURE));
 			for(LiftingPoint[] point : data.getType().getGroupedLiftingPoints().values()){
