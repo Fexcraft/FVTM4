@@ -149,7 +149,7 @@ public class WorldWI extends FvtmWorld {
 		return ClientPacketPlayer.get() == null;
 	}
 
-	private static AABB aabb = new AABB(-20, -20, -20, 20, 20, 20);
+	public static AABB aabb = new AABB(-20, -20, -20, 20, 20, 20);
 
 	@Override
 	public ArrayList<VehicleInstance> getVehicles(V3D pos){
