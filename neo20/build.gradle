@@ -13,13 +13,13 @@ sourceSets {
     main {
         java {
             srcDirs += 'src/main/java'
-            srcDirs += 'common/java'
-            srcDirs += new File(file('..'), "/FVTMN/src")
+            srcDirs += new File(file('..'), 'common/java')
+            srcDirs += new File(file('../..'), "/FVTMN/src")
         }
         resources {
             srcDirs += 'src/main/resources'
-            srcDirs += 'common/resources'
-            srcDirs += new File(file('..'), "/FVTMN/res")
+            srcDirs += new File(file('..'), 'common/resources')
+            srcDirs += new File(file('../..'), "/FVTMN/res")
         }
     }
 }
