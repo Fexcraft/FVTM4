@@ -1,5 +1,6 @@
 package net.fexcraft.mod.fvtm.impl;
 
+import com.mojang.authlib.GameProfile;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.uni.world.CubeSide;
@@ -8,9 +9,12 @@ import net.fexcraft.mod.uni.world.WorldW;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,7 +83,11 @@ public class WrapperHolderImpl extends WrapperHolder {
 
 	@Override
 	public List<UUID> getOnlinePlayerIDs0(){
-		return null;
+		List<UUID> list = new ArrayList<>();
+		for(ServerPlayer player : ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers()){
+			list.add(player.getGameProfile().getId());
+		}
+		return list;
 	}
 
 	@Override
