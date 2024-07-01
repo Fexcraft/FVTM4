@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.FvtmRegistry;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.uni.Pos;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -19,9 +20,9 @@ public class DecoContainer extends ContainerInterface {
 	protected Decoration entity;
 	protected DecorationData selected;
 
-	public DecoContainer(JsonMap map, EntityW player, V3I pos){
+	public DecoContainer(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
-		Level level = player.getWorld().local();
+		Level level = player.entity.getWorld().local();
 		entity = (Decoration)level.getEntity(pos.x);
 	}
 
