@@ -6,6 +6,7 @@ import net.fexcraft.mod.fvtm.data.root.Colorable;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.ContainerInterface;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -21,9 +22,9 @@ public class ToolboxPaintContainer extends ContainerInterface {
 	protected Colorable colorable;
 	protected RootVehicle vehicle;
 
-	public ToolboxPaintContainer(JsonMap map, EntityW player, V3I vec){
+	public ToolboxPaintContainer(JsonMap map, UniEntity player, V3I vec){
 		super(map, player, vec);
-		vehicle = (RootVehicle)((Level)player.getWorld().local()).getEntity(vec.x);
+		vehicle = (RootVehicle)((Level)player.entity.getWorld().local()).getEntity(vec.x);
 		colorable = vehicle.vehicle.data;
 	}
 
@@ -37,8 +38,8 @@ public class ToolboxPaintContainer extends ContainerInterface {
 				return colorable.getColorChannel(objs[0].toString());
 			}
 			case "open_wiki":{
-				if(player.getWorld().isClient()){
-					((Player)player.direct()).sendSystemMessage(Component.literal("https://fexcraft.net/wiki/mod/fvtm/toolbox#painter"));
+				if(player.entity.getWorld().isClient()){
+					((Player)player.entity.direct()).sendSystemMessage(Component.literal("https://fexcraft.net/wiki/mod/fvtm/toolbox#painter"));
 					//TODO open link dialog instead
 				}
 				return null;
