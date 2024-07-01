@@ -7,7 +7,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.entity.Decoration;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.GenericUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -39,7 +39,7 @@ public class DecorationItem extends Item {
 		decoen.setPos(context.getClickLocation());
 		context.getLevel().addFreshEntity(decoen);
 		if(!context.getPlayer().isCreative()) stack.shrink(1);
-		PassengerUtil.get(context.getPlayer()).openUI(UIKey.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));
+		PassengerUtil.get(context.getPlayer()).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(decoen.getId(), 0, 0));
 		return InteractionResult.SUCCESS;
 	}
 
