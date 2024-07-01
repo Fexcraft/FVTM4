@@ -6,6 +6,7 @@ import net.fexcraft.mod.fcl.util.PassengerUtil;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.uni.world.EntityW;
 import net.fexcraft.mod.uni.world.WorldW;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -105,11 +106,15 @@ public class Packets20F extends Packets20 {
 	private <PKT extends PacketBase> Runnable getRunnableWhenPlayerPresent(PKT packet, Supplier<NetworkEvent.Context> context, PacketHandler<PKT> handler){
 		if(context.get().getDirection().getOriginationSide().isClient()){
 			if(context.get().getSender() == null) return () -> {};
-			return handler.handleServer(packet, PassengerUtil.get(context.get().getSender()));
+			Passenger pass = PassengerUtil.get(context.get().getSender());
+			if(pass == null) return () -> {};
+			return handler.handleServer(packet, pass);
 		}
 		else{
 			if(ClientPacketPlayer.get() == null) return () -> {};
-			return handler.handleClient(packet, PassengerUtil.get(ClientPacketPlayer.get()));
+			Passenger pass = PassengerUtil.get(ClientPacketPlayer.get());
+			if(pass == null) return () -> {};
+			return handler.handleClient(packet, pass);
 		}
 	}
 
