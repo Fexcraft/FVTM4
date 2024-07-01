@@ -5,6 +5,7 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.uimpl.UniCon;
@@ -19,7 +20,7 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 	protected RoadInventory inv;
 	protected SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
-	public RoadToolCustomConImpl(JsonMap map, EntityW player, V3I pos){
+	public RoadToolCustomConImpl(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		inv = new RoadInventory(size[0] >= 9 ? 9 : size[0]);
 	}
@@ -28,7 +29,7 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 	public void init(){
 		int is = size[0] > 9 ? 9 : size[0];
 		for(int i = 0; i < is; i++){
-			((UniCon)root).addSlot(new RoadInventory.RoadSlot((FvtmWorld)player.getWorld(), inv, i, 88 - offset + 1 + i * 18, 8, true, pos.x > 0));
+			((UniCon)root).addSlot(new RoadInventory.RoadSlot((FvtmWorld)player.entity.getWorld(), inv, i, 88 - offset + 1 + i * 18, 8, true, pos.x > 0));
 		}
 		fillStacks();
 	}
