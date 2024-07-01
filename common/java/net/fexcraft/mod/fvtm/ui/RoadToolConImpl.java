@@ -4,6 +4,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCon;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -17,7 +18,7 @@ public class RoadToolConImpl extends RoadToolCon {
 	private RoadInventory inv = new RoadInventory();
 	private SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
-	public RoadToolConImpl(JsonMap map, EntityW player, V3I pos){
+	public RoadToolConImpl(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		initInv();
 	}
