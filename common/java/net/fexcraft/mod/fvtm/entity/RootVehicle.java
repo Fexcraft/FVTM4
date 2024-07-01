@@ -19,7 +19,7 @@ import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.sys.uni.*;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.fvtm.util.MathUtils;
 import net.fexcraft.mod.fvtm.util.PassImplPlus;
 import net.fexcraft.mod.fvtm.util.function.InventoryFunction;
@@ -53,7 +53,7 @@ import static net.fexcraft.lib.common.Static.rad90;
 import static net.fexcraft.mod.fvtm.Config.VEHICLES_NEED_FUEL;
 import static net.fexcraft.mod.fvtm.Config.VEHICLE_SYNC_RATE;
 import static net.fexcraft.mod.fvtm.sys.uni.VehicleInstance.*;
-import static net.fexcraft.mod.fvtm.ui.UIKey.VEHICLE_MAIN;
+import static net.fexcraft.mod.fvtm.ui.UIKeys.VEHICLE_MAIN;
 import static net.fexcraft.mod.fvtm.util.MathUtils.*;
 
 /**
@@ -249,7 +249,7 @@ public class RootVehicle extends Entity {
 		}
 		if(!stack.isEmpty()){
 			if(stack.getItem() instanceof MaterialItem && ((MaterialItem)stack.getItem()).getContent().isFuelContainer()){
-				pass.openUI(UIKey.VEHICLE_FUEL, new V3I(getId(), 0, 0));
+				pass.openUI(UIKeys.VEHICLE_FUEL, new V3I(getId(), 0, 0));
 				return InteractionResult.SUCCESS;
 			}
 			else if(stack.getItem() instanceof ToolboxItem){
@@ -261,7 +261,7 @@ public class RootVehicle extends Entity {
 
 				}
 				else if(var == 2){
-					pass.openUI(UIKey.TOOLBOX_COLORS, new V3I(getId(), 0, 0));
+					pass.openUI(UIKeys.TOOLBOX_COLORS, new V3I(getId(), 0, 0));
 				}
 				return InteractionResult.SUCCESS;
 			}
