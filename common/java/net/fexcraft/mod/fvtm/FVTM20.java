@@ -71,26 +71,26 @@ public class FVTM20 {
 					return new Slot((Container)args[0], (Integer)args[1], (Integer)args[2], (Integer)args[3]);
 			}
 		};
-		UniReg.registerUI(UIKey.DECORATION_EDITOR.key, DecoEditor.class);
-		UniReg.registerMenu(UIKey.DECORATION_EDITOR.key, "assets/fvtm/uis/deco_editor", DecoContainer.class);
-		UniReg.registerUI(UIKey.TOOLBOX_COLORS.key, ToolboxPainter.class);
-		UniReg.registerMenu(UIKey.TOOLBOX_COLORS.key, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
+		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
+		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "assets/fvtm/uis/deco_editor", DecoContainer.class);
+		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
 		//
-		UniReg.registerUI(UIKey.ROAD_TOOL.key, RoadToolUI.class);
-		UniReg.registerMenu(UIKey.ROAD_TOOL.key, "assets/fvtm/uis/road_tool", RoadToolConImpl.class);
-		UniReg.registerUI(UIKey.ROAD_TOOL_CUSTOM.key, RoadToolCustomUI.class);
-		UniReg.registerMenu(UIKey.ROAD_TOOL_CUSTOM.key, "assets/fvtm/uis/road_tool_custom", RoadToolCustomConImpl.class);
+		UniReg.registerUI(UIKeys.ROAD_TOOL, RoadToolUI.class);
+		UniReg.registerMenu(UIKeys.ROAD_TOOL, "assets/fvtm/uis/road_tool", RoadToolConImpl.class);
+		UniReg.registerUI(UIKeys.ROAD_TOOL_CUSTOM, RoadToolCustomUI.class);
+		UniReg.registerMenu(UIKeys.ROAD_TOOL_CUSTOM, "assets/fvtm/uis/road_tool_custom", RoadToolCustomConImpl.class);
 		//
-		UniReg.registerUI(UIKey.VEHICLE_MAIN.key, VehicleMain.class);
-		UniReg.registerMenu(UIKey.VEHICLE_MAIN.key, "assets/fvtm/uis/vehicle_main", VehicleMainCon.class);
-		UniReg.registerUI(UIKey.VEHICLE_FUEL.key, VehicleFuel.class);
-		UniReg.registerMenu(UIKey.VEHICLE_FUEL.key, "assets/fvtm/uis/vehicle_fuel", VehicleFuelConImpl.class);
-		UniReg.registerUI(UIKey.VEHICLE_ATTRIBUTES.key, VehicleAttributes.class);
-		UniReg.registerMenu(UIKey.VEHICLE_ATTRIBUTES.key, "assets/fvtm/uis/vehicle_attributes", VehicleAttributesCon.class);
-		UniReg.registerUI(UIKey.VEHICLE_INVENTORIES.key, VehicleInventories.class);
-		UniReg.registerMenu(UIKey.VEHICLE_INVENTORIES.key, "assets/fvtm/uis/vehicle_inventories", VehicleInventoriesCon.class);
-		UniReg.registerUI(UIKey.VEHICLE_CATALOG.key, VehicleCatalog.class);
-		UniReg.registerMenu(UIKey.VEHICLE_CATALOG.key, "assets/fvtm/uis/vehicle_catalog", VehicleCatalogCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_MAIN, VehicleMain.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_MAIN, "assets/fvtm/uis/vehicle_main", VehicleMainCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_FUEL, VehicleFuel.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_FUEL, "assets/fvtm/uis/vehicle_fuel", VehicleFuelConImpl.class);
+		UniReg.registerUI(UIKeys.VEHICLE_ATTRIBUTES, VehicleAttributes.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_ATTRIBUTES, "assets/fvtm/uis/vehicle_attributes", VehicleAttributesCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_INVENTORIES, VehicleInventories.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_INVENTORIES, "assets/fvtm/uis/vehicle_inventories", VehicleInventoriesCon.class);
+		UniReg.registerUI(UIKeys.VEHICLE_CATALOG, VehicleCatalog.class);
+		UniReg.registerMenu(UIKeys.VEHICLE_CATALOG, "assets/fvtm/uis/vehicle_catalog", VehicleCatalogCon.class);
 		//
 		FvtmResources.INSTANCE.init();
 	}
