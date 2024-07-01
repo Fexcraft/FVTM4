@@ -26,11 +26,6 @@ public class WrapperHolderImpl extends WrapperHolder {
 	private WorldW client;
 
 	@Override
-	public EntityW getEntity0(Object o){
-		return PassengerUtil.get((Entity)o);
-	}
-
-	@Override
 	public WorldW getWorld0(Object o){
 		if(o == null) return null;
 		if(!WORLDS.containsKey(o)){
