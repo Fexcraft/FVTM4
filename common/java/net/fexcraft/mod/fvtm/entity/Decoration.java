@@ -7,7 +7,7 @@ import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
-import net.fexcraft.mod.fvtm.ui.UIKey;
+import net.fexcraft.mod.fvtm.ui.UIKeys;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -116,7 +116,7 @@ public class Decoration extends Entity {
 			return InteractionResult.SUCCESS;
 		}
 		if(stack.isEmpty() || stack.getItem() instanceof DecorationItem){
-			PassengerUtil.get(player).openUI(UIKey.DECORATION_EDITOR.key, new V3I(getId(), 0, 0));
+			PassengerUtil.get(player).openUI(UIKeys.DECORATION_EDITOR.key, new V3I(getId(), 0, 0));
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
