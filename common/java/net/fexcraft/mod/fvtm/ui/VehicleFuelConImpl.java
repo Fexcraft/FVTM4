@@ -4,6 +4,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fvtm.data.Fuel;
 import net.fexcraft.mod.fvtm.ui.vehicle.VehicleFuelCon;
+import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.world.EntityW;
@@ -19,7 +20,7 @@ public class VehicleFuelConImpl extends VehicleFuelCon {
 	private SimpleContainer container;
 	private StackWrapper wrapper = StackWrapper.wrap(ItemStack.EMPTY);
 
-	public VehicleFuelConImpl(JsonMap map, EntityW player, V3I pos){
+	public VehicleFuelConImpl(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
 		container = new SimpleContainer(1);
 	}
@@ -57,9 +58,9 @@ public class VehicleFuelConImpl extends VehicleFuelCon {
 
 	@Override
 	public void onClosed(){
-		if(player.isOnClient()) return;
+		if(player.entity.isOnClient()) return;
 		if(container.getItem(0).isEmpty()) return;
-		ServerPlayer player = this.player.local();
+		ServerPlayer player = this.player.entity.local();
 		if(player.isAlive() && !player.hasDisconnected()){
 			player.getInventory().placeItemBackInInventory(container.getItem(0));
 		}
