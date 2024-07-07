@@ -157,7 +157,7 @@ dependencies {
     // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
 
-    implementation project(":FCL20F")
+    implementation project(":FCL")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
