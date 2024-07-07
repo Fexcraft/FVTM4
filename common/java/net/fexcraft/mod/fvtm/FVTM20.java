@@ -6,7 +6,7 @@ import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
-import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.SWIE;
@@ -21,7 +21,7 @@ import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.fvtm.util.PassImplPlus;
+import net.fexcraft.mod.fvtm.util.EntityWIE;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
@@ -48,7 +48,7 @@ public class FVTM20 {
 	public static Config CONFIG;
 
 	public static void init0(){
-		PassengerUtil.PASS_IMPL = PassImplPlus.class;
+		EntityUtil.IMPL = EntityWIE.class;
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		AABB.SUPPLIER = () -> new AABBI();
 		StackWrapper.SUPPLIER = obj -> {
@@ -119,7 +119,7 @@ public class FVTM20 {
 		return Commands.literal("fvtm")
 			.then(Commands.literal("undo").then(Commands.literal("road").executes(ctx -> {
 				Player player = ctx.getSource().getPlayerOrException();
-				Passenger pass = PassengerUtil.get(player);
+				Passenger pass = EntityUtil.get(player);
 				JsonMap map = RoadPlacingCache.getLastEntry(player.getGameProfile().getId(), player.level().dimension().location().toString());
 				if(map == null || map.empty()){
 					pass.send("No last road data in item.");
