@@ -3,7 +3,7 @@ package net.fexcraft.mod.fvtm.impl;
 import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.ClientPacketPlayer;
-import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.block.Asphalt;
@@ -114,7 +114,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public Passenger getPassenger(int source){
-		return PassengerUtil.get(level.getEntity(source));
+		return EntityUtil.get(level.getEntity(source));
 	}
 
 	@Override
@@ -203,7 +203,7 @@ public class WorldWI extends FvtmWorld {
 
 	@Override
 	public Passenger getClientPassenger(){
-		return PassengerUtil.get(ClientPacketPlayer.get());
+		return EntityUtil.get(ClientPacketPlayer.get());
 	}
 
 	@Override
