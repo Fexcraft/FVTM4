@@ -43,6 +43,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 
+import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -121,6 +122,7 @@ public class FVTM4 {
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializerF.class;
 		}
+		FVTM20.CONFIG = new Config(new File(FMLPaths.CONFIGDIR.get().toFile(), "fvtm.json"));
 		FVTM20.init0();
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(Registries.ITEM, addon.getID().id())));
 		FVTM20.init1();
