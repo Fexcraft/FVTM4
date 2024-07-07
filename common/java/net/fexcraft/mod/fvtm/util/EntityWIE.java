@@ -1,11 +1,11 @@
 package net.fexcraft.mod.fvtm.util;
 
-import net.fexcraft.lib.common.math.V3D;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.util.Passenger;
+import net.fexcraft.mod.fcl.util.EntityWI;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
 import net.fexcraft.mod.fvtm.packet.Packets;
+import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.ui.UIKey;
@@ -15,13 +15,13 @@ import net.minecraft.world.entity.player.Player;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class PassImplPlus extends Passenger implements net.fexcraft.mod.fvtm.sys.uni.Passenger {
+public class EntityWIE extends EntityWI implements Passenger {
 
 	private boolean notified;
 	private int vehicle;
 	private int seat;
 
-	public PassImplPlus(Entity iah){
+	public EntityWIE(Entity iah){
 		super(iah);
 	}
 
@@ -71,25 +71,6 @@ public class PassImplPlus extends Passenger implements net.fexcraft.mod.fvtm.sys
 	@Override
 	public int seat(){
 		return seat;
-	}
-
-	@Override
-	public V3D getEyeVec(){
-		//Entity ent = net.minecraft.client.Minecraft.getInstance().crosshairPickEntity;
-		//return ent == null ? V3D.NULL : new V3D(ent.getEyePosition().x, ent.getEyePosition().y, ent.getEyePosition().z);
-		return new V3D(entity.getEyePosition().x, entity.getEyePosition().y, entity.getEyePosition().z);
-	}
-
-	@Override
-	public V3D getLookVec(){
-		//Entity ent = net.minecraft.client.Minecraft.getInstance().crosshairPickEntity;
-		//return ent == null ? V3D.NULL : new V3D(ent.getLookAngle().x, ent.getLookAngle().y, ent.getLookAngle().z);
-		return new V3D(entity.getLookAngle().x, entity.getLookAngle().y, entity.getLookAngle().z);
-	}
-
-	@Override
-	public boolean isShiftDown(){
-		return entity.isShiftKeyDown();
 	}
 
 	@Override
