@@ -1,6 +1,6 @@
 package net.fexcraft.mod.fvtm.event;
 
-import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler;
 import net.fexcraft.mod.fvtm.sys.uni.KeyPress;
@@ -40,7 +40,7 @@ public class InputEvents {
 	}
 
 	private static void handleKeyboardInput(){
-		Passenger player = PassengerUtil.get(minecraft.player);
+		Passenger player = EntityUtil.get(minecraft.player);
 		SeatInstance seat = ((RootVehicle)minecraft.player.getVehicle()).getSeatOf(minecraft.player);
 		if(seat == null) return;
 		boolean u12 = false;
