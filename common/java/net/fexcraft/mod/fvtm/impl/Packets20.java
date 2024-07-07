@@ -2,15 +2,11 @@ package net.fexcraft.mod.fvtm.impl;
 
 import io.netty.buffer.ByteBuf;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.Config;
-import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.data.block.BlockData;
-import net.fexcraft.mod.fvtm.data.part.PartData;
 import net.fexcraft.mod.fvtm.entity.Decoration;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
-import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
-import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.packet.*;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
@@ -22,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
@@ -68,7 +63,7 @@ public abstract class Packets20 extends Packets {
 				Level level = player.getWorld().local();
 				Entity ent = level.getEntity(tag.getInteger("entity"));
 				if(ent == null) return;
-				((Passenger)PassengerUtil.get(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
+				((Passenger)EntityUtil.get(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
 			});
 			LIS_CLIENT.put("vehicle_color", (tag, player) -> {
 				Level level = player.getWorld().local();
