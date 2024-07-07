@@ -45,6 +45,8 @@ import net.minecraft.world.level.block.Block;
  */
 public class FVTM20 {
 
+	public static Config CONFIG;
+
 	public static void init0(){
 		PassengerUtil.PASS_IMPL = PassImplPlus.class;
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
@@ -55,12 +57,12 @@ public class FVTM20 {
 			return null;
 		};
 		if(EnvInfo.CLIENT){
-			Config.addListener(DefaultPrograms::setupBlinkerTimer);
+			CONFIG.addListener(DefaultPrograms::setupBlinkerTimer);
 			Renderer.RENDERER = new Renderer120();
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
 		FvtmResources.INSTANCE = new ResourcesImpl();
-		Config.addListener(() -> {
+		CONFIG.addListener(() -> {
 			//
 		});
 		//
