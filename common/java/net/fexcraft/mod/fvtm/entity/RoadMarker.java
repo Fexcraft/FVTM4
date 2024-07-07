@@ -1,7 +1,7 @@
 package net.fexcraft.mod.fvtm.entity;
 
 import io.netty.buffer.ByteBuf;
-import net.fexcraft.mod.fcl.util.PassengerUtil;
+import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.item.RoadToolItem;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
 import net.fexcraft.mod.fvtm.util.QV3D;
@@ -117,9 +117,9 @@ public class RoadMarker extends Entity {
 			RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(current);
 			if(road == null) return InteractionResult.SUCCESS;
 			if(player.getMainHandItem().getItem() instanceof RoadToolItem){
-				road.create(PassengerUtil.get(player), position, StackWrapper.wrap(player.getMainHandItem()));
+				road.create(EntityUtil.get(player), position, StackWrapper.wrap(player.getMainHandItem()));
 			}
-			else road.select(PassengerUtil.get(player), position);
+			else road.select(EntityUtil.get(player), position);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.SUCCESS;
@@ -134,7 +134,7 @@ public class RoadMarker extends Entity {
 			if(queueid != null && queueid.equals(queueid)){
 				Player player = (Player)source.getDirectEntity();
 				RoadPlacingUtil.NewRoad road = RoadPlacingUtil.QUEUE.get(queueid);
-				if(road != null) road.remove(PassengerUtil.get(player), position);
+				if(road != null) road.remove(EntityUtil.get(player), position);
 				kill();
 			}
 		}
