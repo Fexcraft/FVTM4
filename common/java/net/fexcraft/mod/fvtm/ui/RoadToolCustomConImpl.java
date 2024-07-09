@@ -2,14 +2,12 @@ package net.fexcraft.mod.fvtm.ui;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.lib.common.math.V3I;
-import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.sys.uni.FvtmWorld;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
 import net.fexcraft.mod.uni.uimpl.UniCon;
-import net.fexcraft.mod.uni.world.EntityW;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -18,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 public class RoadToolCustomConImpl extends RoadToolCustomCon {
 
 	protected RoadInventory inv;
-	protected SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
 	public RoadToolCustomConImpl(JsonMap map, UniEntity player, V3I pos){
 		super(map, player, pos);
@@ -61,8 +58,7 @@ public class RoadToolCustomConImpl extends RoadToolCustomCon {
 
 	@Override
 	public StackWrapper getInventoryContent(int index){
-		wrapper.stack = inv.getItem(index);
-		return wrapper;
+		return StackWrapper.wrap(inv.getItem(index));
 	}
 
 	@Override
