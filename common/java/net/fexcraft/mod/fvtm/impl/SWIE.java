@@ -1,12 +1,10 @@
 package net.fexcraft.mod.fvtm.impl;
 
-import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.data.ContentItem;
 import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.item.*;
 import net.fexcraft.mod.uni.item.ItemType;
 import net.fexcraft.mod.uni.item.ItemWrapper;
-import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.LeadItem;
 
@@ -25,6 +23,7 @@ public class SWIE extends net.fexcraft.mod.uni.impl.SWI {
 
 	@Override
 	public boolean isItemOf(ItemType type){
+		if(stack == null) return false;
 		switch(type){
 			case LEAD: return stack.getItem() instanceof LeadItem;
 			case FOOD: return stack.getItem().isEdible();
@@ -43,8 +42,8 @@ public class SWIE extends net.fexcraft.mod.uni.impl.SWI {
 	public <C> C getContent(Object contenttype){
 		ContentType type = (ContentType)contenttype;
 		switch(type){
-			case PART: return (C)FvtmGetters.PARTDATACACHE.apply(stack).getContent();
-			case VEHICLE: return (C)FvtmGetters.VEHDATACACHE.apply(stack).getContent();
+			case PART: return (C)((PartItem)stack.getItem()).getData(this);
+			case VEHICLE: return (C)((VehicleItem)stack.getItem()).getData(this);
 			case MATERIAL: return (C)((MaterialItem)stack.getItem()).getContent();
 			//TODO case CONTAINER: return (C)((ContainerItem)stack.getItem()).getData(this);
 			case CONSUMABLE: return (C)((ConsumableItem)stack.getItem()).getContent();
@@ -55,11 +54,6 @@ public class SWIE extends net.fexcraft.mod.uni.impl.SWI {
 			//TODO case WIRE: return (C)((WireItem)stack.getItem()).getContent();
 		}
 		return null;
-	}
-
-	@Override
-	public StackWrapper copy(){
-		return new SWIE(stack.copy());
 	}
 
 
