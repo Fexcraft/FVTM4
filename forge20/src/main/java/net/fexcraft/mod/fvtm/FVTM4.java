@@ -1,12 +1,12 @@
 package net.fexcraft.mod.fvtm;
 
 import com.mojang.logging.LogUtils;
+import net.fexcraft.mod.fcl.util.StackWrapperProvider;
 import net.fexcraft.mod.fvtm.block.VehicleLiftEntity;
 import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
-import net.fexcraft.mod.fvtm.item.PartItem;
-import net.fexcraft.mod.fvtm.item.VehicleItem;
+import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
@@ -116,9 +116,8 @@ public class FVTM4 {
 		FvtmGetters.WHEEL_ENTITY = () -> WHEEL_ENTITY.get();
 		FvtmGetters.WHEEL_ENTITY_CLASS = WheelEntityF.class;
 		FvtmGetters.RENDERCACHE = entity -> entity.getCapability(RenderCacheProvider.CAPABILITY).resolve().get();
-		FvtmGetters.VEHDATACACHE = stack -> stack.getCapability(VehicleDataCacheProvider.CAPABILITY).resolve().get();
-		FvtmGetters.PARTDATACACHE = stack -> stack.getCapability(PartDataCacheProvider.CAPABILITY).resolve().get();
 		FvtmGetters.LIFT_ENTITY = () -> LIFT_ENTITY.get();
+		StackWrapperProvider.IMPL = SWIE.class;
 		if(EnvInfo.CLIENT){
 			CTab.IMPL[0] = TabInitializerF.class;
 		}
@@ -171,12 +170,7 @@ public class FVTM4 {
 
 		@SubscribeEvent
 		public static void onAttackStackCaps(AttachCapabilitiesEvent<ItemStack> event){
-			if(event.getObject().getItem() instanceof VehicleItem){
-				event.addCapability(new ResourceLocation("fvtm:itemcache"), new VehicleDataCacheProvider(event.getObject()));
-			}
-			if(event.getObject().getItem() instanceof PartItem){
-				event.addCapability(new ResourceLocation("fvtm:itemcache"), new PartDataCacheProvider(event.getObject()));
-			}
+			//
 		}
 
 		@SubscribeEvent
