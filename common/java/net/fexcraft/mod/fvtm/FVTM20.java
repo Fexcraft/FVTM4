@@ -9,7 +9,6 @@ import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.impl.AABBI;
-import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
@@ -25,8 +24,6 @@ import net.fexcraft.mod.fvtm.util.EntityWIE;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
-import net.fexcraft.mod.uni.item.ItemWrapper;
-import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.WrapperHolder;
 import net.minecraft.commands.CommandSourceStack;
@@ -37,7 +34,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -51,11 +47,6 @@ public class FVTM20 {
 		EntityUtil.IMPL = EntityWIE.class;
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		AABB.SUPPLIER = () -> new AABBI();
-		StackWrapper.SUPPLIER = obj -> {
-			if(obj instanceof ItemWrapper) return new SWIE((ItemWrapper)obj);
-			if(obj instanceof ItemStack) return new SWIE((ItemStack)obj);
-			return null;
-		};
 		if(EnvInfo.CLIENT){
 			CONFIG.addListener(DefaultPrograms::setupBlinkerTimer);
 			Renderer.RENDERER = new Renderer120();
