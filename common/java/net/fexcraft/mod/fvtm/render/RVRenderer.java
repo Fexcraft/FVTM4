@@ -10,7 +10,6 @@ import net.fexcraft.lib.frl.Vertex;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.data.ContentType;
 import net.fexcraft.mod.fvtm.data.InteractZone;
 import net.fexcraft.mod.fvtm.data.part.Part;
 import net.fexcraft.mod.fvtm.data.part.PartData;
@@ -21,7 +20,6 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
-import net.fexcraft.mod.fvtm.impl.SWIE;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
@@ -30,14 +28,15 @@ import net.fexcraft.mod.fvtm.model.RenderCache;
 import net.fexcraft.mod.fvtm.sys.uni.SeatInstance;
 import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
+import net.fexcraft.mod.fvtm.util.PartItemApp;
 import net.fexcraft.mod.fvtm.util.Rot;
+import net.fexcraft.mod.uni.item.StackWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import org.joml.Quaternionf;
 
 import java.util.ArrayList;
@@ -73,7 +72,6 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	public static Vec3f GRNCOLOR = new Vec3f(0, 1, 0);
 	public static Vec3f YLWCOLOR = new Vec3f(1, 1, 0);
 	public static Vec3f SEATCOLOR = new Vec3f(1, 1, 0);
-	private static SWIE wrapper = new SWIE(ItemStack.EMPTY);
 
 	public RVRenderer(EntityRendererProvider.Context context){
 		super(context);
@@ -170,8 +168,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 
 	public static void renderInstallInfo(PoseStack pose, V3D vehpos, VehicleData data){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return;
-		wrapper.stack = Minecraft.getInstance().player.getMainHandItem();
-		PartData part = wrapper.getContent(ContentType.PART);
+		PartData part = StackWrapper.wrapAndGetApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
 		if(part.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) return;
 		SwivelPoint point = null;
 		Renderer120.set(RenderType.lines());
@@ -296,7 +293,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 
 	private static PartData isWheelOrTire(){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return null;
-		PartData data = FvtmGetters.PARTDATACACHE.apply(Minecraft.getInstance().player.getMainHandItem()).getContent();
+		PartData data = StackWrapper.wrapAndGetApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
 		return data.hasFunction("fvtm:wheel") || data.hasFunction("fvtm:tire") ? data : null;
 	}
 
