@@ -65,12 +65,6 @@ public abstract class Packets20 extends Packets {
 				if(ent == null) return;
 				((Passenger)EntityUtil.get(ent)).set(tag.getInteger("vehicle"), tag.getInteger("seat"));
 			});
-			LIS_CLIENT.put("vehicle_color", (tag, player) -> {
-				Level level = player.getWorld().local();
-				Entity ent = level.getEntity(tag.getInteger("vehicle"));
-				if(ent == null) return;
-				((RootVehicle)ent).vehicle.data.getColorChannel(tag.getString("channel")).packed = tag.getInteger("color");
-			});
 		}
 	}
 
