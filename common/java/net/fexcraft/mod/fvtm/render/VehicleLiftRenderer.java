@@ -52,7 +52,8 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 				RVRenderer.renderPoint(pose, data.getRotationPoint(SwivelPoint.DEFAULT), null, data, null, ticks);
 			}
 			V3D vdp = tile.getVehicleDataPos();
-			if(RVRenderer.isInRange(vdp, data)){
+			if(RVRenderer.isInRange(pose, vdp, data)){
+				RVRenderer.renderVehicleInfo(pose, vdp, data);
 				RVRenderer.renderInstallInfo(pose, vdp, data);
 				RVRenderer.renderWheelInstallInfo(pose, data);
 				RVRenderer.renderRemovalInfo(pose, data);
