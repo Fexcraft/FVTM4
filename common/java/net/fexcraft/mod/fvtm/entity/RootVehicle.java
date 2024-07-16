@@ -258,7 +258,7 @@ public class RootVehicle extends Entity {
 
 				}
 				else if(var == 1){
-
+					pass.openUI(UIKeys.TOOLBOX_TEXTURE, new V3I(getId(), 0, 0));
 				}
 				else if(var == 2){
 					pass.openUI(UIKeys.TOOLBOX_COLORS, new V3I(getId(), 0, 0));
