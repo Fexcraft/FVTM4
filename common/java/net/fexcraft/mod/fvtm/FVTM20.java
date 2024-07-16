@@ -68,6 +68,8 @@ public class FVTM20 {
 		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "assets/fvtm/uis/deco_editor", DecoContainer.class);
 		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
 		UniReg.registerMenu(UIKeys.TOOLBOX_COLORS, "assets/fvtm/uis/toolbox_colors", ToolboxPaintContainer.class);
+		UniReg.registerUI(UIKeys.TOOLBOX_TEXTURE, ToolboxTexture.class);
+		UniReg.registerMenu(UIKeys.TOOLBOX_TEXTURE, "assets/fvtm/uis/toolbox_texture", ToolboxTextureContainer.class);
 		//
 		UniReg.registerUI(UIKeys.ROAD_TOOL, RoadToolUI.class);
 		UniReg.registerMenu(UIKeys.ROAD_TOOL, "assets/fvtm/uis/road_tool", RoadToolConImpl.class);
