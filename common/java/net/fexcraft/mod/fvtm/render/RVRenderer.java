@@ -7,6 +7,7 @@ import net.fexcraft.lib.common.math.Vec3f;
 import net.fexcraft.lib.frl.Polygon;
 import net.fexcraft.lib.frl.Polyhedron;
 import net.fexcraft.lib.frl.Vertex;
+import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -44,6 +45,7 @@ import java.util.Map;
 
 import static net.fexcraft.mod.fvtm.model.DefaultModel.RENDERDATA;
 import static net.fexcraft.mod.fvtm.render.Renderer120.*;
+import static net.fexcraft.mod.fvtm.util.DebugUtils.*;
 import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
 
 /**
@@ -67,11 +69,6 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 1), new Vertex(1, 1, 1) }));
 		INSTALLCUBE.pos(-.5f, -.5f, -.5f);
 	}
-	public static Vec3f CYNCOLOR = new Vec3f(0, 1, 1);
-	public static Vec3f REDCOLOR = new Vec3f(1, 0, 0);
-	public static Vec3f GRNCOLOR = new Vec3f(0, 1, 0);
-	public static Vec3f YLWCOLOR = new Vec3f(1, 1, 0);
-	public static Vec3f SEATCOLOR = new Vec3f(1, 1, 0);
 
 	public RVRenderer(EntityRendererProvider.Context context){
 		super(context);
@@ -108,7 +105,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			renderPoint(pose, veh.vehicle.point, veh, veh.vehicle.data, cache, tick);
 		}
 		V3D vp = veh.vehicle.getV3D();
-		if(isInRange(vp, veh.vehicle.data)){
+		if(isInRange(pose, vp, veh.vehicle.data)){
+			renderVehicleInfo(pose, vp, veh.vehicle.data);
 			renderInstallInfo(pose, vp, veh.vehicle.data);
 			renderWheelInstallInfo(pose, veh.vehicle.data);
 			renderRemovalInfo(pose, veh.vehicle.data);
@@ -154,7 +152,8 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		pose.popPose();
 	}
 
-	public static boolean isInRange(V3D vehpos, VehicleData data){
+	public static boolean isInRange(PoseStack pose, V3D vehpos, VehicleData data){
+		Renderer120.set(RenderType.lineStrip());
 		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
 		boolean inrange = false;
 		for(InteractZone zone : data.getInteractZones().values()){
@@ -162,8 +161,20 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 				inrange = true;
 				break;
 			}
+			if(DebugUtils.ACTIVE){
+				pose.pushPose();
+				Renderer120.setColor(zone.inRange(data, vehpos, ply) ? GRNCOLOR : GRYCOLOR);
+				pose.scale(zone.range, zone.range, zone.range);
+				DebugUtils.SPHERE.render();
+				Renderer120.resetColor();
+				pose.popPose();
+			}
 		}
 		return inrange;
+	}
+
+	public static void renderVehicleInfo(PoseStack pose, V3D vehpos, VehicleData data){
+
 	}
 
 	public static void renderInstallInfo(PoseStack pose, V3D vehpos, VehicleData data){
