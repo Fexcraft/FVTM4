@@ -54,9 +54,6 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 			V3D vdp = tile.getVehicleDataPos();
 			if(RVRenderer.isInRange(pose, vdp, data)){
 				RVRenderer.renderVehicleInfo(pose, vdp, data);
-				RVRenderer.renderInstallInfo(pose, vdp, data);
-				RVRenderer.renderWheelInstallInfo(pose, data);
-				RVRenderer.renderRemovalInfo(pose, data);
 			}
 			pose.popPose();
 			Renderer120.set(RenderType.entityCutout(TEXTURE));
