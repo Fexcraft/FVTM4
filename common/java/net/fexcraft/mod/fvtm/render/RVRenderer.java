@@ -3,11 +3,6 @@ package net.fexcraft.mod.fvtm.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.V3D;
-import net.fexcraft.lib.common.math.Vec3f;
-import net.fexcraft.lib.frl.Polygon;
-import net.fexcraft.lib.frl.Polyhedron;
-import net.fexcraft.lib.frl.Vertex;
-import net.fexcraft.lib.tmt.ModelRendererTurbo;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmLogger;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -21,6 +16,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
 import net.fexcraft.mod.fvtm.handler.DefaultPartInstallHandler;
+import net.fexcraft.mod.fvtm.handler.WheelInstallationHandler;
 import net.fexcraft.mod.fvtm.item.MaterialItem;
 import net.fexcraft.mod.fvtm.item.PartItem;
 import net.fexcraft.mod.fvtm.item.ToolboxItem;
@@ -52,23 +48,6 @@ import static net.fexcraft.mod.fvtm.util.MathUtils.valDeg;
  * @author Ferdinand Calo' (FEX___96)
  */
 public class RVRenderer extends EntityRenderer<RootVehicle> {
-
-	public static Polyhedron INSTALLCUBE = new Polyhedron();
-	static{
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(1, 0, 0) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 0, 1) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 0), new Vertex(1, 0, 1) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 1), new Vertex(1, 0, 1) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 1, 0), new Vertex(1, 1, 0) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 1, 0), new Vertex(0, 1, 1) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 1, 0), new Vertex(1, 1, 1) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 1, 1), new Vertex(1, 1, 1) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 0), new Vertex(0, 1, 0) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 0), new Vertex(1, 1, 0) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(0, 0, 1), new Vertex(0, 1, 1) }));
-		INSTALLCUBE.polygons.add(new Polygon(new Vertex[]{ new Vertex(1, 0, 1), new Vertex(1, 1, 1) }));
-		INSTALLCUBE.pos(-.5f, -.5f, -.5f);
-	}
 
 	public RVRenderer(EntityRendererProvider.Context context){
 		super(context);
@@ -107,9 +86,9 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		V3D vp = veh.vehicle.getV3D();
 		if(isInRange(pose, vp, veh.vehicle.data)){
 			renderVehicleInfo(pose, vp, veh.vehicle.data);
-			renderInstallInfo(pose, vp, veh.vehicle.data);
-			renderWheelInstallInfo(pose, veh.vehicle.data);
-			renderRemovalInfo(pose, veh.vehicle.data);
+			//renderInstallInfo(pose, vp, veh.vehicle.data);
+			//renderWheelInstallInfo(pose, veh.vehicle.data);
+			//renderRemovalInfo(pose, veh.vehicle.data);
 		}
 		pose.popPose();
 		//
@@ -145,7 +124,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			pose.translate(pos.x, pos.y, pos.z);
 			Renderer120.pose.scale(scale, scale, scale);
 			Renderer120.setColor(SEATCOLOR);
-			INSTALLCUBE.render();
+			CUBE.render();
 			pose.popPose();
 		}
 		Renderer120.resetColor();
@@ -174,125 +153,124 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	}
 
 	public static void renderVehicleInfo(PoseStack pose, V3D vehpos, VehicleData data){
-
-	}
-
-	public static void renderInstallInfo(PoseStack pose, V3D vehpos, VehicleData data){
-		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return;
-		PartData part = StackWrapper.wrapAndGetApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
-		if(part.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) return;
+		PartData part = isNormalPart();
+		boolean red;
 		SwivelPoint point = null;
 		Renderer120.set(RenderType.lines());
-		for(Map.Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
-			V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
-			point = data.getRotationPointOfPart(ps.getKey());
-			for(PartSlot value : ps.getValue().values()){
-				if(data.hasPart(value.type)){
-					Part epart = data.getPart(value.type).getType();
-					if(!(epart.getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData) || !((DefaultPartInstallHandler.DPIHData)epart.getInstallHandlerData()).swappable) continue;
-				}
-				String type = value.type;
-				for(String str : part.getType().getCategories()){
-					if(str.equals(type)){
-						V3D pes = pos.add(value.pos);
-						if(point.isVehicle()){
-							pose.translate(pes.x, pes.y, pes.z);
-						}
-						else{
+		if(part != null){
+			for(Map.Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
+				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
+				point = data.getRotationPointOfPart(ps.getKey());
+				red = false;
+				for(PartSlot value : ps.getValue().values()){
+					if(data.hasPart(value.type)){
+						Part epart = data.getPart(value.type).getType();
+						if(!(epart.getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData)) continue;
+						red = !((DefaultPartInstallHandler.DPIHData)epart.getInstallHandlerData()).swappable;
+					}
+					String type = value.type;
+					for(String str : part.getType().getCategories()){
+						if(str.equals(type)){
+							V3D pes = pos.add(value.pos);
+							if(point.isVehicle()){
+								pose.translate(pes.x, pes.y, pes.z);
+							}
+							else{
+								pose.pushPose();
+								V3D vec = point.getRelativeVector(pes);
+								pose.translate(vec.x, vec.y, vec.z);
+								rotateRad(point.getPivot().yaw(), AY);
+								rotateRad(point.getPivot().pitch(), AX);
+								rotateRad(point.getPivot().roll(), AZ);
+							}
 							pose.pushPose();
-							V3D vec = point.getRelativeVector(pes);
-							pose.translate(vec.x, vec.y, vec.z);
-							rotateRad(point.getPivot().yaw(), AY);
-							rotateRad(point.getPivot().pitch(), AX);
-							rotateRad(point.getPivot().roll(), AZ);
+							pose.scale(value.radius, value.radius, value.radius);
+							Renderer120.setColor(red ? REDCOLOR : CYNCOLOR);
+							CUBE.render();
+							pose.popPose();
+							if(!point.isVehicle()) pose.popPose();
+							else pose.translate(-pes.x, -pes.y, -pes.z);
 						}
-						pose.pushPose();
-						pose.scale(value.radius, value.radius, value.radius);
-						Renderer120.setColor(CYNCOLOR);
-						INSTALLCUBE.render();
-						pose.popPose();
-						if(!point.isVehicle()) pose.popPose();
-						else pose.translate(-pes.x, -pes.y, -pes.z);
 					}
 				}
 			}
 		}
-		Renderer120.resetColor();
-	}
+		//
 
-	public static void renderWheelInstallInfo(PoseStack pose, VehicleData data){
-		int impact = isImpact();
-		PartData wt = isWheelOrTire();
-		if(impact < 0 && wt == null) return;
-		Renderer120.set(RenderType.lines());
-		boolean red;
-		if(impact > -1){
-			red = data.getType().getImpactWrenchLevel() > impact;
+		int tool = isImpact();
+		if(tool > -1){
+			red = data.getType().getImpactWrenchLevel() > tool ;
 			for(WheelSlot slot : data.getWheelSlots().values()){
 				pose.pushPose();
 				pose.translate(slot.position.x, slot.position.y, slot.position.z);
 				pose.scale(slot.max_radius, slot.max_radius, slot.max_radius);
 				Renderer120.setColor(red ? REDCOLOR : CYNCOLOR);
-				INSTALLCUBE.render();
+				CUBE.render();
 				pose.popPose();
 			}
 		}
-		if(wt != null){
+		part = isWheelOrTire();
+		if(part != null){
 			WheelSlot slot;
-			boolean wheel = wt.hasFunction("fvtm:wheel");
-			boolean tire = wt.hasFunction("fvtm:tire");
+			boolean wheel = part.hasFunction("fvtm:wheel");
+			//boolean tire = part.hasFunction("fvtm:tire");
 			boolean green;
 			for(Map.Entry<String, WheelSlot> entry : data.getWheelSlots().entrySet()){
-				green = wt.getType().getInstallHandler().validInstall(FvtmLogger.NONE, wt, entry.getKey(), data, true);
-				red = wheel ? data.hasPart(entry.getKey()) : data.hasPart(entry.getKey() + ":tire");
+				green = part.getType().getInstallHandler().validInstall(FvtmLogger.NONE, part, entry.getKey(), data, true);
+				if(wheel){
+					red = data.hasPart(entry.getKey());
+				}
+				else{
+					red = data.hasPart(entry.getKey()) && ((WheelInstallationHandler.WheelData)data.getPart(entry.getKey()).getType().getInstallHandlerData()).hasTire();
+					if(!red) red = data.hasPart(entry.getKey() + ":tire");
+				}
 				slot = entry.getValue();
 				pose.pushPose();
 				pose.translate(slot.position.x, slot.position.y, slot.position.z);
 				pose.scale(slot.max_radius, slot.max_radius, slot.max_radius);
 				Renderer120.setColor(red ? REDCOLOR : green ? GRNCOLOR : CYNCOLOR);
-				INSTALLCUBE.render();
+				CUBE.render();
 				pose.popPose();
 			}
 		}
-		Renderer120.resetColor();
-	}
-
-	public static void renderRemovalInfo(PoseStack pose, VehicleData data){
-		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem == false) return;
-		if(((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var > 0) return;
-		Renderer120.set(RenderType.lines());
-		boolean rem;
-		SwivelPoint point;
-		V3D pos;
-		for(Map.Entry<String, PartData> entry : data.getParts().entrySet()){
-			if(entry.getValue().getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) continue;
-			rem = ((DefaultPartInstallHandler.DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
-			point = data.getRotationPointOfPart(entry.getKey());
-			pos = entry.getValue().getInstalledPos();
-			if(point.isVehicle()){
-				pose.translate(pos.x, pos.y, pos.z);
-			}
-			else{
+		//
+		tool = isToolbox();
+		if(tool > 0){
+			Renderer120.setColor(ORGCOLOR);
+			CUBE.render();
+		}
+		if(tool > -1 && tool < 2){
+			V3D pos;
+			for(Map.Entry<String, PartData> entry : data.getParts().entrySet()){
+				if(tool == 0 && entry.getValue().getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) continue;
+				red = tool != 0 || !((DefaultPartInstallHandler.DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
+				point = data.getRotationPointOfPart(entry.getKey());
+				pos = entry.getValue().getInstalledPos();
+				if(point.isVehicle()){
+					pose.translate(pos.x, pos.y, pos.z);
+				}
+				else{
+					pose.pushPose();
+					pos = point.getRelativeVector(pos);
+					pose.translate(pos.x, pos.y, pos.z);
+					rotateDeg(pose, point.getPivot().deg_yaw(), AY);
+					rotateDeg(pose, point.getPivot().deg_pitch(), AX);
+					rotateDeg(pose, point.getPivot().deg_roll(), AZ);
+				}
 				pose.pushPose();
-				pos = point.getRelativeVector(pos);
-				pose.translate(pos.x, pos.y, pos.z);
-				rotateDeg(pose, point.getPivot().deg_yaw(), AY);
-				rotateDeg(pose, point.getPivot().deg_pitch(), AX);
-				rotateDeg(pose, point.getPivot().deg_roll(), AZ);
+				if(red){
+					pose.scale(.25f, .25f, .25f);
+					Renderer120.setColor(YLWCOLOR);
+				}
+				else{
+					pose.scale(.125f, .125f, .125f);
+					Renderer120.setColor(REDCOLOR);
+				}
+				CUBE.render();
+				pose.popPose();
+				if(!point.isVehicle()) pose.popPose();
+				else pose.translate(-pos.x, -pos.y, -pos.z);
 			}
-			pose.pushPose();
-			if(rem){
-				pose.scale(.25f, .25f, .25f);
-				Renderer120.setColor(YLWCOLOR);
-			}
-			else{
-				pose.scale(.125f, .125f, .125f);
-				Renderer120.setColor(REDCOLOR);
-			}
-			INSTALLCUBE.render();
-			pose.popPose();
-			if(!point.isVehicle()) pose.popPose();
-			else pose.translate(-pos.x, -pos.y, -pos.z);
 		}
 		Renderer120.resetColor();
 	}
@@ -300,6 +278,17 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	private static int isImpact(){
 		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof MaterialItem == false) return -1;
 		return ((MaterialItem)Minecraft.getInstance().player.getMainHandItem().getItem()).getContent().getImpactLevel();
+	}
+
+	public static int isToolbox(){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof ToolboxItem == false) return -1;
+		return ((ToolboxItem)Minecraft.getInstance().player.getMainHandItem().getItem()).var;
+	}
+
+	private static PartData isNormalPart(){
+		if(Minecraft.getInstance().player.getMainHandItem().getItem() instanceof PartItem == false) return null;
+		PartData data = StackWrapper.wrapAndGetApp(Minecraft.getInstance().player.getMainHandItem(), PartItemApp.class).data;
+		return data.getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData ? data : null;
 	}
 
 	private static PartData isWheelOrTire(){
