@@ -243,7 +243,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 			V3D pos;
 			for(Map.Entry<String, PartData> entry : data.getParts().entrySet()){
 				if(tool == 0 && entry.getValue().getType().getInstallHandlerData() instanceof DefaultPartInstallHandler.DPIHData == false) continue;
-				red = tool != 0 || !((DefaultPartInstallHandler.DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
+				red = tool != 0 || ((DefaultPartInstallHandler.DPIHData)entry.getValue().getType().getInstallHandlerData()).removable;
 				point = data.getRotationPointOfPart(entry.getKey());
 				pos = entry.getValue().getInstalledPos();
 				if(point.isVehicle()){
