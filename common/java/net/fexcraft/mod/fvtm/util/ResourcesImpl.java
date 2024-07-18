@@ -1,6 +1,7 @@
 package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.app.json.JsonMap;
+import net.fexcraft.mod.fcl.util.ExternalTextures;
 import net.fexcraft.mod.fvtm.FVTM4;
 import net.fexcraft.mod.fvtm.FvtmGetters;
 import net.fexcraft.mod.fvtm.FvtmRegistry;
@@ -17,6 +18,8 @@ import net.fexcraft.mod.fvtm.model.program.ConditionalPrograms;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
+import net.fexcraft.mod.uni.impl.IDLM;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -168,7 +171,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public IDL getExternalTexture(String custom){
-		return null;
+		return IDLManager.getIDLCached(ExternalTextures.get("fvtm", custom).toString());
 	}
 
 	@Override
