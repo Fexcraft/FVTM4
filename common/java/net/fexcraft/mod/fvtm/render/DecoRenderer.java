@@ -37,7 +37,7 @@ public class DecoRenderer extends EntityRenderer<Decoration> {
 				//FvtmLogger.LOGGER.debug(data.modelid);
 				continue;
 			}
-			Renderer120.set(RenderType.entityCutout(data.textures.get(data.seltex).local()));
+			FvtmRenderTypes.setCutout(data.textures.get(data.seltex));
 			pose.pushPose();
 			pose.translate(data.offset.x16, data.offset.y16, data.offset.z16);
 			if(data.rotx != 0.0F || data.roty != 0.0F || data.rotz != 0.0F){
