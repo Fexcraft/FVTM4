@@ -13,6 +13,7 @@ import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
+import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -36,11 +37,11 @@ public class DefaultPrograms20 extends DefaultPrograms {
 			@Override
 			public void pre(ModelGroup list, ModelRenderData data){
 				old = rentype();
-				rentype(RenderType.eyes(data.vehicle.getCurrentTexture().local()));
+				FvtmRenderTypes.setDef(RenderType.eyes(data.vehicle.getCurrentTexture().local()));
 			}
 			@Override
 			public void post(ModelGroup list, ModelRenderData data){
-				rentype(old);
+				FvtmRenderTypes.setDef(old);
 			}
 			@Override
 			public RenderOrder order(){
