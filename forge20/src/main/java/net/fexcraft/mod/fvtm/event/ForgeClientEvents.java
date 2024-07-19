@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.event;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.fexcraft.mod.fvtm.entity.RootVehicle;
+import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.Renderer120;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.minecraft.client.Minecraft;
@@ -37,7 +38,7 @@ public class ForgeClientEvents {
 				@Override
 				public void render(PoseStack pose, VertexConsumer cons, int i, int j, float k, float l, float m, float n){
 					Renderer120.set(pose, cons, i, j);
-					Renderer120.set(RenderType.lines());
+					FvtmRenderTypes.setLines();
 					DebugUtils.SPHERE.render();
 				}
 			});
@@ -50,7 +51,7 @@ public class ForgeClientEvents {
 	public static void onLevelRender(RenderLevelStageEvent event){
 		if(event.getStage() != RenderLevelStageEvent.Stage.AFTER_LEVEL) return;
 		Renderer120.set(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource().getBuffer(RenderType.lines()), 0);
-		Renderer120.set(RenderType.lines());
+		FvtmRenderTypes.setLines();
 		DebugUtils.SPHERE.render();
 	}
 
