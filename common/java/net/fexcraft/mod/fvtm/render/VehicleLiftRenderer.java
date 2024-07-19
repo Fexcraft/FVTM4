@@ -10,6 +10,8 @@ import net.fexcraft.mod.fvtm.data.vehicle.SwivelPoint;
 import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.model.DefaultModel;
 import net.fexcraft.mod.fvtm.model.block.Lift2024Model;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -25,14 +27,14 @@ import static net.fexcraft.mod.fvtm.render.Renderer120.*;
  */
 public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntity> {
 
-	public static final ResourceLocation TEXTURE = new ResourceLocation("fvtm:textures/block/lift2024.png");
+	public static final IDL TEXTURE = IDLManager.getIDLCached("fvtm:textures/block/lift2024.png");
 	private VehicleData data;
 
 	@Override
 	public void render(VehicleLiftEntity tile, float ticks, PoseStack pose, MultiBufferSource buffer, int light, int overlay){
 		Renderer120.pose = pose;
 		Renderer120.set(pose, buffer, light, overlay);
-		Renderer120.set(RenderType.entityCutout(TEXTURE));
+		FvtmRenderTypes.setCutout(TEXTURE);
 		pose.pushPose();
 		pose.translate(0.5, 0, 0.5);
 		if(tile.rot != 0){
@@ -45,7 +47,7 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 			pose.pushPose();
 			pose.translate(0, tile.liftstate + 0.3125, 0);
 			if(data.getType().getModel() != null){
-				rentype(RenderType.entityCutout(data.getCurrentTexture().local()));
+				FvtmRenderTypes.setCutout(data.getCurrentTexture());
 				data.getType().getModel().render(DefaultModel.RENDERDATA.set(data, null, null, false, ticks));
 			}
 			if(data.getParts().size() > 0){
@@ -56,7 +58,7 @@ public class VehicleLiftRenderer implements BlockEntityRenderer<VehicleLiftEntit
 				RVRenderer.renderVehicleInfo(pose, vdp, data);
 			}
 			pose.popPose();
-			Renderer120.set(RenderType.entityCutout(TEXTURE));
+			FvtmRenderTypes.setCutout(TEXTURE);
 			for(LiftingPoint[] point : data.getType().getGroupedLiftingPoints().values()){
 				pose.pushPose();
 				V3D vec = point.length == 1 ? point[0].pos : point[0].pos.add(point[1].pos).multiply(0.5);
