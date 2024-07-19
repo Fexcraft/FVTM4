@@ -31,7 +31,7 @@ public class ItemRenderers {
 			if(via != null && via.data != null && via.data.getType().getModel() != null){
 				VehicleModel model = (VehicleModel)via.data.getType().getModel();
 				Renderer120.set(pose, src, v0);
-				Renderer120.set(RenderType.entityCutout(via.data.getCurrentTexture().local()));
+				FvtmRenderTypes.setCutout(via.data.getCurrentTexture());
 				pose.pushPose();
 				//
 				pose.translate(0.5, 0.5, 0);
