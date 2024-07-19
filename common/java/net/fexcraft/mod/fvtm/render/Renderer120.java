@@ -2,6 +2,7 @@ package net.fexcraft.mod.fvtm.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
@@ -35,7 +36,7 @@ public class Renderer120 extends Renderer<GLObject> {
 	public static PoseStack pose;
 	private static MultiBufferSource buffer;
 	private static VertexConsumer cons;
-	private static RenderType rentype;
+	protected static RenderType rentype;
 	private static int overlay = OverlayTexture.NO_OVERLAY;
 	private static int light;
 
@@ -97,18 +98,37 @@ public class Renderer120 extends Renderer<GLObject> {
 		Matrix4f verma = pose.last().pose();
 		Matrix3f norma = pose.last().normal();
 		for(Polygon poli : poly.polygons){
-			for(Vertex vert : poli.vertices){
-				Vector4f vec = verma.transform(new Vector4f(vert.vector.x, vert.vector.y, vert.vector.z, 1.0F));
-				Vector3f norm = norma.transform(vert.norm == null ? NULLVEC : new Vector3f(vert.norm.x, vert.norm.y, vert.norm.z));
-				//if(vert.color() == null){
-					cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, 1.0F, vert.u, vert.v, overlay, light, norm.x, norm.y, norm.z);
-				//}
-				//else{
-				//	cons.vertex(vec.x, vec.y, vec.z, (vert.color()).x, (vert.color()).y, (vert.color()).z, 1.0F, vert.u, vert.v, OverlayTexture.NO_OVERLAY, light, norm.x, norm.y, norm.z);
-				//}
+			if(rentype.mode() == VertexFormat.Mode.QUADS){
+				for(Vertex vert : poli.vertices){
+					fillVert(verma, norma, vert);
+				}
+				if(poli.vertices.length < 4){
+					fillVert(verma, norma, poli.vertices[2]);
+				}
+			}
+			else{
+				if(poli.vertices.length == 4){
+					fillVert(verma, norma, poli.vertices[0]);
+					fillVert(verma, norma, poli.vertices[1]);
+					fillVert(verma, norma, poli.vertices[2]);
+					fillVert(verma, norma, poli.vertices[0]);
+					fillVert(verma, norma, poli.vertices[2]);
+					fillVert(verma, norma, poli.vertices[3]);
+				}
+				else{
+					for(Vertex vert : poli.vertices){
+						fillVert(verma, norma, vert);
+					}
+				}
 			}
 		}
 		pose.popPose();
+	}
+
+	private void fillVert(Matrix4f verma, Matrix3f norma, Vertex vert){
+		Vector4f vec = verma.transform(new Vector4f(vert.vector.x, vert.vector.y, vert.vector.z, 1.0F));
+		Vector3f norm = norma.transform(vert.norm == null ? NULLVEC : new Vector3f(vert.norm.x, vert.norm.y, vert.norm.z));
+		cons.vertex(vec.x, vec.y, vec.z, color.x, color.y, color.z, 1.0F, vert.u, vert.v, overlay, light, norm.x, norm.y, norm.z);
 	}
 
 	public void delete(Polyhedron<GLObject> poly){
@@ -145,14 +165,6 @@ public class Renderer120 extends Renderer<GLObject> {
 		cons = con;
 		light = lgt;
 		overlay = OverlayTexture.NO_OVERLAY;
-	}
-
-	public static void set(RenderType type){
-		rentype = type;
-	}
-
-	public static void rentype(RenderType type){
-		rentype = type;
 	}
 
 }
