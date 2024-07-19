@@ -69,7 +69,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		//
 		pose.pushPose();
 		Model vehmod = veh.vehicle.data.getType().getModel();
-		Renderer120.set(RenderType.entityCutout(veh.vehicle.data.getCurrentTexture().local()));
+		FvtmRenderTypes.setCutout(veh.vehicle.data.getCurrentTexture());
 		RenderCache cache = FvtmGetters.getRenderCache(veh);
 		if(vehmod != null){
 			pose.pushPose();
@@ -112,7 +112,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	private void renderSeats(PoseStack pose, VehicleInstance vehicle){
 		if(vehicle.seats.isEmpty()) return;
 		pose.pushPose();
-		Renderer120.set(RenderType.lines());
+		FvtmRenderTypes.setLines();
 		float scale;
 		for(SeatInstance seat : vehicle.seats){
 			pose.pushPose();
@@ -132,7 +132,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 	}
 
 	public static boolean isInRange(PoseStack pose, V3D vehpos, VehicleData data){
-		Renderer120.set(RenderType.lineStrip());
+		FvtmRenderTypes.setLineStrip();
 		V3D ply = new V3D(Minecraft.getInstance().player.position().x, Minecraft.getInstance().player.position().y, Minecraft.getInstance().player.position().z);
 		boolean inrange = false;
 		for(InteractZone zone : data.getInteractZones().values()){
@@ -156,7 +156,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		PartData part = isNormalPart();
 		boolean red;
 		SwivelPoint point = null;
-		Renderer120.set(RenderType.lines());
+		FvtmRenderTypes.setLines();
 		if(part != null){
 			for(Map.Entry<String, PartSlots> ps : data.getPartSlotProviders().entrySet()){
 				V3D pos = ps.getKey().equals("vehicle") ? V3D.NULL : data.getPart(ps.getKey()).getInstalledPos();
@@ -330,7 +330,7 @@ public class RVRenderer extends EntityRenderer<RootVehicle> {
 		for(Map.Entry<String, PartData> entry : parts){
 			if(entry.getValue().getType().getModel() == null) continue;
 			pose.pushPose();
-			Renderer120.set(RenderType.entityCutout(entry.getValue().getCurrentTexture().local()));
+			FvtmRenderTypes.setCutout(entry.getValue().getCurrentTexture());
 			translate(pose, entry.getValue().getInstalledPos());
 			rotate(pose, entry.getValue().getInstalledRot());
 			entry.getValue().getType().getModel().render(RENDERDATA.set(data, vehicle == null ? null : vehicle.vehicle, cache, entry.getValue(), entry.getKey(), false, ticks));
