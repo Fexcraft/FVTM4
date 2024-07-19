@@ -6,6 +6,8 @@ import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.mod.fvtm.entity.RoadMarker;
 import net.fexcraft.mod.fvtm.model.entity.RoadMarkerModel;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingUtil;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -20,7 +22,7 @@ import static net.fexcraft.mod.fvtm.render.Renderer120.*;
  */
 public class RoadMarkerRenderer extends EntityRenderer<RoadMarker> {
 
-	private ResourceLocation texture = new ResourceLocation("fvtm:textures/entity/roadmarker.png");
+	private IDL texture = IDLManager.getIDLCached("fvtm:textures/entity/roadmarker.png");
 	public static final RGB CYAN = new RGB(0, 255, 255);
 
 	public RoadMarkerRenderer(EntityRendererProvider.Context context){
@@ -32,7 +34,7 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker> {
 	public void render(RoadMarker marker, float yaw, float tick, PoseStack pose, MultiBufferSource buffer, int light){
 		pose.pushPose();
 		Renderer120.set(pose, buffer, light);
-		Renderer120.set(RenderType.entityCutout(texture));
+		FvtmRenderTypes.setCutout(texture);
 		pose.mulPose(new Quaternionf().rotateAxis(Static.rad180, AZ));
 		RoadMarkerModel.INST.marker.render();
 		if(marker.queueid == null){
@@ -56,7 +58,7 @@ public class RoadMarkerRenderer extends EntityRenderer<RoadMarker> {
 
 	@Override
 	public ResourceLocation getTextureLocation(RoadMarker entity){
-		return texture;
+		return texture.local();
 	}
 
 }
