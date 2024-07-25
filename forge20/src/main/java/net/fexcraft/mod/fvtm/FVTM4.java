@@ -100,8 +100,6 @@ public class FVTM4 {
 		BlockEntityType.Builder.of(VehicleLiftEntity::new, FvtmGetters.LIFT_BLOCK.get()).build(null));
 
 	public FVTM4(){
-		LOGGER4.info("MARKER " + IDLManager.INSTANCE[0]);
-		IDLManager.INSTANCE[0] = new IDLM();
 		FvtmRegistry.init("1.20", FMLPaths.CONFIGDIR.get().toFile());
 		FvtmLogger.LOGGER = new FvtmLogger() {
 			@Override
