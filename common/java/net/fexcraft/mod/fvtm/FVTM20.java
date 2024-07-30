@@ -8,6 +8,7 @@ import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.data.block.AABB;
+import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
@@ -19,6 +20,7 @@ import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
+import net.fexcraft.mod.fvtm.util.BlockTypeImpl;
 import net.fexcraft.mod.fvtm.util.DebugUtils;
 import net.fexcraft.mod.fvtm.util.EntityWIE;
 import net.fexcraft.mod.fvtm.util.ResourcesImpl;
@@ -47,6 +49,7 @@ public class FVTM20 {
 		EntityUtil.IMPL = EntityWIE.class;
 		WrapperHolder.INSTANCE = new WrapperHolderImpl();
 		AABB.SUPPLIER = () -> new AABBI();
+		BlockType.BLOCK_IMPL = BlockTypeImpl::get;
 		if(EnvInfo.CLIENT){
 			CONFIG.addListener(DefaultPrograms::setupBlinkerTimer);
 			Renderer.RENDERER = new Renderer120();
