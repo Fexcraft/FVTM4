@@ -2,10 +2,7 @@ package net.fexcraft.mod.fvtm.util;
 
 import net.fexcraft.app.json.JsonMap;
 import net.fexcraft.mod.fcl.util.ExternalTextures;
-import net.fexcraft.mod.fvtm.FVTM4;
-import net.fexcraft.mod.fvtm.FvtmGetters;
-import net.fexcraft.mod.fvtm.FvtmRegistry;
-import net.fexcraft.mod.fvtm.FvtmResources;
+import net.fexcraft.mod.fvtm.*;
 import net.fexcraft.mod.fvtm.block.Asphalt;
 import net.fexcraft.mod.fvtm.block.VehicleLiftBlock;
 import net.fexcraft.mod.fvtm.data.Content;
@@ -19,7 +16,6 @@ import net.fexcraft.mod.fvtm.model.program.DefaultPrograms20;
 import net.fexcraft.mod.fvtm.render.Transforms120;
 import net.fexcraft.mod.uni.IDL;
 import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.impl.IDLM;
 import net.fexcraft.mod.uni.impl.IWI;
 import net.fexcraft.mod.uni.impl.IWR;
 import net.fexcraft.mod.uni.item.ItemWrapper;
@@ -39,6 +35,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Supplier;
+
+import static net.fexcraft.mod.fvtm.FvtmRegistry.BLOCKS;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -61,7 +59,9 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void createContentBlocks(){
-
+		BLOCKS.forEach(block -> {
+			FVTM4.BLOCK_REGISTRY.get(block.getID().space()).register(block.getID().id(), () -> block.genBlock());
+		});
 	}
 
 	@Override
@@ -70,6 +70,10 @@ public class ResourcesImpl extends FvtmResources {
 		FvtmRegistry.CONSUMABLES.forEach(con -> con.setItemWrapper(wrapwrapper(con.getID(), () -> new ConsumableItem(con))));
 		FvtmRegistry.PARTS.forEach(part -> part.setItemWrapper(wrapwrapper(part.getID(), () -> new PartItem(part))));
 		FvtmRegistry.VEHICLES.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new VehicleItem(veh))));
+		FvtmRegistry.BLOCKS.forEach(blk -> blk.setItemWrapper(wrapwrapper(blk.getID(), () -> {
+			FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
+			return new net.fexcraft.mod.fvtm.item.BlockItem(blk);
+		})));
 	}
 
 	@Override
@@ -178,9 +182,9 @@ public class ResourcesImpl extends FvtmResources {
 	public void registerFvtmBlocks(){
 		for(int idx = 0; idx < FvtmGetters.ASPHALT.length; idx++){
 			int index = idx;
-			FvtmGetters.ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.register("asphalt_" + idx, () -> new Asphalt(index));
+			FvtmGetters.ASPHALT[idx] = FVTM4.BLOCK_REGISTRY.get("fvtm").register("asphalt_" + idx, () -> new Asphalt(index));
 		}
-		FvtmGetters.LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.register("vehicle_lift", () -> new VehicleLiftBlock());
+		FvtmGetters.LIFT_BLOCK = FVTM4.BLOCK_REGISTRY.get("fvtm").register("vehicle_lift", () -> new VehicleLiftBlock());
 	}
 
 	@Override
