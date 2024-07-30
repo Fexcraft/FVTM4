@@ -93,7 +93,7 @@ public class FVTM4 {
 		.networkProtocolVersion(() -> "fvtm4")
 		.simpleChannel();
 	//
-	public static final DeferredRegister<Block> BLOCK_REGISTRY = DeferredRegister.create(Registries.BLOCK, "fvtm");
+	public static final HashMap<String, DeferredRegister<Block>> BLOCK_REGISTRY = new HashMap<>();
 	//
 	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
 	public static final RegistryObject<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY = BLOCKENTS.register("vehicle_lift", () ->
@@ -122,6 +122,7 @@ public class FVTM4 {
 		FVTM20.CONFIG = new Config(new File(FMLPaths.CONFIGDIR.get().toFile(), "fvtm.json"));
 		FVTM20.init0();
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(Registries.ITEM, addon.getID().id())));
+		FvtmRegistry.ADDONS.forEach(addon -> BLOCK_REGISTRY.put(addon.getID().id(), DeferredRegister.create(Registries.BLOCK, addon.getID().id())));
 		FVTM20.init1();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
@@ -129,7 +130,7 @@ public class FVTM4 {
 		ITEM_REGISTRY.values().forEach(reg -> reg.register(bus));
 		CREATIVE_MODE_TABS.register(bus);
 		ENTITIES.register(bus);
-		BLOCK_REGISTRY.register(bus);
+		BLOCK_REGISTRY.values().forEach(reg -> reg.register(bus));
 		BLOCKENTS.register(bus);
 	}
 
