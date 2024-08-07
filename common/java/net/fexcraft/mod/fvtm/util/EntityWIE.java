@@ -83,9 +83,4 @@ public class EntityWIE extends EntityWI implements Passenger {
 		//
 	}
 
-	@Override
-	public void openUI(UIKey key, V3I pos){
-		openUI(key.key, pos);
-	}
-
 }
