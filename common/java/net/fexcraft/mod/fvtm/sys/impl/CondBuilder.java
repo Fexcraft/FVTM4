@@ -1,11 +1,10 @@
 package net.fexcraft.mod.fvtm.sys.impl;
 
-import net.fexcraft.mod.fvtm.data.part.PartData;
-import net.fexcraft.mod.fvtm.data.part.PartFunction;
-import net.fexcraft.mod.fvtm.sys.condition.Condition;
-import net.fexcraft.mod.fvtm.sys.condition.Conditional;
+import net.fexcraft.mod.fvtm.sys.condition.*;
 
 import java.util.function.Function;
+
+import static net.fexcraft.mod.fvtm.sys.condition.ConditionRegistry.COND_FALSE;
 
 /**
  * @author Ferdinand Calo' (FEX___96)
@@ -13,92 +12,24 @@ import java.util.function.Function;
 public class CondBuilder {
 
 	public static Function<Condition, Conditional> run(){
-		return (cond) -> {
+		Function<Condition, Conditional> con = CondBuilderRoot.run();
+		if(con != null) return con;
+		return cond -> {
 			switch(cond.type){
-				case "attribute":{
-					switch(cond.mode){
-						case BOOL_EQUAL:{
-							boolean bool = Boolean.parseBoolean(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeBoolean(cond.target, false) == bool;
-							};
-						}
-						case BOOL_NEQUAL:{
-							boolean bool = Boolean.parseBoolean(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeBoolean(cond.target, false) != bool;
-							};
-						}
-						case NUMB_EQUAL:{
-							Float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) == val;
-							};
-						}
-						case NUMB_NEQUAL:{
-							Float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) != val;
-							};
-						}
-						case EQUAL:{
-							return data -> {
-								return data.vehicle.getAttributeString(cond.target, "null").equals(cond.condi);
-							};
-						}
-						case NEQUAL:{
-							return data -> {
-								return !data.vehicle.getAttributeString(cond.target, "null").equals(cond.condi);
-							};
-						}
-						case LEQUAL:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) <= val;
-							};
-						}
-						case GEQUAL:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) >= val;
-							};
-						}
-						case LESS:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) < val;
-							};
-						}
-						case GREATER:{
-							float val = Float.parseFloat(cond.condi);
-							return data -> {
-								return data.vehicle.getAttributeFloat(cond.target, 0f) > val;
-							};
-						}
-					}
-					break;
+				case WORLDTIME -> {
+
+					return COND_FALSE;
 				}
-				case "part_function":
-				case "part_func":
-				case "partfunc":{
-					return mrdata -> {
-						PartData data = mrdata.part_category.equals(cond.target) ? mrdata.part : mrdata.vehicle.getPart(cond.target);
-						PartFunction func = data == null ? null : data.getFunction(cond.targets[1]);
-						return func == null ? false : func.onCondition(cond.targets, cond.mode, cond.condi);
-					};
+				case BLOCKSTATE -> {
+
+					return COND_FALSE;
 				}
-				case "multiple":
-				case "multi":
-				case "group":{
-					//TODO
-					break;
-				}
-				default:{
-					//TODO run forge event
-					break;
+				case CUSTOM -> {
+
+					return COND_FALSE;
 				}
 			}
-			return data -> false;
+			return COND_FALSE;
 		};
 	}
 
