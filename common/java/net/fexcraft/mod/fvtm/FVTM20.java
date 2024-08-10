@@ -60,13 +60,6 @@ public class FVTM20 {
 			//
 		});
 		//
-		UISlot.SLOT_GETTER = (type, args) -> {
-			switch(type){
-				case "default":
-				default:
-					return new Slot((Container)args[0], (Integer)args[1], (Integer)args[2], (Integer)args[3]);
-			}
-		};
 		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
 		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "assets/fvtm/uis/deco_editor", DecoContainer.class);
 		UniReg.registerUI(UIKeys.TOOLBOX_COLORS, ToolboxPainter.class);
