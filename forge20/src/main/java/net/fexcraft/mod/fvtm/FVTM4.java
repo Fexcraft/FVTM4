@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.IDLManager;
 import net.fexcraft.mod.uni.impl.IDLM;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +19,7 @@ import net.minecraft.server.packs.FilePackResources;
 import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -94,6 +96,7 @@ public class FVTM4 {
 		.simpleChannel();
 	//
 	public static final HashMap<String, DeferredRegister<Block>> BLOCK_REGISTRY = new HashMap<>();
+	public static final HashMap<String, DeferredRegister<SoundEvent>> SOUND_REGISTY = new HashMap<>();
 	//
 	public static final DeferredRegister<BlockEntityType<?>> BLOCKENTS = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, "fvtm");
 	public static final RegistryObject<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY = BLOCKENTS.register("vehicle_lift", () ->
@@ -124,6 +127,7 @@ public class FVTM4 {
 		FvtmRegistry.ADDONS.forEach(addon -> ITEM_REGISTRY.put(addon.getID().id(), DeferredRegister.create(Registries.ITEM, addon.getID().id())));
 		FvtmRegistry.ADDONS.forEach(addon -> BLOCK_REGISTRY.put(addon.getID().id(), DeferredRegister.create(Registries.BLOCK, addon.getID().id())));
 		FVTM20.init1();
+		regSounds();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		bus.addListener(this::commonSetup);
 		bus.register(new PackAdder());
@@ -132,10 +136,54 @@ public class FVTM4 {
 		ENTITIES.register(bus);
 		BLOCK_REGISTRY.values().forEach(reg -> reg.register(bus));
 		BLOCKENTS.register(bus);
+		SOUND_REGISTY.values().forEach(reg -> reg.register(bus));
+	}
+
+	private void regSounds(){
+		FvtmRegistry.VEHICLES.forEach(vehicle -> {
+			vehicle.getSounds().values().forEach(sound -> {
+				if(sound.soundid.space().equals("minecraft")) return;
+				if(!SOUND_REGISTY.containsKey(sound.soundid.space())){
+					SOUND_REGISTY.put(sound.soundid.space(), DeferredRegister.create(Registries.SOUND_EVENT, sound.soundid.space()));
+				}
+				SOUND_REGISTY.get(sound.soundid.space()).register(sound.soundid.id(), () -> {
+					SoundEvent ev = SoundEvent.createVariableRangeEvent(sound.soundid.local());
+					sound.event = ev;
+					return ev;
+				});
+			});
+		});
+		FvtmRegistry.PARTS.forEach(part -> {
+			part.getSounds().values().forEach(sound -> {
+				if(sound.soundid.space().equals("minecraft")) return;
+				if(!SOUND_REGISTY.containsKey(sound.soundid.space())){
+					SOUND_REGISTY.put(sound.soundid.space(), DeferredRegister.create(Registries.SOUND_EVENT, sound.soundid.space()));
+				}
+				SOUND_REGISTY.get(sound.soundid.space()).register(sound.soundid.id(), () -> {
+					SoundEvent ev = SoundEvent.createVariableRangeEvent(sound.soundid.local());
+					sound.event = ev;
+					return ev;
+				});
+			});
+		});
 	}
 
 	private void commonSetup(final FMLCommonSetupEvent event){
 		new Packets20F().init();
+		FvtmRegistry.VEHICLES.forEach(vehicle -> {
+			vehicle.getSounds().values().forEach(sound -> {
+				if(sound.soundid.space().equals("minecraft")){
+					sound.event = BuiltInRegistries.SOUND_EVENT.get((ResourceLocation)sound.soundid.local());
+				}
+			});
+		});
+		FvtmRegistry.PARTS.forEach(part -> {
+			part.getSounds().values().forEach(sound -> {
+				if(sound.soundid.space().equals("minecraft")){
+					sound.event = BuiltInRegistries.SOUND_EVENT.get((ResourceLocation)sound.soundid.local());
+				}
+			});
+		});
 	}
 
 	public static class PackAdder {
