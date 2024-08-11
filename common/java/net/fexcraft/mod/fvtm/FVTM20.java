@@ -64,22 +64,6 @@ public class FVTM20 {
 		CONFIG.addListener(() -> {
 			//
 		});
-		EventAction.PLAY_SOUND.set((data, lis, args) -> {
-			String ori = lis.args[0];
-			String sound = lis.args[1];
-			Sound s = null;
-			if(ori.equals("vehicle")){
-				s = data.rootholder.sounds.getSounds().get(sound);
-			}
-			else if(ori.startsWith("part:")){
-				PartData part = data.vehicle.getPart(ori.substring(5));
-				if(part != null) s = part.getType().getSounds().get(sound);
-			}
-			else{
-				s = data.holder.sounds.getSounds().get(sound);
-			}
-			if(s != null) data.vehent.entity.playSound(s.event, s.volume, s.pitch);
-		});
 		//
 		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
 		UniReg.registerMenu(UIKeys.DECORATION_EDITOR, "assets/fvtm/uis/deco_editor", DecoContainer.class);
