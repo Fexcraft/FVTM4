@@ -7,15 +7,20 @@ import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.lib.frl.GLO;
 import net.fexcraft.lib.frl.Renderer;
 import net.fexcraft.mod.fcl.util.EntityUtil;
+import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
+import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
 import net.fexcraft.mod.fvtm.model.GLObject;
 import net.fexcraft.mod.fvtm.model.program.DefaultPrograms;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.fvtm.sys.event.EventAction;
 import net.fexcraft.mod.fvtm.sys.road.RoadPlacingCache;
 import net.fexcraft.mod.fvtm.sys.uni.Passenger;
+import net.fexcraft.mod.fvtm.sys.uni.VehicleInstance;
 import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
@@ -58,6 +63,22 @@ public class FVTM20 {
 		FvtmResources.INSTANCE = new ResourcesImpl();
 		CONFIG.addListener(() -> {
 			//
+		});
+		EventAction.PLAY_SOUND.set((data, lis, args) -> {
+			String ori = lis.args[0];
+			String sound = lis.args[1];
+			Sound s = null;
+			if(ori.equals("vehicle")){
+				s = data.rootholder.sounds.getSounds().get(sound);
+			}
+			else if(ori.startsWith("part:")){
+				PartData part = data.vehicle.getPart(ori.substring(5));
+				if(part != null) s = part.getType().getSounds().get(sound);
+			}
+			else{
+				s = data.holder.sounds.getSounds().get(sound);
+			}
+			if(s != null) data.vehent.entity.playSound(s.event, s.volume, s.pitch);
 		});
 		//
 		UniReg.registerUI(UIKeys.DECORATION_EDITOR, DecoEditor.class);
