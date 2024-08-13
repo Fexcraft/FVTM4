@@ -11,6 +11,7 @@ import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.block.AABB;
 import net.fexcraft.mod.fvtm.data.block.BlockType;
 import net.fexcraft.mod.fvtm.data.part.PartData;
+import net.fexcraft.mod.fvtm.data.root.LoopedSound;
 import net.fexcraft.mod.fvtm.data.root.Sound;
 import net.fexcraft.mod.fvtm.impl.AABBI;
 import net.fexcraft.mod.fvtm.impl.WrapperHolderImpl;
@@ -25,14 +26,12 @@ import net.fexcraft.mod.fvtm.ui.*;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomUI;
 import net.fexcraft.mod.fvtm.ui.road.RoadToolUI;
 import net.fexcraft.mod.fvtm.ui.vehicle.*;
-import net.fexcraft.mod.fvtm.util.BlockTypeImpl;
-import net.fexcraft.mod.fvtm.util.DebugUtils;
-import net.fexcraft.mod.fvtm.util.EntityWIE;
-import net.fexcraft.mod.fvtm.util.ResourcesImpl;
+import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
 import net.fexcraft.mod.uni.UniReg;
 import net.fexcraft.mod.uni.ui.UISlot;
 import net.fexcraft.mod.uni.world.WrapperHolder;
+import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
@@ -41,6 +40,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -61,6 +61,10 @@ public class FVTM20 {
 			GLO.SUPPLIER = (() -> new GLObject());
 		}
 		FvtmResources.INSTANCE = new ResourcesImpl();
+		LoopedSound.ACTIVATE = sound -> {
+			sound.localsound = new LoopSound(sound);
+			net.minecraft.client.Minecraft.getInstance().getSoundManager().play((SoundInstance)sound.localsound);
+		};
 		CONFIG.addListener(() -> {
 			//
 		});
