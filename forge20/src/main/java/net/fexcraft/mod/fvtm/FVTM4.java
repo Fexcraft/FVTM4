@@ -7,10 +7,10 @@ import net.fexcraft.mod.fvtm.data.addon.Addon;
 import net.fexcraft.mod.fvtm.entity.*;
 import net.fexcraft.mod.fvtm.impl.Packets20F;
 import net.fexcraft.mod.fvtm.impl.SWIE;
+import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.util.*;
 import net.fexcraft.mod.uni.EnvInfo;
-import net.fexcraft.mod.uni.IDLManager;
-import net.fexcraft.mod.uni.impl.IDLM;
+import net.fexcraft.mod.uni.impl.WrapperHolderImpl;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -27,6 +27,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.AddPackFindersEvent;
@@ -170,6 +171,7 @@ public class FVTM4 {
 
 	private void commonSetup(final FMLCommonSetupEvent event){
 		new Packets20F().init();
+		WrapperHolderImpl.LEVEL_PROVIDER = lvl -> new WorldWIE((Level)lvl);
 		FvtmRegistry.VEHICLES.forEach(vehicle -> {
 			vehicle.getSounds().values().forEach(sound -> {
 				if(sound.soundid.space().equals("minecraft")){
