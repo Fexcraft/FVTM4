@@ -12,7 +12,7 @@ import net.fexcraft.mod.fvtm.data.vehicle.VehicleData;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRef;
 import net.fexcraft.mod.fvtm.handler.InteractionHandler.InteractRefHolder;
-import net.fexcraft.mod.fvtm.impl.WorldWI;
+import net.fexcraft.mod.fvtm.impl.WorldWIE;
 import net.fexcraft.mod.fvtm.item.VehicleItem;
 import net.fexcraft.mod.fvtm.packet.PacketListener;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -185,7 +185,7 @@ public class VehicleLiftEntity extends BlockEntity implements PacketListener, In
 
 	@Override
 	public AABB getRenderBoundingBox(){
-        return WorldWI.aabb.move(getBlockPos());
+        return WorldWIE.aabb.move(getBlockPos());
     }
 
 	@Override
