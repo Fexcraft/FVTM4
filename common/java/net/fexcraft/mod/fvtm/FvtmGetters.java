@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  */
 public class FvtmGetters {
 
-	public static Supplier<EntityType<? extends Decoration>> DECORATION_ENTITY;
+	public static Supplier<EntityType<? extends DecorationEntity>> DECORATION_ENTITY;
 	public static Supplier<EntityType<? extends RoadMarker>> ROAD_MARKER_ENTITY;
 	public static Supplier<EntityType<? extends RootVehicle>> ROOTVEHICLE_ENTITY;
 	public static Supplier<EntityType<? extends WheelEntity>> WHEEL_ENTITY;
@@ -31,7 +31,6 @@ public class FvtmGetters {
 	//
 	public static Supplier<BlockEntityType<VehicleLiftEntity>> LIFT_ENTITY;
 	//
-	public static Supplier<DecorationItem> DECORATION_ITEM;
 	public static Supplier<RoadToolItem> ROAD_TOOL_ITEM;
 	public static Supplier<ToolboxItem> TOOLBOX0;
 	public static Supplier<ToolboxItem> TOOLBOX1;
@@ -43,7 +42,7 @@ public class FvtmGetters {
 	//
 	public static Function<Entity, RenderCache> RENDERCACHE;
 
-	public static Decoration getNewDecoration(Level level){
+	public static DecorationEntity getNewDecoration(Level level){
 		return DECORATION_ENTITY.get().create(level);
 	}
 
