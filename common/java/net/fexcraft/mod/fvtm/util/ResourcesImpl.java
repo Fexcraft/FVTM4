@@ -74,6 +74,7 @@ public class ResourcesImpl extends FvtmResources {
 			FvtmRegistry.CONTENT_BLOCKS.put(blk.getID(), blk.getBlock());
 			return new net.fexcraft.mod.fvtm.item.BlockItem(blk);
 		})));
+		FvtmRegistry.DECORATIONS.forEach(veh -> veh.setItemWrapper(wrapwrapper(veh.getID(), () -> new DecorationItem(veh))));
 	}
 
 	@Override
@@ -189,7 +190,6 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public void registerFvtmItems(){
-		FvtmGetters.DECORATION_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("decoration", () -> new DecorationItem());
 		FvtmGetters.ROAD_TOOL_ITEM = FVTM4.ITEM_REGISTRY.get("fvtm").register("road_tool", () -> new RoadToolItem());
 		FvtmGetters.TOOLBOX0 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_0", () -> new ToolboxItem(0));
 		FvtmGetters.TOOLBOX1 = FVTM4.ITEM_REGISTRY.get("fvtm").register("toolbox_1", () -> new ToolboxItem(1));
