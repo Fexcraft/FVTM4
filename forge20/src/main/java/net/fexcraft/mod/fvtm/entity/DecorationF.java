@@ -1,7 +1,5 @@
 package net.fexcraft.mod.fvtm.entity;
 
-import net.fexcraft.mod.fvtm.data.DecorationData;
-import net.fexcraft.mod.uni.tag.TagCW;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -13,7 +11,7 @@ import net.minecraftforge.network.NetworkHooks;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class DecorationF extends Decoration implements IEntityAdditionalSpawnData {
+public class DecorationF extends DecorationEntity implements IEntityAdditionalSpawnData {
 
 	public DecorationF(EntityType<DecorationF> type, Level level){
 		super(type, level);
