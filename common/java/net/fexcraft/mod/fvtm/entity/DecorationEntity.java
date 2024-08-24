@@ -3,6 +3,7 @@ package net.fexcraft.mod.fvtm.entity;
 import net.fexcraft.lib.common.math.V3I;
 import net.fexcraft.mod.fcl.util.EntityUtil;
 import net.fexcraft.mod.fvtm.FvtmGetters;
+import net.fexcraft.mod.fvtm.FvtmResources;
 import net.fexcraft.mod.fvtm.data.DecorationData;
 import net.fexcraft.mod.fvtm.item.DecorationItem;
 import net.fexcraft.mod.fvtm.packet.Packet_TagListener;
@@ -31,12 +32,12 @@ import java.util.ArrayList;
 /**
  * @author Ferdinand Calo' (FEX___96)
  */
-public class Decoration extends Entity {
+public class DecorationEntity extends Entity {
 
 	public ArrayList<DecorationData> decos = new ArrayList<>();
 	protected boolean locked;
 
-	protected Decoration(EntityType<?> type, Level level){
+	protected DecorationEntity(EntityType<?> type, Level level){
 		super(type, level);
 	}
 
@@ -51,7 +52,7 @@ public class Decoration extends Entity {
 		if(tag.contains("decorations")){
 			ListTag list = (ListTag)tag.get("decorations");
 			for(int i = 0; i < list.size(); i++){
-				this.decos.add(new DecorationData(TagCW.wrap(list.get(i)), level().isClientSide));
+				this.decos.add(FvtmResources.getDecorationData(TagCW.wrap(list.get(i))));
 			}
 		}
 	}
@@ -60,7 +61,7 @@ public class Decoration extends Entity {
 	protected void addAdditionalSaveData(CompoundTag tag){
 		if(this.decos.size() == 0) return;
 		ListTag list = new ListTag();
-		for(DecorationData deco : this.decos) list.add(deco.write().local());
+		for(DecorationData deco : this.decos) list.add(deco.write(TagCW.create()).local());
 		tag.put("decorations", list);
 	}
 
@@ -69,7 +70,7 @@ public class Decoration extends Entity {
 			buffer.writeBoolean(this.locked);
 			buffer.writeInt(this.decos.size());
 			for(DecorationData deco : this.decos){
-				buffer.writeNbt(deco.write().local());
+				buffer.writeNbt(deco.write(TagCW.create()).local());
 			}
 		}
 		catch(Exception e){
@@ -83,7 +84,7 @@ public class Decoration extends Entity {
 			decos.clear();
 			int amount = buffer.readInt();
 			for(int i = 0; i < amount; i++){
-				this.decos.add(new DecorationData(TagCW.wrap(buffer.readNbt()), level().isClientSide));
+				this.decos.add(FvtmResources.getDecorationData(TagCW.wrap(buffer.readNbt())));
 			}
 		}
 		catch(Exception e){
@@ -131,10 +132,12 @@ public class Decoration extends Entity {
 				return true;
 			}
 			//ItemStack stack = getPickedResult(null);
-			ItemEntity entity = new ItemEntity(EntityType.ITEM, level());
-			entity.setPos(position().add(0.0D, 0.25D, 0.0D));
-			entity.setItem(new ItemStack(FvtmGetters.DECORATION_ITEM.get(), 1));
-			level().addFreshEntity(entity);
+			for(DecorationData deco : decos){
+				ItemEntity entity = new ItemEntity(EntityType.ITEM, level());
+				entity.setPos(position().add(0.0D, 0.25D, 0.0D));
+				entity.setItem(deco.getNewStack().local());
+				level().addFreshEntity(entity);
+			}
 			kill();
 			return true;
 		}
