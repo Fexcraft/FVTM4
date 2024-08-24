@@ -212,7 +212,7 @@ public class FVTM4 {
 		@SubscribeEvent
 		public static void onAttackEntityCaps(AttachCapabilitiesEvent<Entity> event){
 			if(!EnvInfo.CLIENT) return;
-			if(event.getObject() instanceof Decoration || event.getObject() instanceof RootVehicle){
+			if(event.getObject() instanceof DecorationEntity || event.getObject() instanceof RootVehicle){
 				event.addCapability(new ResourceLocation("fvtm:rendercache"), new RenderCacheProvider(event.getObject()));
 			}
 		}
