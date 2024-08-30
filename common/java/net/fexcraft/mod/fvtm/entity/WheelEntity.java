@@ -28,6 +28,7 @@ public class WheelEntity extends Entity {
 	public double motionX;
 	public double motionY;
 	public double motionZ;
+	private int remtimer;
 
 	public WheelEntity(EntityType<?> type, Level level){
 		super(type, level);
@@ -68,7 +69,7 @@ public class WheelEntity extends Entity {
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag){
-		kill();
+		remtimer = 40;
 	}
 
 	@Override
@@ -114,6 +115,10 @@ public class WheelEntity extends Entity {
 
 	@Override
 	public void tick(){
+		if(remtimer > 0){
+			if(remtimer == 1) kill();
+			remtimer--;
+		}
 		if(level().isClientSide && !found){
 			root = (RootVehicle)level().getEntity(vehid);
 			if(root == null) return;
