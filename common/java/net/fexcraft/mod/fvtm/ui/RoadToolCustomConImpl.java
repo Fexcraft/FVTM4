@@ -7,7 +7,7 @@ import net.fexcraft.mod.fvtm.ui.road.RoadToolCustomCon;
 import net.fexcraft.mod.uni.UniEntity;
 import net.fexcraft.mod.uni.item.StackWrapper;
 import net.fexcraft.mod.uni.tag.TagCW;
-import net.fexcraft.mod.uni.uimpl.UniCon;
+import net.fexcraft.mod.uni.ui.UniCon;
 import net.minecraft.world.item.ItemStack;
 
 /**
