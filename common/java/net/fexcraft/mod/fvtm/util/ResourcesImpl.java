@@ -176,7 +176,7 @@ public class ResourcesImpl extends FvtmResources {
 
 	@Override
 	public IDL getExternalTexture(String custom){
-		return IDLManager.getIDLCached(ExternalTextures.get("fvtm", custom).toString());
+		return ExternalTextures.get("fvtm", custom);
 	}
 
 	@Override
