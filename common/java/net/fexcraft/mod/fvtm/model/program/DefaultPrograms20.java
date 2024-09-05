@@ -1,6 +1,5 @@
 package net.fexcraft.mod.fvtm.model.program;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.fexcraft.lib.common.Static;
 import net.fexcraft.lib.common.math.RGB;
 import net.fexcraft.lib.common.math.Vec3f;
@@ -8,13 +7,14 @@ import net.fexcraft.mod.fvtm.data.attribute.AttrFloat;
 import net.fexcraft.mod.fvtm.data.attribute.Attribute;
 import net.fexcraft.mod.fvtm.data.vehicle.WheelSlot;
 import net.fexcraft.mod.fvtm.function.part.GetWheelPos;
-import net.fexcraft.mod.fvtm.function.part.WheelFunction;
 import net.fexcraft.mod.fvtm.model.ModelGroup;
 import net.fexcraft.mod.fvtm.model.ModelRenderData;
 import net.fexcraft.mod.fvtm.model.Program;
 import net.fexcraft.mod.fvtm.model.RenderOrder;
 import net.fexcraft.mod.fvtm.render.FvtmRenderTypes;
 import net.fexcraft.mod.fvtm.render.Renderer120;
+import net.fexcraft.mod.uni.IDL;
+import net.fexcraft.mod.uni.IDLManager;
 import net.minecraft.client.renderer.RenderType;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -180,6 +180,7 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		ModelGroup.PROGRAMS.add(new AttributeRotator("", false, 0, 0, 0, 0, 0f));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeTranslator("", false, 0, 0, 0, 0));//jtmt/obj init only
 		ModelGroup.PROGRAMS.add(new AttributeVisible("", false));//jtmt/obj init only
+		ModelGroup.PROGRAMS.add(new TextureBinder("minecraft:textures/blocks/stone.png"));
 	}
 
 	public static class RGBCustom implements Program {
@@ -457,6 +458,42 @@ public class DefaultPrograms20 extends DefaultPrograms {
 		@Override
 		public Program parse(String[] args){
 			return new AttributeVisible(args[0], args.length > 1 ? Boolean.parseBoolean(args[1]) : false);
+		}
+
+	}
+
+	public static class TextureBinder implements Program {
+
+		private IDL idl;
+		private RenderType rentype;
+
+		public TextureBinder(String rs){
+			idl = IDLManager.getIDLCached(rs);
+		}
+
+		public TextureBinder(IDL rs){
+			idl = rs;
+		}
+
+		@Override
+		public String id(){
+			return "fvtm:bind_texture";
+		}
+
+		@Override
+		public void pre(ModelGroup list, ModelRenderData data){
+			rentype = Renderer120.rentype();
+			FvtmRenderTypes.setCutout(idl);
+		}
+
+		@Override
+		public void post(ModelGroup list, ModelRenderData data){
+			FvtmRenderTypes.setDef(rentype);
+		}
+
+		@Override
+		public Program parse(String[] args){
+			return new TextureBinder(args[0]);
 		}
 
 	}
