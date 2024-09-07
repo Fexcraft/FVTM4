@@ -9,3 +9,7 @@ https://discord.gg/AkMAzaA
 License 
 ------
 All Rights Reserved
+
+
+## Status
+Merged back into [FVTM](https://github.com/Fexcraft/FVTM)
